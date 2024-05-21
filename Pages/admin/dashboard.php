@@ -34,11 +34,11 @@ if(isset($_POST['Logout'])){
         <?php 
             echo 'ID: '.$id.'<br>';
             echo 'Hi user: '.$username.'<br>';
-            echo 'My role id: '.$roleId.'<br>';
+            echo 'My role id: '.$role.'<br>';
             //Getting the current URL
-            echo $_SERVER['PHP_SELF']; 
+            //echo $_SERVER['PHP_SELF']; 
         ?>
-    <h2>Admin Landing page</h2>
+    
     
     <!-- <form action="" method="POST">
         <input type="hidden" name="mode" value="<?php echo ($mode === 'light') ? 'dark' : 'light'; ?>">

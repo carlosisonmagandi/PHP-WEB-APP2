@@ -202,7 +202,7 @@ if(isset($_POST['Logout'])){
                     </div>
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <a class="nav-link" href="dashboard.php">
+                            <a class="nav-link" href="/Pages/admin/dashboard.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
@@ -293,9 +293,9 @@ if(isset($_POST['Logout'])){
 
                             
                             <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="charts.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Charts
+                            <a class="nav-link" href="/qr-list.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-qrcode"></i></div>
+                                QR
                             </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
@@ -312,7 +312,7 @@ if(isset($_POST['Logout'])){
                             echo $_SESSION['session_username'];
                             ?>
                         </div>
-                        <strong>Role:</strong> Admin
+                        <strong>Role:</strong> <?php echo $_SESSION['session_role'];?>
                     </div>
                 </nav>
             </div>

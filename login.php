@@ -40,7 +40,7 @@ if(isset($_POST['submit'])){
         // Store the username and user ID in session variables
         $_SESSION['session_username'] = $row['username'];
         $_SESSION['session_id'] = $row['id'];
-        $_SESSION['session_roleId'] = $row['role_id'];
+        $_SESSION['session_role'] = $row['role'];
 
         // Check if the "Remember me" checkbox is checked
         if(isset($_POST['remember']) && $_POST['remember'] == 'on') {
