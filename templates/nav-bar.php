@@ -264,7 +264,7 @@ if(isset($_POST['Logout'])){
                                     <div class="collapse" id="pagesCollapseTrees" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="../../inventory.php">View List</a>
-                                            <a class="nav-link" href="maple.html">Add New Record</a>
+                                            <a class="nav-link" href="/inventory-add-record.php">Add New Record</a>
                                         </nav>
                                     </div>
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">
@@ -299,7 +299,7 @@ if(isset($_POST['Logout'])){
                             </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Manage Title
+                                Scan QR (For Staff only)
                             </a>
                         </div>
                     </div>

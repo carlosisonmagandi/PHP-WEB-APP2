@@ -6,7 +6,7 @@ function showAlertMsg($message, $alertType , $closable = true) {
     if ($closable) {
         echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
     }
-    echo '<strong><span style="display:none">' . ucfirst($alertType) . '<span>!</strong> ' . $message;
+    echo '<strong><span>' . ucfirst($alertType) . '<span>!</strong> ' . $message;
     echo '</div>';
 }
 

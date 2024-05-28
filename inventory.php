@@ -134,7 +134,7 @@ include ("templates/nav-bar.php");
     <!-- <input type="file" id="fileInput" accept=".xls,.xlsx"> -->
     <!-- <button onclick="handleFile()" style="float:right">Load Data</button> -->
 
-    <button onclick="" class='btn btn-default' style="border:1px solid #e0e0e0;  ">
+    <button onclick="redirectToUrl()" class='btn btn-default' style="border:1px solid #e0e0e0;  ">
         ( + )
     </button>
 
@@ -634,6 +634,11 @@ function printTable() {
     $(table).find('thead tr').append(lastColumnHeader);
     $(table).find('tbody tr').append(lastColumnCells);
 }
+
+//Add new record
+    function redirectToUrl() {
+         window.location.href = '/inventory-add-record.php'; 
+    }
 
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
