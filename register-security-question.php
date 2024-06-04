@@ -1,10 +1,6 @@
 <?php
 
-// $querySecurityQuestion="INSERT INTO 
-//                     security_questions (question1,question2,answer1,answer2,account_id)
-//                     VALUES
-//                     ('$question1','$question2', '$questionInput1','$questionInput2',(SELECT id from account where username=$userName AND password=$password))";
-//                     $sqlSecurityQuestion = mysqli_query($connection, $querySecurityQuestion);
+//The variables were set in register.php file 
 
 $querySecurityQuestion = "
     INSERT INTO security_questions (question1, question2, answer1, answer2, account_id)

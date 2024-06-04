@@ -76,7 +76,7 @@ require("login.php");
                                                 <input class="form-check-label" type="checkbox" name="remember" > Remember me<br>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-between mt-4 mb-0">
-                                                <a class="small" href="password.html">Forgot Password?</a>
+                                                <a class="small" href="/forgot-password.php">Forgot Password?</a>
                                                 <input class="btn btn-primary" type="submit" name="submit" value="Login"></a>
                                             </div>
                                             <br>

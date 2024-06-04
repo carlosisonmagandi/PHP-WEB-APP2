@@ -6,7 +6,8 @@ $currentUrl = $_SERVER['REQUEST_URI'];
 $validPages = array(
     'Pages/admin/dashboard.php',
     'Pages/admin/manageOwnAccount.php',
-    '/index.php'
+    '/index.php',
+    '/forgot-password-reset.php'
     
 );
 

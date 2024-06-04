@@ -181,6 +181,7 @@ if(isset($_POST['submit'])){
                                     <i class="fas fa-eye"></i>
                                 </span>
                             </div>
+                            <br>
                             <input type="submit" name="submit" value="Register" id="registerBtn">
                         
                     </div>
@@ -208,7 +209,7 @@ if(isset($_POST['submit'])){
                             ?>
                             </p>
                             <div class="form-group">
-                                <input require type="text" class="form-control" name="inputAnswer1" placeholder="Answer...." id="inputAnswer1" >
+                                <input required type="text" class="form-control" name="inputAnswer1" placeholder="Answer...." id="inputAnswer1Id"  >
                             </div>
                             <input type="hidden" name="answerText1Name" id="hiddenAnswerText1">
                         </div>
@@ -235,7 +236,7 @@ if(isset($_POST['submit'])){
                             ?> 
                             </p>
                             <div class="form-group">
-                                <input require type="text" class="form-control" name="inputAnswer2" placeholder="Answer...." id="inputAnswer2" >
+                                <input required type="text" class="form-control" name="inputAnswer2" placeholder="Answer...." id="inputAnswer2Id" >
                             </div>
                             <input type="hidden" name="answerText2Name" id="hiddenAnswerText2">
                         </div>  
@@ -300,7 +301,7 @@ if(isset($_POST['submit'])){
         document.getElementById('hiddenAnswerText1').value = answerText1;
         document.getElementById('hiddenAnswerText2').value = answerText2;
         
-        if(answerText1!='' && answerText2!=''){
+        if(answerText1!='' && answerText2!=''){ 
             if (answerText1 === answerText2) {
                 alert("Answers to security questions must be different.");
                 event.preventDefault(); // Prevent form submission
