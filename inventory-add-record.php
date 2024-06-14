@@ -5,17 +5,14 @@ require("includes/darkmode.php");
 require("includes/authentication.php");
 require_once("includes/db_connection.php");
 
-
-//action after logout button
-if(isset($_POST['Logout'])){
+// Action after logout button
+if (isset($_POST['Logout'])) {
     session_destroy();
     header("Location: ../../index.php");
     exit;
-   // echo "<script>alert('This is an alert message!');</script>";
-};
+}
 
-
-if(isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {
     // Retrieve form data
     $date_of_apprehension = $_POST['date_of_apprehension'];
     $sitio = $_POST['sitio'];
@@ -32,43 +29,87 @@ if(isset($_POST['submit'])) {
     $date_of_confiscation_order = $_POST['date_of_confiscation_order'];
     $remarks = $_POST['remarks'];
     $apprehended_persons = $_POST['apprehended_persons'];
+    $date_created = date('Y-m-d');
 
-    // Prepare the SQL statement
-    $stmt = $connection->prepare("INSERT INTO inventory (
-        date_of_apprehension, 
-        sitio, 
-        barangay, 
-        city_municipality, 
-        province, 
-        apprehending_officer, 
-        apprehended_items, 
-        EMV_forest_product, 
-        EMV_conveyance_implements, 
-        involve_personalities, 
-        custodian, 
-        ACP_status_or_case_no, 
-        date_of_confiscation_order, 
-        remarks, 
-        apprehended_persons) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    // Handle file uploads
+    $upload_directory = 'Inventory/images/'; // Directory to save uploaded images
+    $allowed_types = array('jpg', 'png', 'jpeg', 'gif');
+    $invalid_file_found = false;
 
-    // Bind the parameters to the SQL query
-    $stmt->bind_param('sssssssssssssss', $date_of_apprehension, $sitio, $barangay, $city_municipality, $province, $apprehending_officer, $apprehended_items, $EMV_forest_product, $EMV_conveyance_implements, $involve_personalities, $custodian, $ACP_status_or_case_no, $date_of_confiscation_order, $remarks, $apprehended_persons);
+    if (!empty(array_filter($_FILES['images']['name']))) {
+        foreach ($_FILES['images']['tmp_name'] as $key => $tmp_name) {
+            $file_name = basename($_FILES['images']['name'][$key]);
+            $file_size = $_FILES['images']['size'][$key];
+            $file_tmp = $_FILES['images']['tmp_name'][$key];
+            $file_type = $_FILES['images']['type'][$key];
+            $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+            $date_created = date('Y-m-d');
 
-    // Execute the statement
-    if ($stmt->execute()) {
-        echo ("success");
-       
-    } else {
-        echo "Error: " . $stmt->error;
+            // Check if the file type is allowed
+            if (in_array($file_ext, $allowed_types) && $file_size <= 2097152) { // Limit file size to 2MB
+                $new_file_name = uniqid() . '.' . $file_ext;
+                $upload_path = $upload_directory . $new_file_name;
+
+                if (move_uploaded_file($file_tmp, $upload_path)) {
+                    // Insert image information into the database
+                    $stmt_image = $connection->prepare("INSERT INTO inventory_images (inventory_id, file_name, file_path, date_created) VALUES (?, ?, ?, ?)");
+                    $stmt_image->bind_param('isss', $record_id, $file_name, $upload_path, $date_created);
+                    $stmt_image->execute();
+                    $stmt_image->close();
+                }
+            } else {
+                // Set flag to true if an invalid file is found
+                $invalid_file_found = true;
+                echo "Invalid file: $file_name<br>";
+            }
+        }
     }
 
-    // Close the statement
-    $stmt->close();
+    // Check if any invalid file was found
+    if (!$invalid_file_found) {
+        // Prepare the SQL statement
+        $stmt = $connection->prepare("INSERT INTO inventory (
+            date_of_apprehension, 
+            sitio, 
+            barangay, 
+            city_municipality, 
+            province, 
+            apprehending_officer, 
+            apprehended_items, 
+            EMV_forest_product, 
+            EMV_conveyance_implements, 
+            involve_personalities, 
+            custodian, 
+            ACP_status_or_case_no, 
+            date_of_confiscation_order, 
+            remarks, 
+            apprehended_persons,
+            date_created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // Bind the parameters to the SQL query
+        $stmt->bind_param('ssssssssssssssss', $date_of_apprehension, $sitio, $barangay, $city_municipality, $province, $apprehending_officer, $apprehended_items, $EMV_forest_product, $EMV_conveyance_implements, $involve_personalities, $custodian, $ACP_status_or_case_no, $date_of_confiscation_order, $remarks, $apprehended_persons, $date_created);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            $record_id = $stmt->insert_id; // Get the ID of the inserted record
+            echo "Success";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        // Handle the case where invalid files were found
+        echo "Invalid file(s) found. Aborting insertion into inventory table.";
+       
+    }
 }
 
 // Close the connection
 $connection->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,7 +126,10 @@ $connection->close();
     ?>
     <div class="container " style="padding:60px;">
         <h2>Apprehension Record</h2>
-        <form method="post" action=''>
+        <form method="post" action='' enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="file" name="images[]" multiple>
+            </div>
             <div class="form-group">
                 <label for="date_of_apprehension">Date of Apprehension</label>
                 <input type="text" class="form-control datepicker" id="date_of_apprehension" name="date_of_apprehension">

@@ -3,7 +3,23 @@
 require_once("includes/db_connection.php");
     
 // Prepare and execute SQL query to fetch data
-$sql = "SELECT * FROM inventory";
+$sql = "SELECT id,
+    date_of_apprehension,
+    sitio,
+    barangay,
+    city_municipality,
+    province,
+    apprehending_officer,
+    apprehended_items,
+    EMV_forest_product,
+    EMV_conveyance_implements,
+    involve_personalities,
+    custodian,
+    ACP_status_or_case_no,
+    date_of_confiscation_order,
+    remarks,
+    apprehended_persons,
+    date_created  FROM inventory";
 $result = $connection->query($sql);
 
 $data = array();

@@ -10,7 +10,6 @@ if(isset($_POST['Logout'])){
     session_destroy();
     header("Location: ../../index.php");
     exit;
-   // echo "<script>alert('This is an alert message!');</script>";
 };
 ?>
 <!DOCTYPE html>
@@ -58,15 +57,12 @@ if(isset($_POST['Logout'])){
         height:300px;
        
     }
-
     .container {
-        width: 80%; /* Adjust as needed */
-        max-width: 600px; /* Adjust as needed */
+        width: 80%; 
+        max-width: 600px; 
         border: 1px solid #ccc;
         padding: 20px;
     }
-
-    /* Optional: Style for the content inside the container */
     .content {
         text-align: center;
     }
@@ -81,8 +77,7 @@ if(isset($_POST['Logout'])){
         padding-right:15px;
         margin:0;
         font-size:12px;
-        line-height:6px;
-        
+        line-height:6px;  
     }
     
     
@@ -175,6 +170,8 @@ include ("templates/nav-bar.php");
             <th>DATE OF CONFISCATION ORDER</th>
             <th>REMARKS(Status of apprehended Item)</th>
             <th>APPREHENDED PERSON</th>
+            <th>DATE CREATED</th>
+            
             <th>ACTIONS</th>
         </tr>
         </thead>
@@ -199,6 +196,7 @@ include ("templates/nav-bar.php");
                 <th>DATE OF CONFISCATION ORDER</th>
                 <th>REMARKS(Status of apprehended Item)</th>
                 <th>APPREHENDED PERSON</th>
+                <th>DATE CREATED</th>
                 <th >ACTIONS</th>
             </tr>
         </tfoot>
@@ -406,7 +404,7 @@ function updateTable(data) {
     });
     
     // Redraw the DataTable
-    table.draw();
+    table.order([16, 'desc']).draw();
 }
 
 // Call fetchDataFromDB() when the page loads
@@ -569,10 +567,60 @@ function clickableId(){
     });
 }
 
-function itemClickId(id){
-        Swal.fire({
-            title: "Success.",
-            text: id
+function itemClickId(id) {
+        $.ajax({
+            url: '/inventory-get-images.php',
+            type: 'GET',
+            data: { inventory_id: id },
+            dataType: 'json',
+            success: function(images) {
+                let htmlContent = '<h2>Apprehended Images</h2>';
+                if (images.length > 0) {
+                    images.forEach(function(image) {
+                        htmlContent += `
+                        <style>
+                        .flex-container {
+                            display: flex;
+                            flex-direction: row; /* Change to row for horizontal alignment */
+                            text-align: center;
+                        }
+
+                        .flex-item-left-img {
+                            background-color: #f1f1f1;
+                            flex: 1; /* Adjust flex basis for equal width, or use 100px for fixed width */
+                            margin: 5px; /* Optional: Add margin for spacing between images */
+                        }
+
+                        .flex-item-left-img img {
+                            max-height: 100px;
+                            width: auto; /* Keep image aspect ratio */
+                        }
+                        </style>
+                        <div>    
+                            <div class="flex-container">
+                                <div class="flex-item-left-img">
+                                    <img src="${image.file_path}" alt="${image.file_name}" style=" max-height: 100px;">
+                                </div> 
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    htmlContent += '<p>No images found.</p>';
+                }
+
+                Swal.fire({
+                    title: "Success.",
+                    text: `Inventory ID: ${id}`,
+                    html: htmlContent
+                });
+            },
+            error: function() {
+                Swal.fire({
+                    title: "Error",
+                    text: "Unable to fetch images",
+                    icon: "error"
+                });
+            }
         });
     }
 

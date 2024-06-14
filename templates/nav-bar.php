@@ -125,21 +125,42 @@ if(isset($_POST['Logout'])){
                         $.ajax({
                             url: '/fetch-notif-div.php',
                             type: 'GET',
-                            dataType: 'json', // assuming your PHP script returns JSON
+                            dataType: 'json', 
                             success: function(data) {
                                 // Clear previous notifications
                                 $('#contents-container').empty();
 
                                 // Append new notifications
                                 data.forEach(function(notification) {
-                                    // Create notification element
-                                    var $notification = $('<div class="notification">' +
-                                                            '<div class="notification-content">' + notification.title + ' ' + notification.id +'</div>' +
-                                                            '<div class="notification-time">' + notification.date_created + ' <span style="float:right"><strong>' + notification.time_created + '</strong></span></div>' +
-                                                        '</div>');
+                                    var statusContent = notification.status;
+                                    if (notification.status === "seen") {
+                                        statusContent += '<span style="font-size:7px;"> &nbsp; &#10004;&#10004;</span>'; 
+                                    }
 
-                                    // Add click listener
+                                    // Create notification element
+                                    var $notification = $(
+                                        '<div class="notification">' +
+                                            '<div class="notification-content">' + notification.title + ' ' + notification.id + '</div>' +
+                                            '<div class="notification-time">' + notification.date_created + ' <span style="float:right"><strong>' + notification.time_created + '</strong></span></div>' +
+                                            '<div class="status" >' + statusContent + '</div>' +
+                                        '</div>'
+                                        );
+
+
+                                    //click listener
                                     $notification.click(function() {
+
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "/templates/nav-bar-update-pushedNotif.php", 
+                                            data: { id: notification.id },
+                                            success: function(response) {
+                                                console.log(response); 
+                                            },
+                                            error: function(jqXHR, textStatus, errorThrown) {
+                                                console.error(textStatus, errorThrown); // error handling
+                                            }
+                                        });
                                         if(notification.title=="Account Registration"){
                                             //alert(notification.id);
                                             window.location.href = '/Pages/admin/manageAccounts.php?user_name=' + notification.user_name;
@@ -218,37 +239,41 @@ if(isset($_POST['Logout'])){
                                     <a class="nav-link" href="">Manage Roles</a>
                                 </nav>
                             </div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-key"></i></div>
-                                Forgot Password
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapsePassword" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                        Authentication
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="login.html">Login</a>
-                                            <a class="nav-link" href="register.html">Register</a>
-                                            <a class="nav-link" href="password.html">Forgot Password</a>
-                                        </nav>
-                                    </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                        Error
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="401.html">401 Page</a>
-                                            <a class="nav-link" href="404.html">404 Page</a>
-                                            <a class="nav-link" href="500.html">500 Page</a>
-                                        </nav>
-                                    </div>
-                                </nav>
-                            </div>
+                            <!-- display if role is admin -->
+                            <?php if ($_SESSION['session_role']=="Admin"){
+                                echo '
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePages">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div>
+                                    Monitoring
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="collapsePassword" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                                    <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                            Items
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" href="/monitor-item-trees.php">Trees</a>
+                                                <a class="nav-link" href="register.html">Equipment</a>
+                                                <a class="nav-link" href="password.html">Vehicle</a>
+                                            </nav>
+                                        </div>
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                            Cases
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" href="401.html">Active case</a>
+                                                <a class="nav-link" href="404.html">Closed case</a>
+                                            </nav>
+                                        </div>
+                                    </nav>
+                                </div>';
+                            }
+                            ?>
                             <!--  -->
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInventory" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
@@ -294,12 +319,12 @@ if(isset($_POST['Logout'])){
                             
                             <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="/qr-list.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-qrcode"></i></div>
-                                QR
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Reports
                             </a>
                             <a class="nav-link" href="tables.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Scan QR (For Staff only)
+                                Create Request (For Staff only)
                             </a>
                         </div>
                     </div>

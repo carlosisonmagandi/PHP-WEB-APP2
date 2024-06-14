@@ -24,6 +24,7 @@ require_once("templates/alert-message.php");
     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
+
     <!-- <link href="/Styles/sb-admin/sb-admin-styles.css" rel="stylesheet" /> -->
         
     <!-- sweetalert2 -->

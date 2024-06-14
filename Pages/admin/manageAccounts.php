@@ -13,36 +13,24 @@ if (!isset($_SESSION['session_id'])) {
     header("Location: login.php");
     exit(); // Stop execution to prevent further code execution
 }
-
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Manage Accounts</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <!-- DataTables CSS -->
-  <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <!-- Navbar -->
-    <?php include("../../templates/nav-bar.php"); ?>
-
-    <!-- Alert message -->
-    <?php 
-    require_once("../../templates/alert-message.php");
-    ?>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Accounts</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
     <style>
         body {
             background-image: url('/Images/manage-accounts.png');
             background-repeat: no-repeat;
             background-size: contain;
             background-position: right bottom;
-            
-            
         }
         body::before {
             content: "";
@@ -54,25 +42,45 @@ if (!isset($_SESSION['session_id'])) {
             background-color: rgba(255, 255, 255, 0.7); /* Adjust opacity here */
             z-index: -1; /* Ensure the pseudo-element is behind other content */
         }
-        
-
-       
+        .status-circle {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .active {
+            background-color: green;
+        }
+        .inactive {
+            background-color: red;
+        }
+        p {
+            display: inline;
+        }
         @media screen and (min-width: 320px) and (max-width: 425px) {
-            #container{
+            #container {
                 background-color: rgba(255, 255, 255, 0.8);
             }
-                
-            } 
+        } 
     </style>
-    <div class="container mt-4"  style="padding:3%">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <?php include("../../templates/nav-bar.php"); ?>
+
+    <!-- Alert message -->
+    <?php require_once("../../templates/alert-message.php"); ?>
+
+    <div class="container mt-4" style="padding:3%">
         <h2>Users</h2>
         <input type="text" id="searchInput" class="form-control mb-2" style="width:20%" 
             <?php 
             $notification_user_name = isset($_GET['user_name']) ? $_GET['user_name'] : null;
             if ($notification_user_name == null) {
                 echo 'placeholder="Search..."';
-            }
-            else{
+            } else {
                 echo "value=\"$notification_user_name\"";
             }
             ?>
@@ -81,18 +89,18 @@ if (!isset($_SESSION['session_id'])) {
         <div id="refreshDiv">
             <div class="table-responsive" style="padding:20px">
                 <table class="table table-hover">
-                <thead>
-                    <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Created On</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="myTable">
-                    <!-- Table rows will be dynamically added here -->
-                </tbody>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Created On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                        <!-- Table rows will be dynamically added here -->
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -106,31 +114,33 @@ if (!isset($_SESSION['session_id'])) {
 
     <script>
         $(document).ready(function(){
-        var originalData; // Store the original data
+            var originalData; // Store the original data
+
             // Function to handle approve button click
-            function handleApprove(id,buttonValue) {
+            function handleApprove(id, buttonValue) {
                 $.ajax({
                     url: 'approve_account.php',
                     type: 'GET',
-                    data: { id: id, buttonValue:buttonValue }, // Pass the ID as data in the AJAX request
+                    data: { id: id, buttonValue: buttonValue }, // Pass the ID as data in the AJAX request
                     success: function(response) {
                         // Display response from approve.php (alert)
                         $("body").append(response);
 
-                         // Update the status in the table without hiding the row
+                        // Update the status in the table without hiding the row
                         var row = $('#myTable').find('tr').filter(function () {
                             return $(this).find('td:first').text() == id; // Find the row with the corresponding user id
                         });
 
                         // Find the status cell in the row and update its text
-                        row.find('td:nth-child(4)').text(buttonValue == 'Approve' ? 'active' : 'inactive');
+                        var newStatus = buttonValue === 'Approve' ? 'active' : 'inactive';
+                        row.find('td:nth-child(4)').html('<div class="status-circle ' + newStatus + '"></div>' + newStatus);
                     },
                     error: function(xhr, status, error) {
                         console.error("Failed to approve:", error);
                     }
                 });
             }
-        
+
             // Fetch accounts data from PHP script
             $.ajax({
                 url: 'fetch_accounts.php',
@@ -152,7 +162,7 @@ if (!isset($_SESSION['session_id'])) {
                     paginate(originalData);
                 } else {
                     var filteredUsers = originalData.filter(function(user) {
-                        return user.username.toLowerCase().indexOf(searchText) > -1 || user.id.toString().indexOf(searchText) > -1;;
+                        return user.username.toLowerCase().indexOf(searchText) > -1 || user.id.toString().indexOf(searchText) > -1;
                     });
                     paginate(filteredUsers); // Paginate filtered data
                 }
@@ -179,19 +189,17 @@ if (!isset($_SESSION['session_id'])) {
                     row.append($('<td>').text(user.id));
                     row.append($('<td>').text(user.username));
                     row.append($('<td>').text(user.created_on));
-                    row.append($('<td>').text(user.status));
+                    row.append($('<td>').html('<div class="status-circle ' + user.status + '"></div>' + user.status));
                     var actions = $('<td>');
                     var approveBtn = $('<button class="btn btn-warning btn-sm mr-2">Approve</button>');
                     approveBtn.click(function() {
-                        handleApprove(user.id,'Approve'); // Call handleApprove function with user id
-                        
+                        handleApprove(user.id, 'Approve'); 
                     });
                     actions.append(approveBtn);
 
-                    var deactivateBtn= $('<button class="btn btn-danger btn-sm">Deactivate</button>');
+                    var deactivateBtn = $('<button class="btn btn-danger btn-sm">Deactivate</button>');
                     deactivateBtn.click(function() {
-                        handleApprove(user.id,'Deactivate'); // Call handleApprove function with user id
-                        
+                        handleApprove(user.id, 'Deactivate'); 
                     });
                     actions.append(deactivateBtn);
 
@@ -212,10 +220,9 @@ if (!isset($_SESSION['session_id'])) {
                 }
             }
         });
+    </script>
 
-    </script>  
-    
     <!-- Navbar 2 -->
     <?php include("../../templates/nav-bar2.php"); ?>
 </body>
-
+</html>

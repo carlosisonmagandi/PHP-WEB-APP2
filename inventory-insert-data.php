@@ -1,4 +1,6 @@
 <?php
+//
+//Do not modify this, this is use by AJAX inserting record of excel file
 // Get the JSON data from the request body
 $jsonData = file_get_contents('php://input');
 $data = json_decode($jsonData, true);

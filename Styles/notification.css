@@ -61,7 +61,7 @@
    
     .custom-column {
     border: none;
-    background-color: #f0f0f0;
+    background-color: #f6f6f6;
     padding: 10px;
     border-radius:6px;
     margin-bottom: 10px;
@@ -94,3 +94,11 @@
         color: #666;
         margin-top: 5px;
     }
+
+    .status{
+        font-size: 10px;
+       margin-left: 80%;
+       font-style: italic;
+    }
+
+   
