@@ -266,6 +266,8 @@ include ("templates/nav-bar.php");
                     <option >2030</option>
                 </select>` ;
                 document.getElementById("titleContainer").innerHTML = '<h3 style="font-family: \'Poppins\', sans-serif; font-size:12px; font-weight:bold"><center>' + dynamicContent + '</center></h3>';
+
+                callback(endYear);
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
@@ -395,7 +397,7 @@ function updateTable(data) {
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item edit-action"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
                 <li><a class="dropdown-item delete-action"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
-                <li><a class="dropdown-item qr-action"> Generate QR <i class="fas fa-qrcode" style="float:right"></i></a></li>
+                <li><a class="dropdown-item qr-action">Add Specs<i class="fas fa-qrcode" style="float:right"></i></a></li>
             </ul>
         </div>
         `);
@@ -568,44 +570,95 @@ function clickableId(){
 }
 
 function itemClickId(id) {
-        $.ajax({
-            url: '/inventory-get-images.php',
-            type: 'GET',
-            data: { inventory_id: id },
-            dataType: 'json',
-            success: function(images) {
-                let htmlContent = '<h2>Apprehended Images</h2>';
-                if (images.length > 0) {
-                    images.forEach(function(image) {
+    $.ajax({
+        url: '/inventory-get-images.php',
+        type: 'GET',
+        data: { inventory_id: id },
+        dataType: 'json',
+        success: function(response) { 
+            console.log(response); // Log the response to help debug
+
+            // Expected data
+            if (response && response.apprehended_items && response.images) {
+                let htmlContent = `<h2>${response.apprehended_items}</h2>`;
+                if (response.images.length > 0) {
+                    response.images.forEach(function(image) {
                         htmlContent += `
                         <style>
                         .flex-container {
                             display: flex;
-                            flex-direction: row; /* Change to row for horizontal alignment */
+                            flex-direction: row; 
                             text-align: center;
                         }
 
                         .flex-item-left-img {
                             background-color: #f1f1f1;
-                            flex: 1; /* Adjust flex basis for equal width, or use 100px for fixed width */
-                            margin: 5px; /* Optional: Add margin for spacing between images */
+                            flex: 1; 
+                            margin: 5px; 
                         }
 
                         .flex-item-left-img img {
                             max-height: 100px;
-                            width: auto; /* Keep image aspect ratio */
+                            width: auto; 
                         }
                         </style>
                         <div>    
                             <div class="flex-container">
                                 <div class="flex-item-left-img">
-                                    <img src="${image.file_path}" alt="${image.file_name}" style=" max-height: 100px;">
+                                    <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 100px;">
                                 </div> 
                             </div>
                         </div>`;
                     });
                 } else {
-                    htmlContent += '<p>No images found.</p>';
+                    htmlContent +=`
+                    <style>
+                    .flex-container {
+                        display: flex;
+                        flex-direction: row; 
+                        text-align: center;
+                    }
+
+                    .flex-item-left-img {
+                        // background-color: #f1f1f1;
+                        flex: 1; 
+                        margin: 5px; 
+                        position: relative; /* Position relative to enable absolute positioning for hover effect */
+                    }
+
+                    .flex-item-left-img img {
+                        max-height: 100px;
+                        width: auto; 
+                    }
+
+                    .flex-item-left-img .hover-text {
+                        display: none;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.6); /* Transparent black background */
+                        color: white;
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        font-size: 16px;
+                        cursor: pointer;
+                    }
+
+                    .flex-item-left-img:hover .hover-text {
+                        display: flex; /* Show the text on hover */
+                    }
+                    </style>
+                    <div>    
+                        <div class="flex-container">
+                            <div class="flex-item-left-img">
+                                <img src="images/log-default-image.jpg" alt="Default Image" style="max-height: 100px;">
+                                <div class="hover-text">UPDATE ME</div>
+                            </div> 
+                        </div>
+                    </div>`;
                 }
 
                 Swal.fire({
@@ -613,16 +666,24 @@ function itemClickId(id) {
                     text: `Inventory ID: ${id}`,
                     html: htmlContent
                 });
-            },
-            error: function() {
+            } else {
                 Swal.fire({
                     title: "Error",
-                    text: "Unable to fetch images",
+                    text: "Invalid response from server",
                     icon: "error"
                 });
             }
-        });
-    }
+        },
+        error: function() {
+            Swal.fire({
+                title: "Error",
+                text: "Unable to fetch images",
+                icon: "error"
+            });
+        }
+    });
+}
+
 
 // print table view
 function printTable() {
@@ -642,46 +703,47 @@ function printTable() {
     // Reduce font size for printing
     $(table).css('font-size', '8px');
     
-    // Create a copy of the table and append it to the body
+    // Create a copy of the table
     var tableClone = table.cloneNode(true);
-    document.body.appendChild(tableClone);
+
+    // Create a title element
+    var titleElement = document.createElement('h1');
+    titleElement.innerText = "APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
+    titleElement.style.textAlign = 'center';
+    titleElement.style.fontSize = '12px';
+
+    var printContainer = document.createElement('div');
+    printContainer.appendChild(titleElement);
+    printContainer.appendChild(tableClone);
+
+    document.body.appendChild(printContainer);
     
-    // Event listener for before print
     window.addEventListener('beforeprint', function() {
-        // Print initiated
         console.log("Print initiated");
     });
 
-    // Event listener for after print
     window.addEventListener('afterprint', function() {
-        // Print cancelled or completed
         console.log("Print cancelled or completed");
         // Refresh the page
         window.location.reload();
     });
 
-    // Trigger the print dialog
     window.print();
     
-    // Remove the cloned table from the body
-    document.body.removeChild(tableClone);
+    document.body.removeChild(printContainer);
     
-    // Reset font size after printing
-    $(table).css('font-size', '8px'); // Reset to default
+    $(table).css('font-size', ''); 
     
-    // Show all elements again
     $('body > *').show();
     
-    // Show the table footer
     $(table).find('tfoot').show();
     
-    // Restore the last column (action column)
-    // Add it back to the original table to maintain its structure
-    var lastColumnHeader = "<th>ACTIONS</th>";
-    var lastColumnCells = "<td></td>"; // Create empty cells for each row
-    $(table).find('thead tr').append(lastColumnHeader);
-    $(table).find('tbody tr').append(lastColumnCells);
+    $(table).find('thead tr').append("<th>ACTIONS</th>");
+    $(table).find('tbody tr').each(function() {
+        $(this).append("<td></td>");
+    });
 }
+
 
 //Add new record
     function redirectToUrl() {

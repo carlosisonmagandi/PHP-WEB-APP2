@@ -315,17 +315,36 @@ if(isset($_POST['Logout'])){
                                    
                                 </nav>
                             </div>
-
+                            <?php if ($_SESSION['session_role']=="Admin"){
+                            echo '
+                            <a class="nav-link" href="">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Requests
+                            </a>
+                            ';}
+                            else{
+                                echo '
+                                <a class="nav-link" href="/requestForm.php">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                    Create Request
+                                </a>
+                                ';
+                            }
+                            
+                            ?>
                             
                             <div class="sb-sidenav-menu-heading">Addons</div>
                             <a class="nav-link" href="/qr-list.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                                 Reports
                             </a>
-                            <a class="nav-link" href="tables.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Create Request (For Staff only)
+
+                            <!-- reference data -->
+                            <a class="nav-link" href="/manage-ref-data-home.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                                Manage Reference data
                             </a>
+                            
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
