@@ -8,6 +8,7 @@
 
 .tabset .tab-panel {
   display: none;
+  
 }
 
 .tabset > input:first-child:checked ~ .tab-panels > .tab-panel:first-child,
@@ -85,10 +86,10 @@ input:focus-visible + label {
   box-sizing: border-box;
 }
 
-
+/* 
 .tabset {
-  max-width: 65em;
-}
+  max-width: 75em;
+} */
 
 /* custom */
 .container{

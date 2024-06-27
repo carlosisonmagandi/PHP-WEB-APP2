@@ -41,6 +41,7 @@ if(isset($_POST['submit'])){
         $_SESSION['session_username'] = $row['username'];
         $_SESSION['session_id'] = $row['id'];
         $_SESSION['session_role'] = $row['role'];
+        $_SESSION['mode']='light';
 
         // Check if the "Remember me" checkbox is checked
         if(isset($_POST['remember']) && $_POST['remember'] == 'on') {

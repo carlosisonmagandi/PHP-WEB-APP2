@@ -13,6 +13,11 @@ if (!isset($_SESSION['session_id'])) {
     header("Location: login.php");
     exit(); // Stop execution to prevent further code execution
 }
+
+// Get the active tab from session
+$activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
+$activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : 'Species'; // Default value if not set
+
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +30,8 @@ if (!isset($_SESSION['session_id'])) {
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/Styles/breadCrumbs.css">
     <style>
         body {
             background-image: url('/Images/manage-accounts.png');
@@ -74,8 +81,21 @@ if (!isset($_SESSION['session_id'])) {
     <?php require_once("../../templates/alert-message.php"); ?>
 
     <div class="container mt-4" style="padding:3%">
-        <h2>Users</h2>
-        <input type="text" id="searchInput" class="form-control mb-2" style="width:20%" 
+
+        <!-- a simple div with some links -->
+        <?php if ($_SESSION['mode'] == 'light'): ?>
+            <div class="breadcrumb flat">
+                <a href="#">Account Management</a>
+                <a href="#" class="active">Accounts</a>
+            </div>
+        <?php else: ?>
+            <div class="breadcrumb">
+                <a href="#">Account Management</a>
+                <a href="#" class="active">Accounts</a>
+            </div>
+        <?php endif; ?>
+
+        <input type="text" id="searchInput" class="form-control mb-2" style="width:20%;float:right" 
             <?php 
             $notification_user_name = isset($_GET['user_name']) ? $_GET['user_name'] : null;
             if ($notification_user_name == null) {

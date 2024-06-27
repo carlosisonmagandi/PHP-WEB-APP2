@@ -340,7 +340,7 @@ if(isset($_POST['Logout'])){
                             </a>
 
                             <!-- reference data -->
-                            <a class="nav-link" href="/manage-ref-data-home.php">
+                            <a class="nav-link" href="/manage-reference-data/manage-ref-data-home.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                                 Manage Reference data
                             </a>
