@@ -3,36 +3,26 @@ session_start();
 require("../../includes/session.php");
 require("../../includes/darkmode.php");
 
-// Assuming you have a database connection established, replace connection with your actual database connection
 require_once "../../includes/db_connection.php";
 
-// Check if the user is logged in
 if (!isset($_SESSION['session_id'])) {
-    // Redirect the user to login page or handle accordingly
     header("Location: login.php");
-    exit(); // Stop execution to prevent further code execution
+    exit();
 }
 
-// Assuming you have a function to safely fetch the user's data from the database using prepared statements
 function fetchUserData($connection, $userId) {
     $query = "SELECT id, username, password FROM account WHERE id = ?";
     $statement = $connection->prepare($query);
-    $statement->bind_param("i", $userId); // Assuming id is an integer
+    $statement->bind_param("i", $userId); // i is for integer and s is for string
     $statement->execute();
     $result = $statement->get_result();
     $userData = $result->fetch_assoc();
     $statement->close();
     return $userData;
 }
-
-// Fetch user data
 $userData = fetchUserData($connection, $_SESSION['session_id']);
 
 ?>
-
-<head>
-    <!-- Head content -->
-</head>
 
 <body>
     <!-- Navbar -->
@@ -42,37 +32,28 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
     <?php 
     require_once("../../templates/alert-message.php");
 
-    // Check if the form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Retrieve submitted values
         $newUsername = $_POST['username'];
         $newPassword = $_POST['password'];
 
-        // Function to check if the password meets the specified criteria
         function validatePassword($newPassword) {
             return (strlen($newPassword) >= 5 && preg_match('/\d/', $newPassword) && preg_match('/[A-Z]/', $newPassword) && preg_match('/[!@#$%^&*(),.?":{}|<>]/', $newPassword));
         }
 
         if (validatePassword($newPassword)) {
-            // Prepare and execute UPDATE query
             $updateQuery = "UPDATE account SET username = ?, password = ? WHERE id = ?";
             $updateStatement = $connection->prepare($updateQuery);
             $updateStatement->bind_param("ssi", $newUsername, $newPassword, $_SESSION['session_id']); // this is the session id 
             $updateStatement->execute();
 
-            // Check if the update was successful
             if ($updateStatement->affected_rows > 0) {
-                // Display success message
                 showAlertMsg("Profile updated successfully.", "success");
-                // Update the userData variable with the new values
                 $userData['username'] = $newUsername;
                 $userData['password'] = $newPassword;
             } else {
                 // Display error message
                 //showAlertMsg("Failed to update profile. Please try again.", "danger");
             }
-
-            // Close the update statement
             $updateStatement->close();
         }
         else{
@@ -98,8 +79,8 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
             left: 0;
             width: 100%; /* Cover the entire body */
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.3); /* Adjust opacity here */
-            z-index: -1; /* Ensure the pseudo-element is behind other content */
+            background-color: rgba(255, 255, 255, 0.3);
+            z-index: -1;
         }
        
         @media screen and (min-width: 320px) and (max-width: 425px) {

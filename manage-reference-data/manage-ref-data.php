@@ -35,8 +35,9 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                 success: function(response) {
                     var res = JSON.parse(response);
                     if (res.status === 'success') {
-                        console.log(res);
-                        console.log("Active tab updated successfully");
+                        //To check if the click was successfully working
+                        // console.log(res);
+                        // console.log("Active tab updated successfully");
 
                         updateActiveTabName(tabName);
                     } else {
@@ -102,9 +103,8 @@ include("../templates/nav-bar.php");
 
         <div class="tab-panels">
             <section id="Species" class="tab-panel">
-                <h2>A. Species</h2>
-                <p><strong>SPECIES:</strong> This should be the species of the trees</p>
-                <input type="text">
+                <!-- Call the table display -->
+                <?php include("../manage-reference-data/species-display.php"); ?>
             </section>
             
             <section id="Condition" class="tab-panel">

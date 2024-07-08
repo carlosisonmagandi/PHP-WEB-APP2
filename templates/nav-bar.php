@@ -87,6 +87,12 @@ if(isset($_POST['Logout'])){
                             type: 'GET',
                             success: function(response) {
                                 $('#notificationCount').text(response); // Update notification count
+
+                                if (parseInt(response) >= 1) {
+                                    $('#notificationCount').show(); // Show the badge
+                                } else {
+                                    $('#notificationCount').hide(); // Hide the badge
+                                }
                             },
                             error: function(xhr, status, error) {
                                 console.error('Error fetching notification count:', error);
@@ -228,20 +234,24 @@ if(isset($_POST['Logout'])){
                                 Dashboard
                             </a>
                             <div class="sb-sidenav-menu-heading">Interface</div>
-                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
-                                <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
-                                Account Management
-                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                            </a>
-                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
-                                <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="/Pages/admin/manageAccounts.php">Manage Accounts</a>
-                                    <a class="nav-link" href="">Manage Roles</a>
-                                </nav>
-                            </div>
-                            <!-- display if role is admin -->
+
                             <?php if ($_SESSION['session_role']=="Admin"){
-                                echo '
+                                    echo '
+                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                        <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                                        Account Management
+                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                    </a>
+                                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                        <nav class="sb-sidenav-menu-nested nav">
+                                            <a class="nav-link" href="/Pages/admin/manageAccounts.php">Manage Accounts</a>
+                                            <a class="nav-link" href="/Pages/admin/manageRoles.php">Manage Roles</a>
+                                        </nav>
+                                    </div>';
+                                }
+                            ?>
+                                <!-- display if role is admin -->
+                            
                                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePages">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chart-line"></i></div>
                                     Monitoring
@@ -250,14 +260,14 @@ if(isset($_POST['Logout'])){
                                 <div class="collapse" id="collapsePassword" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                            Items
+                                            Request Items
                                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                         </a>
                                         <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
                                                 <a class="nav-link" href="/monitor-item-trees.php">Trees</a>
                                                 <a class="nav-link" href="register.html">Equipment</a>
-                                                <a class="nav-link" href="password.html">Vehicle</a>
+                                                <!-- <a class="nav-link" href="password.html">Vehicle</a> -->
                                             </nav>
                                         </div>
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
@@ -271,9 +281,7 @@ if(isset($_POST['Logout'])){
                                             </nav>
                                         </div>
                                     </nav>
-                                </div>';
-                            }
-                            ?>
+                                </div>
                             <!--  -->
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInventory" aria-expanded="false" aria-controls="collapsePages">
                                 <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>

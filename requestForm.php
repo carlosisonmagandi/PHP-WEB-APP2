@@ -57,16 +57,19 @@
         }
         .form-column {
             flex: 1;
-            min-width: 300px; /* Adjust as needed */
+            min-width: 300px;
         }
         legend {
             color: #666;
             font-size: 14px; 
             font-style:italic;
+            font-weight:bold;
         }
         fieldset{
             padding:25px;
             margin:15px;
+            border-width: 1px; 
+            border-style: solid;
         }
         /* Tooltip CSS */
         .tooltip {

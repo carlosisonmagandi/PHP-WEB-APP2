@@ -1,6 +1,4 @@
 <?php 
-
-// Database connection
 require_once("includes/db_connection.php");
 require_once("templates/alert-message.php");
 
@@ -18,40 +16,39 @@ if(isset($_POST['submit'])){
         return (strlen($password) >= 5 && preg_match('/\d/', $password) && preg_match('/[A-Z]/', $password) && preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password));
     }
 
-    if($password == $confirmPassword){
+    if ($password == $confirmPassword) {
         if (validatePassword($password)) {
-            // Check if the username already exists
+            // Hash the password
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    
             $queryCheck = "SELECT * FROM account WHERE username = '$userName'";
             $resultCheck = mysqli_query($connection, $queryCheck);
-            if(mysqli_num_rows($resultCheck) > 0) {
-                
+            if (mysqli_num_rows($resultCheck) > 0) {
                 showAlertMsg("Username already exists. Please choose a different username.", "danger");
-
             } else {
-                if(($question1==''||$question1==null)||($question2==''||$question2==null)){
-                    showAlertMsg("Please select your security questions.", "warning");      
-                }else{
+                if (($question1 == '' || $question1 == null) || ($question2 == '' || $question2 == null)) {
+                    showAlertMsg("Please select your security questions.", "warning");
+                } else {
                     // Insert the new user if username is not already taken
-                    $queryUser = "INSERT INTO account (username, password, role) VALUES ('$userName', '$password', 'Staff')";
+                    $queryUser = "INSERT INTO account (username, password, role) VALUES ('$userName', '$hashedPassword', 'Staff')";
                     $sqlUser = mysqli_query($connection, $queryUser);
-
-                    //Insert Security question
-                    include("register-security-question.php");//push record to security_question table
-
-                    //echo '<script>alert("Test Question 1: ' . $question1 . '");</script>';
-                    
-                    include("includes/notification.php");//push record to notification
+    
+                    // Insert Security question
+                    include("register-security-question.php"); 
+    
+                    include("includes/notification.php");
+    
                     if (!$sqlUser) {
                         die("Query failed: " . mysqli_error($connection));
                     }
-                }   
+                }
             }
         } else {
             showAlertMsg("Password must be at least 5 characters long and contain at least 1 number, 1 uppercase letter, and 1 special character.", "danger");
         }
     } else {
-        showAlertMsg("Password didnt match.", "danger");
-    }
+        showAlertMsg("Password didn't match.", "danger");
+    }    
 }
 ?>
 

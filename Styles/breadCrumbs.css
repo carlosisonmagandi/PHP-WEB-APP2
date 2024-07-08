@@ -112,7 +112,9 @@
 }
 .flat a:hover, .flat a.active, 
 .flat a:hover:after, .flat a.active:after{
-	background: #9EEB62;
+	/* background: #9EEB62; */
+	background:#2f6c00;
+	color:white
 }
 
 

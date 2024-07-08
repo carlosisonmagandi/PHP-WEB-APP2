@@ -17,7 +17,16 @@ if (isset($_POST['Logout'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Reference data </title>
-    <link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home.css">
+    
+    <?php
+        
+        // Output the appropriate stylesheet based on $_SESSION['mode']
+        if ($_SESSION['mode'] == 'light') {
+            echo '<link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home.css">';
+        } else if ($_SESSION['mode'] == 'dark') {
+            echo '<link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home-dm.css">';
+        }
+    ?>
     <!-- Assuming you are using Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
@@ -28,9 +37,9 @@ include("../templates/nav-bar.php");
 
 <div class="container">
     <div class="centered">
-        <a href="/manage-reference-data/manage-ref-data.php" class="button" ><i class="fas fa-tree"></i> </a>
-        <a class="button"><i class="fas fa-car"></i> </a>
-        <a class="button"><i class="fas fa-tools"></i></a>
+        <a href="/manage-reference-data/manage-ref-data.php" class="button" data-text="Trees" ><i class="fas fa-tree"></i> </a>
+        <a class="button" data-text="Vehicle"><i class="fas fa-car" ></i> </a>
+        <a class="button" data-text="Equpment"><i class="fas fa-tools"></i></a>
     </div>
 </div>
 

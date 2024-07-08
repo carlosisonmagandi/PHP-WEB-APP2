@@ -11,21 +11,21 @@
     margin: 10px;
     font-size: 50px;
     border: none;
-    background-color: #f8f9fa;
-    color: #002f6c; 
+    background-color: #343a40; 
+    color: #ffffff; 
     cursor: pointer;
     text-align: center;
     text-decoration: none;
     border-radius: 5px;
-    transition: background-color 0.3s ease, color 0.3s ease; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); 
     position: relative; 
 }
 
 .button:hover {
-    background-color: #002f6c; 
-    color: #f8f9fa;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    background-color: #f8f9fa; 
+    color: #343a40; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); 
 }
 
 .button:hover::after {
@@ -51,5 +51,5 @@
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0; 
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease; 
 }
