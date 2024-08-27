@@ -1,7 +1,5 @@
 <?php
-
 require_once("../includes/db_connection.php");
-
 if (isset($_GET['conditionType'])) {
     $conditionType = $_GET['conditionType'];
 
@@ -19,7 +17,6 @@ if (isset($_GET['conditionType'])) {
     http_response_code(400);
     echo json_encode(['error' => 'Missing conditionType parameter']);
 }
-
 $stmt->close();
 $connection->close();
 ?>

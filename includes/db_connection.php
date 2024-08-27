@@ -1,5 +1,4 @@
-<?php 
-//Fetching data from form
+<?php
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -8,11 +7,9 @@ $user = 'root';
 $password = 'root';
 $database = 'php_app_db';
 
-// Create a connection
-$connection = mysqli_connect($host, $user, $password, $database);
+$connection = mysqli_connect($host, $user, $password, $database);// Create a connection
 
-// Check the connection
-if (!$connection) {
+if (!$connection) {// Check the connection
     die("Database connection failed: " . mysqli_connect_error());
 }
 ?>

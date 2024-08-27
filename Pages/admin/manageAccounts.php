@@ -3,21 +3,16 @@ session_start();
 require("../../includes/session.php");
 require("../../includes/darkmode.php");
 
-// Assuming you have a database connection established, replace connection with your actual database connection
 require_once "../../includes/db_connection.php";
 require_once("../../templates/alert-message.php");
 
-// Check if the user is logged in
-if (!isset($_SESSION['session_id'])) {
-    // Redirect the user to login page or handle accordingly
+if (!isset($_SESSION['session_id'])) {// Check if the user is logged in
     header("Location: login.php");
-    exit(); // Stop execution to prevent further code execution
+    exit();
 }
 
-// Get the active tab from session
-$activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
+$activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';// Get the active tab from session
 $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : 'Species'; // Default value if not set
-
 ?>
 
 <!DOCTYPE html>
@@ -46,8 +41,8 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
             left: 0;
             width: 100%; /* Cover the entire body */
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.7); /* Adjust opacity here */
-            z-index: -1; /* Ensure the pseudo-element is behind other content */
+            background-color: rgba(255, 255, 255, 0.9); /* Adjust opacity here */
+            z-index: -1;
         }
         .status-circle {
             width: 7px;
@@ -105,7 +100,6 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
             }
             ?>
         >
-
         <div id="refreshDiv">
             <div class="table-responsive" style="padding:20px">
                 <table class="table table-hover">
@@ -119,40 +113,33 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                         </tr>
                     </thead>
                     <tbody id="myTable">
-                        <!-- Table rows will be dynamically added here -->
                     </tbody>
                 </table>
             </div>
         </div>
         <ul class="pagination"></ul>
     </div>
-
     <!-- Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
     <script>
         $(document).ready(function(){
             var originalData; // Store the original data
 
-            // Function to handle approve button click
-            function handleApprove(id, buttonValue) {
+            function handleApprove(id, buttonValue) {// Function to handle approve button click
                 $.ajax({
                     url: 'approve_account.php',
                     type: 'GET',
                     data: { id: id, buttonValue: buttonValue }, // Pass the ID as data in the AJAX request
                     success: function(response) {
-                        // Display response from approve.php (alert)
-                        $("body").append(response);
+                        $("body").append(response); // Display response from approve.php (alert)
 
-                        // Update the status in the table without hiding the row
-                        var row = $('#myTable').find('tr').filter(function () {
+                        var row = $('#myTable').find('tr').filter(function () {// Update the status in the table without hiding the row
                             return $(this).find('td:first').text() == id; // Find the row with the corresponding user id
                         });
 
-                        // Find the status cell in the row and update its text
-                        var newStatus = buttonValue === 'Approve' ? 'active' : 'inactive';
+                        var newStatus = buttonValue === 'Approve' ? 'active' : 'inactive';// Find the status cell in the row and update its text
                         row.find('td:nth-child(4)').html('<div class="status-circle ' + newStatus + '"></div>' + newStatus);
                     },
                     error: function(xhr, status, error) {
@@ -160,9 +147,7 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                     }
                 });
             }
-
-            // Fetch accounts data from PHP script
-            $.ajax({
+            $.ajax({// Fetch accounts data from PHP script
                 url: 'fetch_accounts.php',
                 type: 'GET',
                 dataType: 'json',
@@ -175,8 +160,7 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                 }
             });
 
-            // Search functionality
-            $('#searchInput').keyup(function(){
+            $('#searchInput').keyup(function(){// Search functionality
                 var searchText = $(this).val().toLowerCase().trim();
                 if (searchText === "") { // If search input is empty, reset the table
                     paginate(originalData);
@@ -200,9 +184,7 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                 populateTable(paginatedData);
                 renderPagination(Math.ceil(data.length / itemsPerPage));
             }
-
-            // Populate table with data
-            function populateTable(data) {
+            function populateTable(data) {// Populate table with data
                 $('#myTable').empty();
                 $.each(data, function(i, user){
                     var row = $('<tr>');
@@ -227,7 +209,6 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                     $('#myTable').append(row);
                 });
             }
-
             function renderPagination(totalPages) {
                 $('.pagination').empty();
                 for (var i = 1; i <= totalPages; i++) {
@@ -241,7 +222,6 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
             }
         });
     </script>
-
     <!-- Navbar 2 -->
     <?php include("../../templates/nav-bar2.php"); ?>
 </body>

@@ -17,7 +17,7 @@ $apprehended_item_parts = explode(',', $apprehended_item_full);
 $apprehended_item = $apprehended_item_parts[0];
 
 //fetching imag record from inventory_table
-$images_stmt = $connection->prepare("SELECT file_name, file_path FROM inventory_images WHERE inventory_id = ?");
+$images_stmt = $connection->prepare("SELECT id,file_name, file_path FROM inventory_images WHERE inventory_id = ?");
 $images_stmt->bind_param("i", $inventory_id);
 $images_stmt->execute();
 $images_result = $images_stmt->get_result();

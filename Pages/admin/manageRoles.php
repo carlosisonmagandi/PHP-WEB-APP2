@@ -6,6 +6,7 @@ require("../../includes/darkmode.php");
 require_once "../../includes/db_connection.php";
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,19 +24,18 @@ require_once "../../includes/db_connection.php";
 <?php include("../../templates/nav-bar.php"); ?>
         
 <div class="container" style="padding:40px">
-
     <!-- breadcrumbs -->
     <?php if ($_SESSION['mode'] == 'light'): ?>
         <div class="breadcrumb flat">
-                <a href="#">Account Management</a>
-                <a href="#" class="active">Roles</a>
-            </div>
-        <?php else: ?>
-            <div class="breadcrumb">
-                <a href="#">Account Management</a>
-                <a href="#" class="active">Roles</a>
-            </div>
-        <?php endif; ?>
+            <a href="#">Account Management</a>
+            <a href="#" class="active">Roles</a>
+        </div>
+    <?php else: ?>
+        <div class="breadcrumb">
+            <a href="#">Account Management</a>
+            <a href="#" class="active">Roles</a>
+        </div>
+    <?php endif; ?>
 
     <table id="accountRole" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
         <thead>
@@ -46,8 +46,7 @@ require_once "../../includes/db_connection.php";
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-            
+        <tbody> 
         </tbody>
         <tfoot>
             <tr>
@@ -59,58 +58,105 @@ require_once "../../includes/db_connection.php";
         </tfoot>
     </table>
 </div>
-<!-- place the style here for button because of the php tags -->
+<!-- CSS for role buttons -->
 <style>
-        .admin-role-btn,.staff-role-btn{
-            background-color:#f8f9fa;
-            color:#002f6c;
-            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-        }
-        .admin-role-btn:hover,.staff-role-btn:hover{
-            background-color:#002f6c;
-            color:#f8f9fa;
-            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-        }
-        
-    </style>
+    body {
+            background-image: url('/Images/manage-accounts.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: right bottom;
+    }
+    body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; /* Cover the entire body */
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9); /* Adjust opacity here */
+            z-index: -1; /* Ensure the pseudo-element is behind other content */
+    }
+    .admin-role-btn, .staff-role-btn {
+        background-color: #f8f9fa;
+        color: #002f6c;
+        border: 1px solid #002f6c;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-size: 11px;
+        border-radius: 1px;
+    }
 
+    .admin-role-btn:hover, .staff-role-btn:hover {
+        background-color: #002f6c;
+        color: #f8f9fa;
+    }
+</style>
+<!-- JavaScript -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
-
 <script>
-    //Initialize DataTable
-    $('#accountRole').DataTable({
-            // "order": [[ 3, "desc" ]],
-            "responsive": true
-    });
     $(document).ready(function() {
-        
-        function fetchDataFromDB() {
+        var table = $('#accountRole').DataTable({
+            "responsive": true
+        });
+
+        // Handle role change button click
+        $('#accountRole tbody').on('click', '.admin-role-btn, .staff-role-btn', function() {
+            var data = table.row($(this).parents('tr')).data();
+            var accountId = data[0];
+            var newRole = $(this).hasClass('admin-role-btn') ? 'Admin' : 'Staff';
+
+            
+            $.ajax({//Update Role
+                url: 'manageRoleUpdate.php',
+                method: 'POST',
+                data: {
+                    accountId: accountId,
+                    newRole: newRole
+                },
+                dataType: 'json',
+                success: function(response) {
+                    Swal.fire('Success', response.message, 'success');
+                    fetchDataFromDB();// refresh the view
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    Swal.fire('Error', 'Failed to update role. See console for details.', 'error');
+                }
+            });
+        });
+
+        function fetchDataFromDB() {//Get data 
             $.ajax({
                 url: 'manageRole-fetch-record.php',
                 type: 'GET',
                 dataType: 'json',
                 success: function(response) {
-                    $('#accountRole').DataTable().clear().draw();
+                    table.clear().draw();
                     $.each(response, function(index, row) {
-                        var roleAdminButton = 'Change to: <button class="btn btn-sm admin-role-btn" data-id="' + row.id + '"><i class="fas fa-user-shield"></i> Admin</button>';
-                        var roleStaffButton = '<button class="btn btn-sm staff-role-btn" data-id="' + row.id + '"><i class="fas fa-user-tie"></i> Staff</button>';
+                        var roleButton;
+                        if (row.role === 'Staff') {
+                            roleButton = '<button class="btn btn-sm admin-role-btn"><i class="fas fa-user-shield"></i> Admin</button>';
+                        } else if (row.role === 'Admin') {
+                            roleButton = '<button class="btn btn-sm staff-role-btn"><i class="fas fa-user-tie"></i> Staff</button>';
+                        } else {
+                            roleButton = ''; // Handle any other roles if necessary
+                        }
 
-                        $('#accountRole').DataTable().row.add([
+                        table.row.add([
                             row.id,
                             row.username,
                             row.role,
-                            roleAdminButton + roleStaffButton 
+                            roleButton
                         ]).draw();
                     });
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
-                    alert("Error fetching data. See console for details.");
+                    Swal.fire('Error', 'Failed to fetch data. See console for details.', 'error');
                 }
             });
         }
-        fetchDataFromDB();
+        fetchDataFromDB();// Initial fetch
     });
 </script>
 

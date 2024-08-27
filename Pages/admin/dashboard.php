@@ -24,15 +24,14 @@ if(isset($_POST['Logout'])){
         }
     </style>
 </head>
-
 <body>
 <?php include ("../../templates/nav-bar.php");?>
 
 <div class="container-fluid mt-5">
     <div class="row ">
-        <ol class="breadcrumb mb-4">
+        <!-- <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
+        </ol> -->
         <div class="row">
             <div class="col-xl-3 col-md-6">
                 <div class="card bg-primary text-white mb-4">
@@ -96,11 +95,9 @@ if(isset($_POST['Logout'])){
         </div>
     </div>    
 </div>
-
 <?php 
 include  "../../templates/nav-bar2.php"; 
 ?>
-
 <script>
     var ctxLine = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctxLine, {
@@ -125,7 +122,6 @@ include  "../../templates/nav-bar2.php";
             }
         }
     });
-
     var ctxPie = document.getElementById('pieChart').getContext('2d');
     var pieChart = new Chart(ctxPie, {
         type: 'pie',
@@ -154,7 +150,6 @@ include  "../../templates/nav-bar2.php";
             maintainAspectRatio: false
         }
     });
-
     var ctxBar = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctxBar, {
         type: 'bar',
@@ -179,6 +174,5 @@ include  "../../templates/nav-bar2.php";
         }
     });
 </script>
-
 </body>
 </html>

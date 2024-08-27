@@ -4,12 +4,10 @@ require("../../includes/session.php");
 require("../../includes/darkmode.php");
 
 require_once "../../includes/db_connection.php";
-
 if (!isset($_SESSION['session_id'])) {
     header("Location: login.php");
     exit();
 }
-
 function fetchUserData($connection, $userId) {
     $query = "SELECT id, username, password FROM account WHERE id = ?";
     $statement = $connection->prepare($query);
@@ -21,25 +19,19 @@ function fetchUserData($connection, $userId) {
     return $userData;
 }
 $userData = fetchUserData($connection, $_SESSION['session_id']);
-
 ?>
-
 <body>
     <!-- Navbar -->
     <?php include("../../templates/nav-bar.php"); ?>
-
     <!-- Alert message -->
     <?php 
     require_once("../../templates/alert-message.php");
-
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $newUsername = $_POST['username'];
         $newPassword = $_POST['password'];
-
         function validatePassword($newPassword) {
             return (strlen($newPassword) >= 5 && preg_match('/\d/', $newPassword) && preg_match('/[A-Z]/', $newPassword) && preg_match('/[!@#$%^&*(),.?":{}|<>]/', $newPassword));
         }
-
         if (validatePassword($newPassword)) {
             $updateQuery = "UPDATE account SET username = ?, password = ? WHERE id = ?";
             $updateStatement = $connection->prepare($updateQuery);
@@ -58,11 +50,9 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
         }
         else{
             showAlertMsg("Password must contain atleast one Uppercase letter, one number and one special character.", "danger");
-        }
-        
+        } 
     }
     ?>
-
     <style>
         body {
             background-image: url('/Images/edit-account.png');
@@ -70,7 +60,6 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
             background-size: contain;
             background-position: right bottom;
             font-family: 'Poppins', sans-serif;
-
         }
         body::before {
             content: "";
@@ -82,7 +71,6 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
             background-color: rgba(255, 255, 255, 0.3);
             z-index: -1;
         }
-       
         @media screen and (min-width: 320px) and (max-width: 425px) {
             #container{
                 background-color: rgba(255, 255, 255, 0.8);
@@ -94,8 +82,7 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
         <div class="row justify-content-left">
             <div class="col-md-5">
                 <form method="POST">
-                    <!-- Form fields -->
-                    <h1>Edit Account</h1><br>
+                    <h1>Edit Account</h1><br><!-- Form fields -->
                     <div class="mb-3">
                         <label for="id" class="form-label">ID</label>
                         <input type="text" class="form-control full-width" id="id" name="id" value="<?php echo $userData['id']; ?>" disabled>
@@ -117,7 +104,6 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
     <!-- Navbar 2 -->
     <?php include("../../templates/nav-bar2.php"); ?>
 
-    <!-- Script to update the input fields dynamically -->
     <script>
         <?php
         // Echo JavaScript code to update the input fields with the new values

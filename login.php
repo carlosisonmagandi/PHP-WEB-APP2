@@ -50,13 +50,13 @@ if(isset($_POST['submit'])){
                 unset($_COOKIE['remember_username']);
                 unset($_COOKIE['remember_password']);
             }
-
-            if ($row['role_id'] == '1') {
+            
+            if ($row['role'] == 'Admin' && $row["status"] == 'active') {
                 header("Location: Pages/admin/dashboard.php");
                 exit;
             } else {
                 if ($row["status"] == 'active') {
-                    header("Location: Pages/staff/dashboard.php"); 
+                    header("Location: Pages/admin/dashboard.php"); 
                     exit;
                 } else {
                     header("Location: templates/status.php");
@@ -69,7 +69,6 @@ if(isset($_POST['submit'])){
             require_once("templates/alert-message.php");
             showAlertMsg("Username or Password is incorrect.", "danger");
         }
-        
     } else {
         $error = "Invalid username or password";
         require_once("templates/alert-message.php");

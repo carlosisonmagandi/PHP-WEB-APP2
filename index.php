@@ -5,11 +5,7 @@ require_once("includes/db_connection.php");
 
 //login form
 require("login.php");
-
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
