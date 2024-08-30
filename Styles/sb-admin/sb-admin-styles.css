@@ -10981,6 +10981,9 @@ body {
 .sb-topnav.navbar-light #sidebarToggle {
   color: #212529;
 }
+.sb-topnav.navbar-light{
+  background-color: #e9ecef !important;/*change me*/
+}
 
 .sb-sidenav {
   display: flex;
@@ -11058,7 +11061,7 @@ body {
 }
 
 .sb-sidenav-light {
-  background-color: #f8f9fa;
+  background-color: #e9ecef;
   color: #212529;
 }
 .sb-sidenav-light .sb-sidenav-menu .sb-sidenav-menu-heading {
@@ -11082,8 +11085,9 @@ body {
 .sb-sidenav-light .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
   color: #0d6efd;
 }
-.sb-sidenav-light .sb-sidenav-footer {
-  background-color: #e9ecef;
+.sb-sidenav-light .sb-sidenav-footer {/*change me*/
+  /* background-color: #e9ecef; */
+  background-color:#ced4da;
 }
 
 .datatable-wrapper .datatable-container {

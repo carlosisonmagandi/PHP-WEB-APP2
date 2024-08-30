@@ -76,6 +76,17 @@ if(isset($_POST['Logout'])){
         font-size:12px;
         line-height:6px;  
     }
+    /* Style for input elements in footers */
+    tfoot input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 4px;
+    }
+
+    tfoot th {
+        text-align: center;
+    }
+
     @media (max-width: 800px) {
     .flex-container {
         flex-direction: column;
@@ -187,44 +198,51 @@ include ("templates/nav-bar.php");
 
   new DataTable('#dataTable', {
     initComplete: function () {
-        this.api().column(2).visible(false);//hide the SITIO column
-        this.api().column(6).visible(false);//hide the Apprehending Officer column
-        this.api().column(8).visible(false);//hide the Estimated marketvalue column
-        this.api().column(9).visible(false);//hide the Estimated value of conveyance column
-        this.api().column(10).visible(false);//hide the Involve personalities column
-        this.api().column(11).visible(false);//hide the Customdian column
-        this.api().column(12).visible(false);//hide the ACP case No column
-        this.api().column(13).visible(false);//hide the Date of confiscation order column
-        this.api().column(14).visible(false);//hide the Remarks column
-        this.api().column(15).visible(false);//hide the Apprehended person column
-        this.api().column(16).visible(false);//hide the Date created column
-        this.api()
-            .columns()
-            .every(function () {
-                let column = this;
-                let title = column.footer().textContent;
- 
-                // Create input element
-                let input = document.createElement('input');
-                input.placeholder = title;
-                column.footer().replaceChildren(input);
- 
+        const api = this.api();
+
+        // Hide columns in a single operation
+        api.columns([2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+            .visible(false);
+
+        api.columns().every(function () {
+            const column = this;
+            const footer = column.footer();
+            
+            const input = document.createElement('input');// Create input element
+            input.placeholder = column.footer().textContent;
+
+            
+            if (footer) {// Clear the footer and append the input
+                footer.innerHTML = ''; 
+                footer.appendChild(input);
+                
                 // Event listener for user input
-                input.addEventListener('keyup', () => {
-                    if (column.search() !== this.value) {
+                input.addEventListener('keyup', debounce(() => {
+                    if (column.search() !== input.value) {
                         column.search(input.value).draw();
                     }
-                });
-            });
-        }
-    });
-  function fetchTitleFromDB() {//Get title details
+                }, 300)); // Debounce input to limit redraws
+            }
+        });
+    }
+});
+
+// Debounce function to limit the rate at which the search is performed
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+    function fetchTitleFromDB() {//Get title details
         $.ajax({
             url: '/inventory-get-title.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                console.log('Title:', response);
+                // console.log('Title:', response);
                 //alert(JSON.stringify(response));
                 var percent = response[0].percentage;
                 var title = response[0].title;
@@ -262,7 +280,7 @@ include ("templates/nav-bar.php");
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                console.log('Success:', response);
+                // console.log('Success:', response);
                 updateTable(response);//call updateTable
             },
             error: function(xhr, status, error) {
@@ -405,7 +423,37 @@ include ("templates/nav-bar.php");
     }
 
     function deleteAction(id) {
-        alert('Delete successful for ID: ' + id);
+        // alert('Delete successful for ID: ' + id);
+
+        $.ajax({
+            url: '/inventory-tree/delete-record.php',
+            type: 'POST',
+            data: { inventory_id: id },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    console.log(response);
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message,
+                        icon: 'error'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while deleting the image.',
+                    icon: 'error'
+                });
+            }
+        });
     }
 
     function generateQrAction(id) {
@@ -424,18 +472,42 @@ include ("templates/nav-bar.php");
     }
 
     function itemClickId(id) {
+        //Image pane funtions
         $.ajax({
             url: '/inventory-get-images.php',
             type: 'GET',
             data: { inventory_id: id },
             dataType: 'json',
             success: function(response) { 
-                console.log(response); // Log the response to help debug
+                // console.log('here');
+                //  console.log(response); // Log the response to help debug
 
                 // Expected data
-                if (response && response.apprehended_items && response.images) {
+                if (response) {
+                    const barangay=response.barangay
+                    const title=response.apprehended_items;
+                    const sitio=response.sitio;
+                    const city_municipality=response.city_municipality;
+                    const province=response.province;
+                    const apprehending_officer=response.apprehending_officer;
+                    const EMV_forest_product=response.EMV_forest_product;
+                    const EMV_conveyance_implements=response.EMV_conveyance_implements;
+                    const involve_personalities=response.involve_personalities;
+                    const custodian=response.custodian;
+                    const ACP_status_or_case_no=response.ACP_status_or_case_no;
+                    const date_of_confiscation_order=response.date_of_confiscation_order;
+                    const remarks=response.remarks;
+                    const apprehended_persons=response.apprehended_persons;
+
+                    const apprehended_quantity=response.apprehended_quantity;
+                    const apprehended_volume=response.apprehended_volume;
+                    const apprehended_vehicle=response.apprehended_vehicle;
+                    const apprehended_vehicle_type=response.apprehended_vehicle_type;
+                    const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
+
                     let htmlContent = ``;
-                    
+
+
                     if (response.images.length > 0) {
                         response.images.forEach(function(image) {
                             htmlContent += `
@@ -639,7 +711,7 @@ include ("templates/nav-bar.php");
                         </style>
                         <div class="flex-container">
                             <div class="flex-container-left" style="overflow-y:scroll">
-                                <input type="button" value="Add Image" class="addImageButton" />
+                                <input type="button" value="Add Image" class="addImageButton" id="addImage" />
                                 ${htmlContent}
                             </div>
                             <div class="flex-container-right">
@@ -657,10 +729,10 @@ include ("templates/nav-bar.php");
                                                 <td><b>Province</b></td>
                                             </tr>
                                             <tr>
-                                                <td>N/A</td>
-                                                <td>Bucal</td>
-                                                <td>Calamba</td>
-                                                <td>Laguna</td>
+                                                <td>${sitio}</td>
+                                                <td >${barangay}</td>
+                                                <td>${city_municipality}</td>
+                                                <td>${province}</td>
                                             </tr>
                                         </table>
                                     </div>  
@@ -676,10 +748,10 @@ include ("templates/nav-bar.php");
                                                 <td><b>EMV Conveyance Implements</b></td>
                                             </tr>
                                             <tr>
-                                                <td>John</td>
-                                                <td>Mahogany logs,4pcs,1.871 cu.m(Ten Wheeler Truck with Plate No. ADK-4398)</td>
-                                                <td>N/A</td>
-                                                <td>N/A</td>
+                                                <td>${apprehending_officer}</td>
+                                                <td>${title}</td>
+                                                <td>${EMV_forest_product}</td>
+                                                <td>${EMV_conveyance_implements}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -697,12 +769,12 @@ include ("templates/nav-bar.php");
                                                 <td><b>Apprehended Person</b></td>
                                             </tr>
                                             <tr>
-                                                <td>ED Regional Office</td>
-                                                <td>Chief, EMS PENRO Lag.</td>
-                                                <td>Final report submitted to R.O dated 07/11/2019</td>
-                                                <td>07/11/2019</td>
-                                                <td>Confiscated forest Product</td>
-                                                <td>Joe</td>
+                                                <td>${involve_personalities}</td>
+                                                <td>${custodian}</td>
+                                                <td>${ACP_status_or_case_no}</td>
+                                                <td>${date_of_confiscation_order}</td>
+                                                <td>${remarks}</td>
+                                                <td>${apprehended_persons}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -712,7 +784,6 @@ include ("templates/nav-bar.php");
                         `;
                     }
 
-                    
                     Swal.fire({
                         text: `Inventory ID: ${id}`,
                         html: getHtmlContent(),
@@ -720,7 +791,8 @@ include ("templates/nav-bar.php");
                         didOpen: () => {
                             document.querySelector('.swal2-popup').style.width = '90%';
                             document.querySelector('.swal2-popup').style.height = '100%';
-                            document.querySelectorAll('.delete-button').forEach(button => {
+
+                            document.querySelectorAll('.delete-button').forEach(button => {//delete icon button
                                 button.addEventListener('click', function() {
                                     let buttonId = this.getAttribute('data-id');
                                     $.ajax({
@@ -759,6 +831,102 @@ include ("templates/nav-bar.php");
                                     });
                                 });
                             });
+                            // add new image button
+                            const buttonAddImage = document.getElementById('addImage');
+                            buttonAddImage.addEventListener('click', addImage);
+
+                            function addImage() {
+                                Swal.fire({
+                                    html: `
+                                        <div style="text-align: center;">
+                                            <i class="fas fa-cloud-upload-alt" style="font-size: 60px; display: block; margin: 0 auto 15px;"></i>
+                                            <input type="file" name="images[]" id="images" multiple>
+                                            <br><br>
+                                            <p style="color:gray;font-size:14px;font-style:italic">Allowed files: 'jpg', 'jpeg', 'png', 'gif'</p>
+                                            <input type="hidden" name="action" value="upload_img">
+                                            <input type="hidden" id="record_id" name="record_id" value="${id}">
+                                            <input type="button" class="btn btn-success" value="Upload" id="uploadImage" / style="float:right">
+                                        </div>
+                                    `,
+                                    showConfirmButton: false,
+                                    showCancelButton: false,
+                                    allowOutsideClick: true
+                                });
+                                // .then(() => {
+                                //     $('#dataTable').hide();
+                                //     Swal.fire({
+                                //         html: itemClickId(id)
+                                //     });
+                                // });
+
+                                // Call AJAX for upload button
+                                const buttonUploadImage = document.getElementById('uploadImage');
+                                const fileInput = document.getElementById('images');
+
+                                buttonUploadImage.addEventListener('click', () => {
+                                    if (!fileInput) {
+                                        console.error('File input element not found');
+                                        return;
+                                    }
+                                    functionUploadImage(fileInput);
+                                });
+
+                                function functionUploadImage(fileInput) {
+                                    const formData = new FormData();
+                                    formData.append('action', 'upload_img'); 
+                                    formData.append('record_id', document.getElementById('record_id').value);
+
+                                    // Append files
+                                    let images = fileInput.files;
+                                    for (let i = 0; i < images.length; i++) {
+                                        formData.append('images[]', images[i]);
+                                    }
+
+                                    $.ajax({
+                                        url: '/inventory-tree/upload-image.php',
+                                        type: 'POST',
+                                        data: formData,
+                                        processData: false,
+                                        contentType: false,
+                                        dataType: 'json',
+                                        success: function(response) {
+                                            if (response.status === 'success') {
+                                                $('#dataTable').show();
+                                                Swal.fire({
+                                                    title: 'Success',
+                                                    text: 'Image uploaded successfully',
+                                                    icon: 'success'
+                                                }).then(() => {
+                                                    // Call the function to update and reopen the modal
+                                                    Swal.fire({
+                                                        html: itemClickId(id)
+                                                    })
+                                                });
+                                            } else {
+                                                Swal.fire({
+                                                    title: 'Error',
+                                                    text: response.message,
+                                                    icon: 'error'
+                                                }).then(() => {
+                                                    // Call the function to update and reopen the modal
+                                                    Swal.fire({
+                                                        html: itemClickId(id)
+                                                    })
+                                                });
+                                                //console.log(response.message);
+                                            }
+                                        },
+                                        error: function(xhr, status, error) {
+                                            Swal.fire({
+                                                title: 'Error',
+                                                text: 'An error occurred while uploading the image.',
+                                                icon: 'error'
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+
                         }
                     }).then(() => {
                         $('#dataTable').show();
@@ -785,8 +953,6 @@ include ("templates/nav-bar.php");
             }
         });
     }
-
-
 
 
     // print table view
