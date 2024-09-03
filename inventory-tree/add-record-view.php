@@ -11,6 +11,13 @@ if(isset($_POST['Logout'])){
     header("Location: ../../index.php");
     exit;
 };
+
+$requestUri = $_SERVER['REQUEST_URI'];
+$parsedUrl = parse_url($requestUri);
+$queryString = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
+
+$id = $queryString;
+$hasId = !empty($id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,12 +58,14 @@ if(isset($_POST['Logout'])){
         <form id="apprehension-form" method="post">
             <input type="hidden" name="action" value="add_record">
 
-            <fieldset>
+            <?php if (!$hasId): ?>
+                <fieldset>
                 <legend>Images:</legend>
-                <div class="form-group">
-                    <input type="file" name="images[]" id="images" multiple>
-                </div>
-            </fieldset>
+                    <div class="form-group">
+                        <input type="file" name="images[]" id="images" multiple>
+                    </div>
+                </fieldset>
+            <?php endif; ?>
 
             <fieldset>
                 <legend>Apprehension Site:</legend>
@@ -104,16 +113,16 @@ if(isset($_POST['Logout'])){
                         <input type="text" class="form-control" id="apprehended_volume" name="apprehended_volume">
                     </div>
                     <div class="form-group">
-                        <label for="apprehended_vehicle_name">Vehicle</label>
-                        <input type="text" class="form-control" id="apprehended_vehicle_name" name="apprehended_vehicle_name">
+                        <label for="apprehended_vehicle">Vehicle</label>
+                        <input type="text" class="form-control" id="apprehended_vehicle" name="apprehended_vehicle">
                     </div>
                     <div class="form-group">
                         <label for="apprehended_vehicle_type">Vehicle Type</label>
                         <input type="text" class="form-control" id="apprehended_vehicle_type" name="apprehended_vehicle_type">
                     </div>
                     <div class="form-group">
-                        <label for="apprehended_vehicle_plate">Vehicle Plate No.</label>
-                        <input type="text" class="form-control" id="apprehended_vehicle_plate" name="apprehended_vehicle_plate">
+                        <label for="apprehended_vehicle_plate_no">Vehicle Plate No.</label>
+                        <input type="text" class="form-control" id="apprehended_vehicle_plate_no" name="apprehended_vehicle_plate_no">
                     </div>
                 </fieldset>
 
@@ -155,78 +164,180 @@ if(isset($_POST['Logout'])){
                 </div>
             </fieldset>
             
-            <button type="button" id="send" class="btn btn-primary">Submit</button>
+            <?php if ($hasId): ?>
+                <button type="button" id="update" class="btn btn-primary">Update</button>
+            <?php else: ?>
+                <button type="button" id="send" class="btn btn-primary">Submit</button>
+            <?php endif; ?>
         </form>
     </div>
     <?php
     include "../templates/nav-bar2.php"; 
     ?>
-
 <script>
-    $('#send').on('click', function() {
-        addRecord();
-    });
-
-    function addRecord() {
-    const formData = new FormData();
-
-    // Append all form data
-    formData.append('action', 'add_record'); // Ensure this matches the PHP script expectation
-    formData.append('date_of_apprehension', $('#date_of_apprehension').val());
-    formData.append('sitio', $('#sitio').val());
-    formData.append('barangay', $('#barangay').val());
-    formData.append('city_municipality', $('#city_municipality').val());
-    formData.append('province', $('#province').val());
-    formData.append('apprehending_officer', $('#apprehending_officer').val());
-    formData.append('apprehended_items', $('#apprehended_items').val());
-    formData.append('EMV_forest_product', $('#EMV_forest_product').val());
-    formData.append('EMV_conveyance_implements', $('#EMV_conveyance_implements').val());
-    formData.append('involve_personalities', $('#involve_personalities').val());
-    formData.append('custodian', $('#custodian').val());
-    formData.append('ACP_status_or_case_no', $('#ACP_status_or_case_no').val());
-    formData.append('date_of_confiscation_order', $('#date_of_confiscation_order').val());
-    formData.append('remarks', $('#remarks').val());
-    formData.append('apprehended_persons', $('#apprehended_persons').val());
-    formData.append('apprehended_quantity', $('#apprehended_quantity').val());
-    formData.append('apprehended_volume', $('#apprehended_volume').val());
-    formData.append('apprehended_vehicle_name', $('#apprehended_vehicle_name').val());
-    formData.append('apprehended_vehicle_type', $('#apprehended_vehicle_type').val());
-    formData.append('apprehended_vehicle_plate', $('#apprehended_vehicle_plate').val());
-
-    // Append files
-    let images = $('#images')[0].files;
-    console.log(images);
-    for (let i = 0; i < images.length; i++) {
-        formData.append('images[]', images[i]);
-    }
-
-    // Make AJAX request
-    $.ajax({
-        url: '/inventory-tree/add-record.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: 'json',
-        success: function(data) {
-            console.log("Success response:", data);
-            if (data.status === 'success') {
-                Swal.fire('Success!', 'Your record has been submitted.', 'success');
-            } else {
-                Swal.fire('Error!', data.message || 'An error occurred while submitting the form.', 'error');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.log("AJAX Error:", status, error);
-            console.log("Response:", xhr.responseText);
-            Swal.fire('Error!', 'An error occurred while submitting the form.', 'error');
+    $(document).ready(function() {
+      
+        var id = "<?php echo $id; ?>";
+        if (id) {
+            $.ajax({
+                url: '/inventory-tree/get-record.php',
+                type: 'GET',
+                data: { inventory_id:id},
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        let record = data.data;
+                        // Populate form fields with the fetched data
+                        $('#sitio').val(record.sitio);
+                        $('#barangay').val(record.barangay);
+                        $('#city_municipality').val(record.city_municipality);
+                        $('#province').val(record.province);
+                        $('#date_of_apprehension').val(record.date_of_apprehension);
+                        $('#apprehending_officer').val(record.apprehending_officer);
+                        $('#apprehended_items').val(record.apprehended_items);
+                        $('#apprehended_quantity').val(record.apprehended_quantity);
+                        $('#apprehended_volume').val(record.apprehended_volume);
+                        $('#apprehended_vehicle').val(record.apprehended_vehicle);
+                        $('#apprehended_vehicle_type').val(record.apprehended_vehicle_type);
+                        $('#apprehended_vehicle_plate_no').val(record.apprehended_vehicle_plate_no);
+                        $('#EMV_forest_product').val(record.EMV_forest_product);
+                        $('#EMV_conveyance_implements').val(record.EMV_conveyance_implements);
+                        $('#involve_personalities').val(record.involve_personalities);
+                        $('#custodian').val(record.custodian);
+                        $('#ACP_status_or_case_no').val(record.ACP_status_or_case_no);
+                        $('#date_of_confiscation_order').val(record.date_of_confiscation_order);
+                        $('#remarks').val(record.remarks);
+                        $('#apprehended_persons').val(record.apprehended_persons);
+                    } else {
+                        Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Error!', 'An error occurred while fetching the record.', 'error');
+                }
+            });
         }
+        //Button Update
+        $('#update').on('click', function() {
+            updateRecord(id);
+        });
+        function updateRecord(id) {
+            const formData = new FormData();
+            formData.append('action', 'update_record');
+            formData.append('inventory_id', id); // Function to get 'id' from the URL
+            formData.append('date_of_apprehension', $('#date_of_apprehension').val());
+            formData.append('sitio', $('#sitio').val());
+            formData.append('barangay', $('#barangay').val());
+            formData.append('city_municipality', $('#city_municipality').val());
+            formData.append('province', $('#province').val());
+            formData.append('apprehending_officer', $('#apprehending_officer').val());
+            formData.append('apprehended_items', $('#apprehended_items').val());
+            formData.append('apprehended_quantity', $('#apprehended_quantity').val());
+            formData.append('apprehended_volume', $('#apprehended_volume').val());
+            formData.append('apprehended_vehicle', $('#apprehended_vehicle').val());
+            formData.append('apprehended_vehicle_type', $('#apprehended_vehicle_type').val());
+            formData.append('apprehended_vehicle_plate_no', $('#apprehended_vehicle_plate_no').val());
+            formData.append('EMV_forest_product', $('#EMV_forest_product').val());
+            formData.append('EMV_conveyance_implements', $('#EMV_conveyance_implements').val());
+            formData.append('involve_personalities', $('#involve_personalities').val());
+            formData.append('custodian', $('#custodian').val());
+            formData.append('ACP_status_or_case_no', $('#ACP_status_or_case_no').val());
+            formData.append('date_of_confiscation_order', $('#date_of_confiscation_order').val());
+            formData.append('remarks', $('#remarks').val());
+            formData.append('apprehended_persons', $('#apprehended_persons').val());
+
+            console.log('Sending request with ID:', id);
+            console.log('Form data:', formData);
+
+            $.ajax({
+                url: '/inventory-tree/update-record.php',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                dataType: 'json',
+                success: function(response) {
+                    //console.log('Response received:', response);
+                    
+                    if (response.status === 'success') {
+                        console.log('Success:', response);
+                        console.log('volume is: ');
+                        console.log(response.apprehended_volume);
+                        Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
+                        let queryString = id;
+                        window.location.href = '/inventory.php?' + queryString;//redirect to inventory table view
+                        });
+                    } else {
+                        Swal.fire('Error!', response.message || 'An error occurred while updating the record.', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('AJAX Error:', status, error);
+                    console.log('Response text:', xhr.responseText);
+                    Swal.fire('Error!', 'An error occurred while updating the record.', 'error');
+                }
+            });
+        }
+
+        //Button Send
+        $('#send').on('click', function() {
+            addRecord();
+        });
+
+        function addRecord() {
+            const formData = new FormData();
+            formData.append('action', 'add_record');
+            formData.append('date_of_apprehension', $('#date_of_apprehension').val());
+            formData.append('sitio', $('#sitio').val());
+            formData.append('barangay', $('#barangay').val());
+            formData.append('city_municipality', $('#city_municipality').val());
+            formData.append('province', $('#province').val());
+            formData.append('apprehending_officer', $('#apprehending_officer').val());
+            formData.append('apprehended_items', $('#apprehended_items').val());
+            formData.append('EMV_forest_product', $('#EMV_forest_product').val());
+            formData.append('EMV_conveyance_implements', $('#EMV_conveyance_implements').val());
+            formData.append('involve_personalities', $('#involve_personalities').val());
+            formData.append('custodian', $('#custodian').val());
+            formData.append('ACP_status_or_case_no', $('#ACP_status_or_case_no').val());
+            formData.append('date_of_confiscation_order', $('#date_of_confiscation_order').val());
+            formData.append('remarks', $('#remarks').val());
+            formData.append('apprehended_persons', $('#apprehended_persons').val());
+            formData.append('apprehended_quantity', $('#apprehended_quantity').val());
+            formData.append('apprehended_volume', $('#apprehended_volume').val());
+            formData.append('apprehended_vehicle', $('#apprehended_vehicle').val());
+            formData.append('apprehended_vehicle_type', $('#apprehended_vehicle_type').val());
+            formData.append('apprehended_vehicle_plate_no', $('#apprehended_vehicle_plate_no').val());
+
+            let images = $('#images')[0].files;
+            for (let i = 0; i < images.length; i++) {
+                formData.append('images[]', images[i]);
+            }
+
+            $.ajax({
+                url: '/inventory-tree/add-record.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        Swal.fire('Success!', 'Your record has been submitted.', 'success').then(() => {
+                            window.location.href = '/inventory.php?';
+                        });
+                    } else {
+                        Swal.fire('Error!', data.message || 'An error occurred while submitting the form.', 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire('Error!', 'An error occurred while submitting the form.', 'error');
+                }
+            });
+        }
+
     });
-
-}
-
-
 </script>
+
 
 </body>
 </html>

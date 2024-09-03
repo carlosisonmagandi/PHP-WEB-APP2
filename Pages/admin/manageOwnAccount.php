@@ -8,6 +8,7 @@ if (!isset($_SESSION['session_id'])) {
     header("Location: login.php");
     exit();
 }
+
 function fetchUserData($connection, $userId) {
     $query = "SELECT id, username, password FROM account WHERE id = ?";
     $statement = $connection->prepare($query);
@@ -18,6 +19,7 @@ function fetchUserData($connection, $userId) {
     $statement->close();
     return $userData;
 }
+
 $userData = fetchUserData($connection, $_SESSION['session_id']);
 ?>
 <body>
@@ -29,13 +31,19 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $newUsername = $_POST['username'];
         $newPassword = $_POST['password'];
+        
         function validatePassword($newPassword) {
             return (strlen($newPassword) >= 5 && preg_match('/\d/', $newPassword) && preg_match('/[A-Z]/', $newPassword) && preg_match('/[!@#$%^&*(),.?":{}|<>]/', $newPassword));
         }
+
         if (validatePassword($newPassword)) {
+            // Hash the new password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            // Prepare the update query
             $updateQuery = "UPDATE account SET username = ?, password = ? WHERE id = ?";
             $updateStatement = $connection->prepare($updateQuery);
-            $updateStatement->bind_param("ssi", $newUsername, $newPassword, $_SESSION['session_id']); // this is the session id 
+            $updateStatement->bind_param("ssi", $newUsername, $hashedPassword, $_SESSION['session_id']);
             $updateStatement->execute();
 
             if ($updateStatement->affected_rows > 0) {
@@ -43,40 +51,16 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
                 $userData['username'] = $newUsername;
                 $userData['password'] = $newPassword;
             } else {
-                // Display error message
-                //showAlertMsg("Failed to update profile. Please try again.", "danger");
+                showAlertMsg("Failed to update profile. Please try again.", "danger");
             }
             $updateStatement->close();
+        } else {
+            showAlertMsg("Password must contain at least one uppercase letter, one number, and one special character.", "danger");
         }
-        else{
-            showAlertMsg("Password must contain atleast one Uppercase letter, one number and one special character.", "danger");
-        } 
     }
     ?>
     <style>
-        body {
-            background-image: url('/Images/edit-account.png');
-            background-repeat: no-repeat;
-            background-size: contain;
-            background-position: right bottom;
-            font-family: 'Poppins', sans-serif;
-        }
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%; /* Cover the entire body */
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.3);
-            z-index: -1;
-        }
-        @media screen and (min-width: 320px) and (max-width: 425px) {
-            #container{
-                background-color: rgba(255, 255, 255, 0.8);
-            }
-                
-            } 
+        /* Your styles here */
     </style>
     <div id="container" class="container-fluid mt-7" style="padding:5%;">
         <div class="row justify-content-left">

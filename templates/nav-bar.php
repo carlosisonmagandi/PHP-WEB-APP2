@@ -104,7 +104,7 @@ if(isset($_POST['Logout'])){
                 });
             </script>
             <!-- Notification -->
-            
+            <?php if ($_SESSION['session_role']=="Admin"){ ?>
             <div class="notification-bell">
                 <button onclick="trigger()" class="btn">🔔</button>
                 
@@ -134,7 +134,7 @@ if(isset($_POST['Logout'])){
                     </div> 
                 </div>
             </div>
-            
+            <?php }?>
             <script>
                 $(document).ready(function() {
                     function fetchNotifications() {
@@ -320,7 +320,7 @@ if(isset($_POST['Logout'])){
                                     <div class="collapse" id="pagesCollapseTrees" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="../../inventory.php">Table View</a>
-                                            <a class="nav-link" href="../../inventory-view/inventory-card.php">Card View</a>
+                                            <a class="nav-link" href="../../inventory-card-view.php">Card View</a>
                                         </nav>
                                     </div>
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">

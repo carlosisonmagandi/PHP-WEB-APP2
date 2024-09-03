@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
 
     if ($stmt = $connection->prepare($sql)) {
-        $stmt->bind_param('sssssssssssssssddssss', 
+        $stmt->bind_param('sssssssssssssssdsssss', 
             $date_of_apprehension, 
             $sitio, 
             $barangay, 
