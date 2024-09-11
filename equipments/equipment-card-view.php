@@ -1,8 +1,8 @@
 <?php
 session_start();
-require("includes/session.php");
-require("includes/darkmode.php");
-require("includes/authentication.php");
+require("../includes/session.php");
+require("../includes/darkmode.php");
+require("../includes/authentication.php");
 
 //action after logout button
 if(isset($_POST['Logout'])){
@@ -31,10 +31,10 @@ $hasId = !empty($id);
 </head>
 <body>
     <?php 
-    include ("templates/nav-bar.php");
+    include ("../templates/nav-bar.php");
     ?>
 
-    <style>
+<style>
     * {
     box-sizing: border-box;
     }
@@ -156,7 +156,7 @@ $hasId = !empty($id);
     <div class="flex-item-left" id="titleContainer">
         <!-- title -->
          <br>
-        <h3 style="font-size:12px; font-weight:bold"><center>100% INVENTORY OF INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES <br>AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+        <h3 style="font-size:12px; font-weight:bold"><center>INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
     </div>
 </div>
 
@@ -193,7 +193,7 @@ $hasId = !empty($id);
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/inventory-tree/get-image.php',
+            url: '/equipments/get-equipment-and-image.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -206,7 +206,7 @@ $hasId = !empty($id);
                 var cardHtml = `
                     <div class="column">
                         <div class="card">
-                            <div class="totalItemDiv">pcs: ${record.apprehended_quantity}</div>
+                            <div class="totalItemDiv">Condition: ${record.equipment_condition}</div>
                             <div class="innerCardContainer">
                                 <div class="imageDiv">
                                     ${imagePath ? 
@@ -222,11 +222,11 @@ $hasId = !empty($id);
                                     <button class="editButtonIcon" id="editButton" data-id=${record.id} >
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <a>${record.apprehended_items}</a>
-                                    <a>(${record.apprehended_volume})</a>
-                                    <p>${record.barangay}, ${record.city_municipality}, ${record.province}</p>
-                                    <i><a>Apprehended Date:</a></i>
-                                    <i><a>${record.date_of_apprehension}</a></i>
+                                    <a>${record.equipment_name}</a>
+                                    <a>(${record.brand})</a>
+                                    <p>${record.location}</p>
+                                    <i><a>Confiscation Date:</a></i>
+                                    <i><a>${record.date_of_compiscation}</a></i>
                                 </div>
                                 <br>
                                 <div class="buttonsDiv">
@@ -316,9 +316,9 @@ $hasId = !empty($id);
     //Edit action
     function editAction(id) {
         $.ajax({
-            url: '/inventory-tree/get-record.php',
+            url: '/equipments/get-edit-record.php',
             type: 'GET',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(data) {
                 if (data.status === 'success') {
@@ -328,7 +328,7 @@ $hasId = !empty($id);
                     // console.log(queryString);
 
                     // Redirect with query parameters
-                    window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
+                    window.location.href = '/equipments/add-record-view.php?' + queryString;
                 } else {
                     Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                 }
@@ -343,33 +343,35 @@ $hasId = !empty($id);
     function itemClickId(id) {
         //Image pane funtions
         $.ajax({
-            url: '/inventory-get-images.php',
+            url: '/equipments/equipment-get-images.php',
             type: 'GET',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(response) { 
+                  //console.log(response); 
+
                 // Expected data
                 if (response) {
-                    const barangay=response.barangay
-                    const title=response.apprehended_items;
-                    const sitio=response.sitio;
-                    const city_municipality=response.city_municipality;
-                    const province=response.province;
-                    const apprehending_officer=response.apprehending_officer;
-                    const EMV_forest_product=response.EMV_forest_product;
-                    const EMV_conveyance_implements=response.EMV_conveyance_implements;
-                    const involve_personalities=response.involve_personalities;
-                    const custodian=response.custodian;
-                    const ACP_status_or_case_no=response.ACP_status_or_case_no;
-                    const date_of_confiscation_order=response.date_of_confiscation_order;
-                    const remarks=response.remarks;
-                    const apprehended_persons=response.apprehended_persons;
+                    // const barangay=response.barangay
+                    // const title=response.apprehended_items;
+                    // const sitio=response.sitio;
+                    // const city_municipality=response.city_municipality;
+                    // const province=response.province;
+                    // const apprehending_officer=response.apprehending_officer;
+                    // const EMV_forest_product=response.EMV_forest_product;
+                    // const EMV_conveyance_implements=response.EMV_conveyance_implements;
+                    // const involve_personalities=response.involve_personalities;
+                    // const custodian=response.custodian;
+                    // const ACP_status_or_case_no=response.ACP_status_or_case_no;
+                    // const date_of_confiscation_order=response.date_of_confiscation_order;
+                    // const remarks=response.remarks;
+                    // const apprehended_persons=response.apprehended_persons;
 
-                    const apprehended_quantity=response.apprehended_quantity;
-                    const apprehended_volume=response.apprehended_volume;
-                    const apprehended_vehicle=response.apprehended_vehicle;
-                    const apprehended_vehicle_type=response.apprehended_vehicle_type;
-                    const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
+                    // const apprehended_quantity=response.apprehended_quantity;
+                    // const apprehended_volume=response.apprehended_volume;
+                    // const apprehended_vehicle=response.apprehended_vehicle;
+                    // const apprehended_vehicle_type=response.apprehended_vehicle_type;
+                    // const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
 
                     let htmlContent = ``;
 
@@ -465,6 +467,7 @@ $hasId = !empty($id);
                         </div>
                         `;
                     }
+
                     function getHtmlContent() {
                         return `
                         <style>
@@ -520,8 +523,6 @@ $hasId = !empty($id);
                                 font-size:12px;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;  
-                                position: relative;
-                                overflow:hidden;
                             }
                             .grid-item {
                                 background-color: rgba(255, 255, 255, 0.8);
@@ -555,6 +556,8 @@ $hasId = !empty($id);
                                 text-align: center;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;
+                                
+            
                             }
                             .category-header {
                                 background-color: #002f6c;
@@ -576,27 +579,6 @@ $hasId = !empty($id);
                                     white-space: nowrap; /* Prevent text from wrapping */
                                 }
                             }
-
-                            /* Hide the checkbox */
-                            #slideToggle {
-                                display: none;
-                            }
-
-                           
-                            .hidden {
-                                height: 90%;
-                                width: 100%;
-                                position: absolute;
-                                background: #f90;
-                                color: #000;
-                                right: -100%; /* Initially placed outside to the right, relative to the modal */
-                                transition: right 0.6s ease-in-out; /* Slide-in effect */
-                            }
-
-                            /* Slide in the panel when checkbox is checked */
-                            #slideToggle:checked + .hidden {
-                                right: 0;
-                            }
                         </style>
                         <div class="flex-container">
                             <div class="flex-container-left" style="overflow-y:scroll">
@@ -606,11 +588,6 @@ $hasId = !empty($id);
                             <div class="flex-container-right">
                                 <br>
                                 <div class="grid-container">
-                                    <label for="slideToggle" class="btn btn-success">View Location</label>
-                                    <label for="slideToggle" class="btn btn-success">Another Button</label>
-                                    <input type="checkbox" id="slideToggle">
-                                    <div class="hidden">Here I am! I will not exceed the modal.</div>
-                                    
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
@@ -623,10 +600,10 @@ $hasId = !empty($id);
                                                 <td><b>Province</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${sitio}</td>
-                                                <td >${barangay}</td>
-                                                <td>${city_municipality}</td>
-                                                <td>${province}</td>
+                                                <td>Test_Sitio</td>
+                                                <td>Test_barangay</td>
+                                                <td>Test_city</td>
+                                                <td>Test_province</td>
                                             </tr>
                                         </table>
                                     </div>  
@@ -642,10 +619,10 @@ $hasId = !empty($id);
                                                 <td><b>EMV Conveyance Implements</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${apprehending_officer}</td>
-                                                <td>${title}</td>
-                                                <td>${EMV_forest_product}</td>
-                                                <td>${EMV_conveyance_implements}</td>
+                                                <td>Test_apprehending_officer</td>
+                                                <td>Test_title</td>
+                                                <td>Test_emv_forest_product</td>
+                                                <td>Php. Test_EMV_conveyance_implements</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -663,12 +640,12 @@ $hasId = !empty($id);
                                                 <td><b>Apprehended Person</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${involve_personalities}</td>
-                                                <td>${custodian}</td>
-                                                <td>${ACP_status_or_case_no}</td>
-                                                <td>${date_of_confiscation_order}</td>
-                                                <td>${remarks}</td>
-                                                <td>${apprehended_persons}</td>
+                                                <td>Test_involve_personalities</td>
+                                                <td>Test_custodian</td>
+                                                <td>Test_ACP_status_or_case_no</td>
+                                                <td>Test_date_of_confiscation_order</td>
+                                                <td>Test_remarks</td>
+                                                <td>Test_apprehended_persons</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -685,11 +662,11 @@ $hasId = !empty($id);
                                                 <td><b>Plate #</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${apprehended_quantity}</td>
-                                                <td>${apprehended_volume}</td>
-                                                <td>${apprehended_vehicle}</td>
-                                                <td>${apprehended_vehicle_type}</td>
-                                                <td>${apprehended_vehicle_plate_no}</td>
+                                                <td>Test_apprehended_quantity</td>
+                                                <td>Test_apprehended_volume</td>
+                                                <td>Tet_apprehended_vehicle</td>
+                                                <td>Test_apprehended_vehicle_type</td>
+                                                <td>Test_apprehended_vehicle_plate_no</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -705,19 +682,17 @@ $hasId = !empty($id);
                         showConfirmButton: false,
                         didOpen: () => {
                             document.querySelector('.swal2-popup').style.width = '90%';
-                            // document.querySelector('.swal2-popup').style.height = '100%';
 
                             document.querySelectorAll('.delete-button').forEach(button => {//delete icon button
                                 button.addEventListener('click', function() {
                                     let buttonId = this.getAttribute('data-id');
                                     $.ajax({
-                                        url: '/inventory-tree/delete-image.php',
+                                        url: '/equipments/delete-image.php',
                                         type: 'POST',
                                         data: { image_id: buttonId },
                                         dataType: 'json',
                                         success: function(response) {
                                             if (response.success) {
-                                                fetchDataFromDB();
                                                 Swal.fire({
                                                     title: 'Success',
                                                     text: response.message,
@@ -746,6 +721,7 @@ $hasId = !empty($id);
                                     });
                                 });
                             });
+
                             // add new image button
                             const buttonAddImage = document.getElementById('addImage');
                             buttonAddImage.addEventListener('click', addImage);
@@ -797,7 +773,7 @@ $hasId = !empty($id);
                                     }
 
                                     $.ajax({
-                                        url: '/inventory-tree/upload-image.php',
+                                        url: '/equipments/upload-image.php',
                                         type: 'POST',
                                         data: formData,
                                         processData: false,
@@ -839,14 +815,13 @@ $hasId = !empty($id);
                                     });
                                 }
                             }
-
                         }
                     }).then(() => {
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
-                        const newUrl = new URL('inventory-card-view.php', window.location.origin);// Construct the new URL to be used
-                        window.history.replaceState({}, '', newUrl.href);// Update the URL without reloading the page
+                        const newUrl = new URL('/equipments/equipment-card-view.php', window.location.origin);// Construct the new URL to be used
+                        window.history.replaceState({}, '', newUrl.href);
                     });
                     
                 } else {
@@ -854,6 +829,8 @@ $hasId = !empty($id);
                         title: "Error",
                         text: "Invalid response from server",
                         icon: "error"
+                    }).then(() => {
+                        $('#dataTable').show();
                     });
                 }
             },
@@ -869,12 +846,12 @@ $hasId = !empty($id);
         });
     }
     function redirectToUrl() {
-         window.location.href = '/inventory-tree/add-record-view.php'; 
+         window.location.href = '/equipments/add-record-view.php'; 
     }
 </script>
 
 <?php
-include  "templates/nav-bar2.php"; 
+include  "../templates/nav-bar2.php"; 
 ?>
 </body>
 </html>

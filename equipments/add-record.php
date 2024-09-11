@@ -11,63 +11,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $response = ['status' => 'success'];
     
     // Collect POST data
-    $date_of_apprehension = $_POST['date_of_apprehension'] ?? '';
-    $sitio = $_POST['sitio'] ?? '';
-    $barangay = $_POST['barangay'] ?? '';
-    $city_municipality = $_POST['city_municipality'] ?? '';
-    $province = $_POST['province'] ?? '';
-    $apprehending_officer = $_POST['apprehending_officer'] ?? '';
-    $apprehended_items = $_POST['apprehended_items'] ?? '';
-    $EMV_forest_product = $_POST['EMV_forest_product'] ?? '';
-    $EMV_conveyance_implements = $_POST['EMV_conveyance_implements'] ?? '';
-    $involve_personalities = $_POST['involve_personalities'] ?? '';
-    $custodian = $_POST['custodian'] ?? '';
-    $ACP_status_or_case_no = $_POST['ACP_status_or_case_no'] ?? '';
-    $date_of_confiscation_order = $_POST['date_of_confiscation_order'] ?? '';
+    $equipmentName = $_POST['equipmentName'] ?? '';
+    $type = $_POST['type'] ?? '';
+    $serialNo = $_POST['serialNo'] ?? '';
+    $brand = $_POST['brand'] ?? '';
+    $model = $_POST['model'] ?? '';
+    $condition = $_POST['condition'] ?? '';
+    $owner = $_POST['owner'] ?? '';
+    $dateOfConfiscation = $_POST['dateOfConfiscation'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $location = $_POST['location'] ?? '';
     $remarks = $_POST['remarks'] ?? '';
-    $apprehended_persons = $_POST['apprehended_persons'] ?? '';
-    $apprehended_quantity = $_POST['apprehended_quantity'] ?? '';
-    $apprehended_volume = $_POST['apprehended_volume'] ?? '';
-    $apprehended_vehicle = $_POST['apprehended_vehicle'] ?? '';
-    $apprehended_vehicle_type = $_POST['apprehended_vehicle_type'] ?? '';
-    $apprehended_vehicle_plate_no = $_POST['apprehended_vehicle_plate_no'] ?? '';
-    $date_created = date('Y-m-d');
 
     // Define allowed file types
     $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
 
     // Adjust SQL query to match your table schema
-    $sql = "INSERT INTO inventory (
-        date_of_apprehension, sitio, barangay, city_municipality, province, apprehending_officer, 
-        apprehended_items, EMV_forest_product, EMV_conveyance_implements, involve_personalities, 
-        custodian, ACP_status_or_case_no, date_of_confiscation_order, remarks, apprehended_persons,
-        apprehended_quantity, apprehended_volume, apprehended_vehicle, apprehended_vehicle_type,
-        apprehended_vehicle_plate_no, date_created
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
+    $sql = "INSERT INTO equipments (
+        equipment_name,
+        equipment_type,
+        serial_no,
+        brand,
+        model,
+        equipment_status,
+        location,
+        date_of_compiscation,
+        equipment_owner,
+        equipment_condition,
+        remarks
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     if ($stmt = $connection->prepare($sql)) {
-        $stmt->bind_param('sssssssssssssssdsssss', 
-            $date_of_apprehension, 
-            $sitio, 
-            $barangay, 
-            $city_municipality, 
-            $province, 
-            $apprehending_officer, 
-            $apprehended_items, 
-            $EMV_forest_product, 
-            $EMV_conveyance_implements, 
-            $involve_personalities, 
-            $custodian, 
-            $ACP_status_or_case_no, 
-            $date_of_confiscation_order, 
-            $remarks, 
-            $apprehended_persons, 
-            $apprehended_quantity, 
-            $apprehended_volume, 
-            $apprehended_vehicle, 
-            $apprehended_vehicle_type, 
-            $apprehended_vehicle_plate_no, 
-            $date_created
+        $stmt->bind_param('sssssssssss', 
+        $equipmentName, 
+        $type, 
+        $serialNo, 
+        $brand, 
+        $model,
+        $status,
+        $location,
+        $dateOfConfiscation,
+        $owner,
+        $condition,
+        $remarks
         );
 
         if ($stmt->execute()) {
@@ -93,13 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     if (in_array($file_ext, $allowed_types) && $file_size <= 2097152) {
                         $new_file_name = uniqid() . '.' . $file_ext;
                         $upload_path = $upload_directory . $new_file_name;
-
-                        $upload_path_with_prefix = 'inventory-tree/' . $upload_path;
             
                         if (move_uploaded_file($file_tmp, $upload_path)) {
-                            $stmt_image = $connection->prepare("INSERT INTO inventory_images (inventory_id, file_name, file_path) VALUES (?, ?, ?)");
+                            $stmt_image = $connection->prepare("INSERT INTO equipments_images (equipment_id, file_name, file_path) VALUES (?, ?, ?)");
                             if ($stmt_image) {
-                                $stmt_image->bind_param('iss', $record_id, $file_name, $upload_path_with_prefix);
+                                $stmt_image->bind_param('iss', $record_id, $file_name, $upload_path);
                                 if (!$stmt_image->execute()) {
                                     $invalid_file_found = true;
                                     $response = ['status' => 'error', 'message' => "Failed to insert file record: " . $stmt_image->error];

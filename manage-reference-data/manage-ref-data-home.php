@@ -39,7 +39,7 @@ include("../templates/nav-bar.php");
     <div class="centered">
         <a href="/manage-reference-data/manage-ref-data.php" class="button" data-text="Trees" ><i class="fas fa-tree"></i> </a>
         <a class="button" data-text="Vehicle"><i class="fas fa-car" ></i> </a>
-        <a class="button" data-text="Equpment"><i class="fas fa-tools"></i></a>
+        <a href="/manage-equipments-ref-data/equipment-reference-data.php" class="button" data-text="Equipment"><i class="fas fa-tools"></i></a>
     </div>
 </div>
 

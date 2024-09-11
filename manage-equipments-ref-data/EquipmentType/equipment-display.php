@@ -23,11 +23,11 @@
 </head>
 <body>
 <input type="button" id="addBtn" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
-<table id="speciesTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
+<table id="equipmentTypeTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
             <th>Id</th>
-            <th>Name of Species</th>
+            <th>Name of Type</th>
             <th>Description</th>
             <th>Date Created</th>
             <th>Actions</th>
@@ -39,7 +39,7 @@
     <tfoot>
         <tr>
             <th>Id</th>
-            <th>Name of Species</th>
+            <th>Name of Type</th>
             <th>Description</th>
             <th>Date Created</th>
             <th>Actions</th>
@@ -51,19 +51,18 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
-    // Initialize DataTable
-    $('#speciesTable').DataTable({
-        "order": [[ 3, "desc" ]],
+    $('#equipmentTypeTable').DataTable({
+        "order": [[ 3, "desc" ]],//order based on the latest created record
         "responsive": true
     });
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/manage-reference-data/species-list.php',
+            url: '/manage-equipments-ref-data/EquipmentType/equipment-list.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var table = $('#speciesTable').DataTable();
+                var table = $('#equipmentTypeTable').DataTable();
                 table.clear();
                 
                 var rows = [];
@@ -73,8 +72,8 @@ $(document).ready(function() {
                     
                     rows.push([
                         row.id,
-                        row.species_name,
-                        row.species_description,
+                        row.type_title,
+                        row.type_description,
                         row.created_on,
                         editButton + ' ' + deleteButton
                     ]);
@@ -90,18 +89,18 @@ $(document).ready(function() {
     }
     fetchDataFromDB();
 
-    $('#speciesTable').on('click', '.delete-btn', function() {
+    $('#equipmentTypeTable').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
         deleteRecord(id);
         //console.log("delete was clicked");
     });
 
-    $('#speciesTable').on('click', '.edit-btn', function() {
+    $('#equipmentTypeTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
-        var speciesName = $(this).closest('tr').find('td:eq(1)').text(); 
-        var speciesDescription = $(this).closest('tr').find('td:eq(2)').text();
+        var equipmentTitle = $(this).closest('tr').find('td:eq(1)').text(); 
+        var equipmentDescription = $(this).closest('tr').find('td:eq(2)').text();
         
-        updateSpeciesRecord(id,speciesName,speciesDescription);
+        updateSpeciesRecord(id,equipmentTitle,equipmentDescription);
         //console.log("edit was clicked");
     });
 
@@ -112,8 +111,8 @@ $(document).ready(function() {
     function addNewRecord() {
         Swal.fire({
             html:
-                '<input id="speciesName" class="swal2-input" placeholder="Species Name">' +
-                '<textarea id="speciesDescription" class="swal2-textarea" placeholder="Species Description"></textarea>',
+                '<input id="equipmentTitle" class="swal2-input" placeholder="Equipment Type">' +
+                '<textarea id="equipmentDescription" class="swal2-textarea" placeholder="Equipment Description"></textarea>',
             showDenyButton: true,
             showCancelButton: false,
             showCloseButton: true,  
@@ -122,30 +121,29 @@ $(document).ready(function() {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                const speciesName = document.getElementById('speciesName').value;
-                const speciesDescription = document.getElementById('speciesDescription').value;
-
-                if (speciesName === '' || speciesDescription === '') {// Validate if inputs are empty
-                    Swal.fire("Error", "Species Name and Species Description are required", "error");
+               
+                const equipmentTitle = document.getElementById('equipmentTitle').value;
+                const equipmentDescription = document.getElementById('equipmentDescription').value;
+                if (equipmentTitle === '' || equipmentDescription === '') {// Validate if inputs are empty
+                    Swal.fire("Error", "Inputs required", "error");
                     return;
                 }
-                checkSpeciesNameExists(speciesName).then(exists => {// Check if speciesName already exists
+                checkSpeciesNameExists(equipmentTitle).then(exists => {// Check if speciesName already exists
                     if (exists) {
-                        Swal.fire("Error", "Species Name already exists", "error");
+                        Swal.fire("Error", "Equipment Type already exists", "error");
                     } else {
                         const data = {
-                            speciesName: speciesName,
-                            speciesDescription: speciesDescription
+                            equipmentTitle: equipmentTitle,
+                            equipmentDescription: equipmentDescription
                         };
                         $.ajax({//Insert record
-                            url: '/manage-reference-data/species-insert.php',
+                            url: '/manage-equipments-ref-data/EquipmentType/equipment-insert.php',
                             type: 'POST',
                             contentType: 'application/json',
                             dataType: 'json',
                             data: JSON.stringify(data),
                             success: function(data) {
-                                console.log('Success:', data);
-                                Swal.fire("Saved!", `Species Name: ${speciesName}, Species Description: ${speciesDescription}`, "success");
+                                Swal.fire("Saved!", `Equipmet type: ${equipmentTitle}, Equipment Description: ${equipmentDescription}`, "success");
                                 
                                 fetchDataFromDB(); // Refresh the table
                             },
@@ -160,20 +158,20 @@ $(document).ready(function() {
                         });
                     }
                 }).catch(error => {
-                    console.error('Error checking species name:', error);
+                    console.error('Error checking equipment type:', error);
                 });
             } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
             }
         });
     };
-    function checkSpeciesNameExists(speciesName) {
+    function checkSpeciesNameExists(equipmentTitle) {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: '/manage-reference-data/species-check-record.php',
+                url: '/manage-equipments-ref-data/EquipmentType/equipment-type-check-record.php',
                 type: 'GET',
                 data: {
-                    speciesName: speciesName
+                    equipmentTitle: equipmentTitle
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -202,13 +200,12 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-reference-data/species-delete.php',
+                    url: '/manage-equipments-ref-data/EquipmentType/equipment-delete.php',
                     type: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
                     data: JSON.stringify(data),
                     success: function(data) {
-                        console.log('Success:', data);
                         Swal.fire("Deleted!", "was successfully deletd", "success");
                         fetchDataFromDB(); // Call this function to refresh the table
                     },
@@ -224,35 +221,34 @@ $(document).ready(function() {
     };
 
     //Update button
-    function updateSpeciesRecord(id, speciesName, speciesDescription) {
+    function updateSpeciesRecord(id, equipmentTitle, equipmentDescription) {
         Swal.fire({
             title: "Are you sure you want to update this record?",
             html:
-            '<input id="inputSpeciesName" class="swal2-input" placeholder="Condition Type" value="' + (speciesName ? speciesName : '') + '">' +
-            '<textarea id="inputSpeciesDescription" class="swal2-textarea" placeholder="Condition Description">' + (speciesDescription ? speciesDescription : '') + '</textarea>',
+            '<input id="inputEquipmentTitle" class="swal2-input" placeholder="Equipment Type" value="' + (equipmentTitle ? equipmentTitle : '') + '">' +
+            '<textarea id="inputEquipmentDescription" class="swal2-textarea" placeholder="Equipment Description">' + (equipmentDescription ? equipmentDescription : '') + '</textarea>',
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes, update it!",
             denyButtonText: `No, keep it`
         }).then((result) => {
             if (result.isConfirmed) {
-                const updatedSpeciesName= $('#inputSpeciesName').val(); 
-                const updatedSpeciesDescription = $('#inputSpeciesDescription').val();
+                const updatedEquipmentTitle= $('#inputEquipmentTitle').val(); 
+                const updatedSpeciesDescription = $('#inputEquipmentDescription').val();
 
-                const updateSpeciesData = {
+                const updateEquipmentData = {
                     id: id,
-                    speciesName: updatedSpeciesName,
-                    speciesDescription: updatedSpeciesDescription
+                    equipmentTitle: updatedEquipmentTitle,
+                    equipmentDescription: updatedSpeciesDescription
                 };
 
                 $.ajax({
-                    url: '/manage-reference-data/species-update.php',
+                    url: '/manage-equipments-ref-data/EquipmentType/equipment-update.php',
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',
-                    data: JSON.stringify(updateSpeciesData), // Corrected to updateData
+                    data: JSON.stringify(updateEquipmentData), // Corrected to updateData
                     success: function(response) {
-                        console.log('Success:', response);
                         Swal.fire("Updated!", response.message, "success");
                         fetchDataFromDB(); // Call this function to refresh the table
                     },

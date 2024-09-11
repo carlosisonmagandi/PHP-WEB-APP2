@@ -1,8 +1,9 @@
 <?php
 session_start();
-require("includes/session.php");
-require("includes/darkmode.php");
-require("includes/authentication.php");
+require("../includes/session.php");
+require("../includes/darkmode.php");
+require("../includes/authentication.php");
+
 
 //action after logout button
 if(isset($_POST['Logout'])){
@@ -10,7 +11,6 @@ if(isset($_POST['Logout'])){
     header("Location: ../../index.php");
     exit;
 };
-
 // getting id from URL
 $requestUri = $_SERVER['REQUEST_URI'];
 $parsedUrl = parse_url($requestUri);
@@ -19,157 +19,233 @@ $queryString = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
 $id = $queryString;
 $hasId = !empty($id);
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventory List</title>
+
 <!-- nav-bar -->
 <link rel="stylesheet" type="text/css" href="/Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="/Styles/darkmode.css">
 
-</head>
-<body>
-    <?php 
-    include ("templates/nav-bar.php");
-    ?>
-
-    <style>
-    * {
-    box-sizing: border-box;
+<?php 
+ if ($_SESSION['mode'] == 'light') {
+        echo '<link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home.css">';
+    } else if ($_SESSION['mode'] == 'dark') {
+        echo '<link rel="stylesheet" type="text/css" href="/Styles/inventory/inventoryMainViewDM.css">';
     }
+?>
 
-    body {
-    font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .column {
-    float: left;
-    width: 25%;
-    padding: 0 10px;
-    }
-
-    .row {margin: 0 -5px;}
-
-    .row:after {
-    content: "";
-    display: table;
-    clear: both;
-    }
-
-    /* Responsive columns */
-    @media screen and (max-width: 600px) {
-    .column {
-        width: 100%;
-        display: block;
-        margin-bottom: 20px;
-    }
-   
-    }
-
-    /* Style the counter cards */
-    .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    padding: 16px;
-    text-align: center;
-    background-color: #f1f1f1;
-    margin: 10px 0;
-    }
-
-    /* custom card style */
-    .totalItemDiv{
-        background-color:#002f6c; 
-        padding:5px; 
-        position:absolute;
-        right:2%;
-        top:2%;
+<style>
+    body{
+        font-family: 'Poppins', sans-serif;        
         font-size:10px;
-        color:#FFF;
-        border-radius:20%
     }
-    
-    .editButtonIcon{
-        background-color:#003d7a;
-        border:none; 
-        position:absolute;
-        right:6%;
-        bottom:43%;
-        font-size:10px;
-        color:#fefefe;
-        border-radius:20%;
-       
-    }
-   
-    .detailDiv{
-        background-color:#003d7a;
-        padding:5%;
-        color:#f8f9fa;
-        font-size:12px
-    }
-    .imageDiv{
-        background-color:#FFF;
         
+    .flex-container {
+    display: flex;
+    flex-direction: row;
+    /* text-align: center; */
     }
-    .img{
-        width: 100%;
-        height: 150px;
-        object-fit: cover; 
-        display: block; 
-    }
-    .button{
-        background-color: #f8f9fa;
-        color: #002f6c;
-        border: 1px solid #002f6c;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-size: 11px;
-        border-radius: 1px;
-        padding:6px;
-        width:40%;
-    }
-    .button:hover{
-        background-color: #002f6c;
-        color:#d1d1d1;  
-    } 
+
     .flex-item-left {
-    flex: 100%;
+    flex: 80%;
     }
 
-
+    .flex-item-right {
+    flex: 5%;
+    }
     .flex-container .flex-item-right button:hover{
         background-color:#D3D3D3;
     } 
-   
-    </style>
 
-    <!-- Scripts -->
-    <!-- Note: It will not work inside header because of the php block for templates -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    /* custom style for map modal */
+    .main-map-container {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .container {
+        width: 80%; 
+        max-width: 600px; 
+        border: 1px solid #ccc;
+        padding: 20px;
+    }
+    .content {
+        /* text-align: center; */
+    }
+    .coordinates{
+        background-color:#000;
+        color:#FFF;
+        position:absolute;
+        bottom:80px;
+        left:40px;
+        padding-top: 15px ;
+        padding-left:15px;
+        padding-right:15px;
+        margin:0;
+        font-size:12px;
+        line-height:6px;  
+    }
+    /* Style for input elements in footers */
+    tfoot input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 4px;
+    }
 
-    <!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    tfoot th {
+        text-align: center;
+    }
 
-    <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    @media (max-width: 800px) {
+    .flex-container {
+        flex-direction: column;
+    }
+    .content{
+        overflow-x:scroll; 
+    }
+    } 
+</style>
+</head>
+<body>
+<?php 
+include ("../templates/nav-bar.php");
+?>
+<br>
 
-<div class="flex-container">
-    <div class="flex-item-left" id="titleContainer">
-        <!-- title -->
-         <br>
-        <h3 style="font-size:12px; font-weight:bold"><center>100% INVENTORY OF INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES <br>AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+<!-- Scripts -->
+<!-- Note: It will not work inside header because of the php block for templates -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
+<!-- data table -->
+<script src="/Styles/data-table/jquery-3.7.1.js"></script>
+<script src="/Styles/data-table/dataTables.js"></script>
+<link href="/Styles/data-table/dataTables.css" rel="stylesheet" />
+
+<!-- sweetalert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+<div class="mainContaier" >
+    <div class="flex-container">
+        <div class="flex-item-left" id="titleContainer">
+            <!-- title -->
+            <h3 style="font-size:12px; font-weight:bold"><center>INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+        </div>
+        <div class="flex-item-right">
+            <button onclick="redirectToUrl()" class='btn btn-default' id="addNewButton" style="border:1px solid #e0e0e0;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); font-size:12px; padding:9px;  ">
+                Add New
+            </button>
+
+            <!-- Print icon button -->
+            <button onclick="printTable()" class='btn btn-default' id="printTableButton" style="border:1px solid #e0e0e0; margin-left: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);">
+                <i class="bi bi-printer"></i> 
+            </button>
+        </div>
     </div>
+
+    <div class="container-div" style="display: flex;flex-direction: column; margin-top:12px; font-size:10px;padding:10px">
+        <div class="content" style="flex-grow: 1; " ><!--Removed overflow-x:scroll; -->
+            <!-- overflow-x:scroll; -->
+            <table id="dataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
+            <thead style="text-align:center; " >
+            <tr>
+                <th style="width:10%;">ID</th>
+                <th>EQUIPMENT NAME</th>
+                <th>TYPE</th>
+                <th>SERIAL NUMBER</th>
+                <th>BRAND</th>
+                <th>MODEL</th>
+                <th>STATUS</th>
+                <th>LOCATION</th>
+                <th>DATE OF CONFISCATION</th>
+                <th>OWNER</th>
+                <th>CONDITION</th>
+                <th>REMARKS</th>
+                <th>DATE CREATED</th>
+    
+                <th>ACTIONS</th>
+            </tr>
+            </thead>
+            <tbody id="dataBody" style="text-align:center;">
+            </tbody>
+
+            <tfoot>
+                <tr>
+                <th style="width:10%;">ID</th>
+                <th>EQUIPMENT NAME</th>
+                <th>TYPE</th>
+                <th>SERIAL NUMBER</th>
+                <th>BRAND</th>
+                <th>MODEL</th>
+                <th>STATUS</th>
+                <th>LOCATION</th>
+                <th>DATE OF CONFISCATION</th>
+                <th>OWNER</th>
+                <th>CONDITION</th>
+                <th>REMARKS</th>
+                <th>DATE CREATED</th>
+    
+                <th>ACTIONS</th>
+                </tr>
+            </tfoot>
+            </table>
+        </div>
+    </div>
+
 </div>
 
-<!-- add new button -->
-<button onclick="redirectToUrl()" class='btn btn-default' style="border:1px solid #e0e0e0; margin-left:20px;  ">
-    Add New
-</button>
-<div class="container" style="overflow-y:scroll;height:450px;">
-    <div class="row">
-      <!-- dynamic values -->
-    </div>
-</div>
+
 <script>
+    let tableData = [];
+    let currentPage = 1;
+    const pageSize = 5;
+
+    new DataTable('#dataTable', {
+        initComplete: function () {
+            const api = this.api();
+             // Hide columns in a single operation
+            api.columns([
+                6,//Status
+                7,//Location
+                8,//Date of Confiscation
+                10,//Condition
+                11,//Remarks
+                12//Date Created
+            ]).visible(false);
+
+            api.columns().every(function (index) { 
+                const column = this;
+                const footer = column.footer();
+
+                if (index !== 13) { 
+                    const input = document.createElement('input'); 
+                    input.placeholder = column.footer().textContent;
+
+                    if (footer) { // Clear the footer and append the input
+                        footer.innerHTML = ''; 
+                        footer.appendChild(input);
+
+                        // Event listener for user input
+                        input.addEventListener('keyup', debounce(() => {
+                            if (column.search() !== input.value) {
+                                column.search(input.value).draw();
+                            }
+                        }, 300));
+                    }
+                }
+            });
+        }
+    });
+
+    // Debounce function to limit the rate at which the search is performed
     function debounce(func, wait) {
         let timeout;
         return function(...args) {
@@ -177,9 +253,54 @@ $hasId = !empty($id);
             timeout = setTimeout(() => func.apply(this, args), wait);
         };
     }
-    $(document).ready(function() {
+
+    function fetchDataFromDB() {
+        $.ajax({
+            url: '/equipments/get-record.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // console.log('Success:', response);
+                updateTable(response);//call updateTable
+            },
+            error: function(xhr, status, error) {
+                // console.error('Error:', error);
+                // console.log(xhr.messageText);
+                // console.log(xhr);
+            }
+        });
+    }
+
+    function updateTable(data) {
+        const table = $('#dataTable').DataTable();
+        table.clear();// Clear the existing data from the DataTable
+        data.forEach(rowData => {// Add new data
+        const rowDataArray = [];
+            
+            Object.values(rowData).forEach(value => {
+                rowDataArray.push(value);
+            });
+            
+            const id = rowData['id'];
+            rowDataArray.push(`
+            <div class="dropdown">
+                <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item edit-action"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
+                    <li><a class="dropdown-item delete-action"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
+                </ul>
+            </div>
+            `);
+            table.row.add(rowDataArray);// Add the row to the DataTable
+        });
+        table.order([12, 'desc']).draw();// Redraw the DataTable
+    }
+
+    $(document).ready(function() {//call fetchDataFromDb on page load
+        clickableId();
         
-        // fetchTitleFromDB(); 
         var hasId = <?php echo json_encode($hasId); ?>;
         var id = <?php echo json_encode($id); ?>;
 
@@ -188,147 +309,49 @@ $hasId = !empty($id);
         }else{
             fetchDataFromDB();
         };
-      
+
+        // Event listener for edit action
+        $('#dataTable').on('click', '.edit-action', function() {
+            const id = $(this).closest('tr').find('td:first').text();
+            sessionStorage.setItem('viewType', 'table');
+            let viewType = sessionStorage.getItem('viewType');
+            // console.log(viewType);
+            editAction(id);
+        });
+
+        // Event listener for delete action
+        $('#dataTable').on('click', '.delete-action', function() {
+            const id = $(this).closest('tr').find('td:first').text();
+            deleteAction(id);
+        });
     });
 
-    function fetchDataFromDB() {
-        $.ajax({
-            url: '/inventory-tree/get-image.php',
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-            // console.log('Image response:', response);
-            $('.container').empty();  // Clear existing content
-
-            $.each(response, function(index, record) {
-                var imagePath = record.file_path;
-                var id=record.id
-                var cardHtml = `
-                    <div class="column">
-                        <div class="card">
-                            <div class="totalItemDiv">pcs: ${record.apprehended_quantity}</div>
-                            <div class="innerCardContainer">
-                                <div class="imageDiv">
-                                    ${imagePath ? 
-                                        `<img class="img" src="${imagePath}" alt="image">` : 
-                                        `<div style="width: 100%; height: 150px; object-fit: cover; display: block;background: rgba(0, 0, 0, 0.6); color:#fefefe ">
-                                            <br><br><br>
-                                            <i class="fas fa-image"></i><span>&nbsp&nbsp</span>No image found.
-                                        </div>
-                                        `
-                                    }
-                                </div>
-                                <div class="detailDiv">
-                                    <button class="editButtonIcon" id="editButton" data-id=${record.id} >
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <a>${record.apprehended_items}</a>
-                                    <a>(${record.apprehended_volume})</a>
-                                    <p>${record.barangay}, ${record.city_municipality}, ${record.province}</p>
-                                    <i><a>Apprehended Date:</a></i>
-                                    <i><a>${record.date_of_apprehension}</a></i>
-                                </div>
-                                <br>
-                                <div class="buttonsDiv">
-                                    <input class="button" type="button" value="view location">
-                                    <input class="button" id="moreDetails" data-id="${id}" type="button" value="more details">
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-
-                $('.container').append(cardHtml);
-            });
-        },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-                console.log(xhr.messageText);
-                // Handle error gracefully, e.g., show an error message to the user
-                alert("Error fetching data from the server. See console for details.");
-            }
+    function clickableId(){
+        //clickable id
+        $('#dataTable').on('click', '.clickable-id', function() {
+            //alert('You clicked on id: ' + $(this).text());
+            var id = $(this).text();
+            itemClickId(id);
         });
     }
 
-    $(document).ready(function() {
-        $(document).on('click', '#moreDetails', function() {
-            var id = $(this).data('id');  
-            //hide the content
-            itemClickId(id);
-        });
-
-        $(document).on('click', '#editButton', function() {
-            var id = $(this).data('id');
-            sessionStorage.setItem('viewType', 'card');
-            let viewType = sessionStorage.getItem('viewType');
-            editAction(id);  
-        });
-
-    });
-
-    
-    // function fetchTitleFromDB() {
-    //     $.ajax({
-    //         url: '/inventory-get-title.php',
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         success: function(response) {
-    //             // console.log('Title:', response);
-    //             //alert(JSON.stringify(response));
-
-    //             var percent = response[0].percentage;
-    //             var title = response[0].title;
-    //             var startYear = response[0].cy_start_year; 
-    //             var endYear = response[0].cy_end_year;
-
-    //             var dynamicContent = percent + "% INVENTORY OF " + title.toUpperCase() 
-    //             // + " AS OF CY "
-    //             //  + startYear + "-"
-    //             +  
-    //             `<select name="endYear" id="endYear" >
-    //                 <option selected>${endYear}</option>
-    //                 <option >2025</option>
-    //                 <option >2026</option>
-    //                 <option >2027</option>
-    //                 <option >2028</option>
-    //                 <option >2029</option>
-    //                 <option >2030</option>
-    //                 <option >2031</option>
-    //                 <option >2032</option>
-    //                 <option >2033</option>
-    //                 <option >2034</option>
-    //                 <option >2035</option>
-    //                 <option >2036</option>
-    //                 <option >2037</option>
-    //                 <option >2038</option>
-    //                 <option >2039</option>
-    //                 <option >2040</option>
-    //             </select>` ;
-    //             document.getElementById("titleContainer").innerHTML = '<h3 style="font-family: \'Poppins\', sans-serif; font-size:12px; font-weight:bold"><center>' + dynamicContent + '</center></h3>';
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.error('Error:', error);
-    //             // Handle error gracefully, e.g., show an error message to the user
-    //             alert("Error fetching data from the server. See console for details.");
-    //         }
-    //     });
-    // }
-
-    //Edit action
+    //Edit function
     function editAction(id) {
+        //console.log(id);
         $.ajax({
-            url: '/inventory-tree/get-record.php',
+            url: '/equipments/get-record-by-id.php',
             type: 'GET',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(data) {
                 if (data.status === 'success') {
                     // Construct query string with data
                     let queryString = id;
-                    // console.log('test');
+                    // console.log(data);
                     // console.log(queryString);
 
                     // Redirect with query parameters
-                    window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
+                    window.location.href = '/equipments/add-record-view.php?' + queryString;
                 } else {
                     Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                 }
@@ -338,39 +361,55 @@ $hasId = !empty($id);
             }
         });
     }
- 
-    // more details
+
+    //Delete function
+    function deleteAction(id) {
+        // alert('Delete successful for ID: ' + id);
+
+        $.ajax({
+            url: '/equipments/delete-record.php',
+            type: 'POST',
+            data: { equipment_id: id },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    // console.log(response);
+                    fetchDataFromDB();//reload the table
+                    Swal.fire({
+                        title: 'Success',
+                        text: response.message,
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.message,
+                        icon: 'error'
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'An error occurred while deleting the image.',
+                    icon: 'error'
+                });
+            }
+        });
+    }
     function itemClickId(id) {
+        console.log(id);
         //Image pane funtions
         $.ajax({
-            url: '/inventory-get-images.php',
+            url: '/equipments/equipment-get-images.php',
             type: 'GET',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(response) { 
+                  //console.log(response); 
+
                 // Expected data
                 if (response) {
-                    const barangay=response.barangay
-                    const title=response.apprehended_items;
-                    const sitio=response.sitio;
-                    const city_municipality=response.city_municipality;
-                    const province=response.province;
-                    const apprehending_officer=response.apprehending_officer;
-                    const EMV_forest_product=response.EMV_forest_product;
-                    const EMV_conveyance_implements=response.EMV_conveyance_implements;
-                    const involve_personalities=response.involve_personalities;
-                    const custodian=response.custodian;
-                    const ACP_status_or_case_no=response.ACP_status_or_case_no;
-                    const date_of_confiscation_order=response.date_of_confiscation_order;
-                    const remarks=response.remarks;
-                    const apprehended_persons=response.apprehended_persons;
-
-                    const apprehended_quantity=response.apprehended_quantity;
-                    const apprehended_volume=response.apprehended_volume;
-                    const apprehended_vehicle=response.apprehended_vehicle;
-                    const apprehended_vehicle_type=response.apprehended_vehicle_type;
-                    const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
-
                     let htmlContent = ``;
 
 
@@ -465,6 +504,7 @@ $hasId = !empty($id);
                         </div>
                         `;
                     }
+
                     function getHtmlContent() {
                         return `
                         <style>
@@ -520,8 +560,6 @@ $hasId = !empty($id);
                                 font-size:12px;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;  
-                                position: relative;
-                                overflow:hidden;
                             }
                             .grid-item {
                                 background-color: rgba(255, 255, 255, 0.8);
@@ -555,6 +593,8 @@ $hasId = !empty($id);
                                 text-align: center;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;
+                                
+            
                             }
                             .category-header {
                                 background-color: #002f6c;
@@ -576,27 +616,6 @@ $hasId = !empty($id);
                                     white-space: nowrap; /* Prevent text from wrapping */
                                 }
                             }
-
-                            /* Hide the checkbox */
-                            #slideToggle {
-                                display: none;
-                            }
-
-                           
-                            .hidden {
-                                height: 90%;
-                                width: 100%;
-                                position: absolute;
-                                background: #f90;
-                                color: #000;
-                                right: -100%; /* Initially placed outside to the right, relative to the modal */
-                                transition: right 0.6s ease-in-out; /* Slide-in effect */
-                            }
-
-                            /* Slide in the panel when checkbox is checked */
-                            #slideToggle:checked + .hidden {
-                                right: 0;
-                            }
                         </style>
                         <div class="flex-container">
                             <div class="flex-container-left" style="overflow-y:scroll">
@@ -606,27 +625,24 @@ $hasId = !empty($id);
                             <div class="flex-container-right">
                                 <br>
                                 <div class="grid-container">
-                                    <label for="slideToggle" class="btn btn-success">View Location</label>
-                                    <label for="slideToggle" class="btn btn-success">Another Button</label>
-                                    <input type="checkbox" id="slideToggle">
-                                    <div class="hidden">Here I am! I will not exceed the modal.</div>
-                                    
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Site</th>
+                                                <th colspan="5" class="sub-category-header">Equipment detail</th>
                                             </tr>
                                             <tr>
-                                                <td><b>SITIO</b></td>
-                                                <td><b>BARANGAY</b></td>
-                                                <td><b>City</b></td>
-                                                <td><b>Province</b></td>
+                                                <td><b>Equipment Name</b></td>
+                                                <td><b>Type</b></td>
+                                                <td><b>Serial Number</b></td>
+                                                <td><b>Brand</b></td>
+                                                <td><b>Model</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${sitio}</td>
-                                                <td >${barangay}</td>
-                                                <td>${city_municipality}</td>
-                                                <td>${province}</td>
+                                                <td>${response.equipment_name}</td>
+                                                <td>${response.equipment_type}</td>
+                                                <td>${response.serial_no}</td>
+                                                <td>${response.brand}</td>
+                                                <td>${response.model}</td>
                                             </tr>
                                         </table>
                                     </div>  
@@ -636,60 +652,34 @@ $hasId = !empty($id);
                                                 <th colspan="4" class="sub-category-header">Apprehension Details</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Apprehending Officer</b></td>
-                                                <td><b>Apprehended Items</b></td>
-                                                <td><b>EMV Forest Product</b></td>
-                                                <td><b>EMV Conveyance Implements</b></td>
+                                                <td><b>Location</b></td>
+                                                <td><b>Confiscation Date</b></td>
+                                                <td><b>Owner</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${apprehending_officer}</td>
-                                                <td>${title}</td>
-                                                <td>${EMV_forest_product}</td>
-                                                <td>${EMV_conveyance_implements}</td>
+                                                <td>${response.location}</td>
+                                                <td>${response.date_of_compiscation}</td>
+                                                <td>${response.equipment_owner}</td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="grid-item item3">
                                         <table>
                                             <tr>
-                                                <th colspan="6" class="category-header">Case Information</th>
+                                                <th colspan="6" class="category-header">Other Information</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Involve Personalities</b></td>
-                                                <td><b>Custodian</b></td>
-                                                <td><b>ACP Status or Case No</b></td>
-                                                <td><b>Date of Confiscation Order</b></td>
+                                                <td><b>Status</b></td>
+                                                <td><b>Condition</b></td>
                                                 <td><b>Remarks</b></td>
-                                                <td><b>Apprehended Person</b></td>
+                                                <td><b>Date Created</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${involve_personalities}</td>
-                                                <td>${custodian}</td>
-                                                <td>${ACP_status_or_case_no}</td>
-                                                <td>${date_of_confiscation_order}</td>
-                                                <td>${remarks}</td>
-                                                <td>${apprehended_persons}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="grid-item item4">
-                                        <table>
-                                            <tr>
-                                                <th colspan="6" class="category-header">Apprehension Metrics</th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Quantity</b></td>
-                                                <td><b>Volume</b></td>
-                                                <td><b>Vehicle</b></td>
-                                                <td><b>Type of vehicle</b></td>
-                                                <td><b>Plate #</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>${apprehended_quantity}</td>
-                                                <td>${apprehended_volume}</td>
-                                                <td>${apprehended_vehicle}</td>
-                                                <td>${apprehended_vehicle_type}</td>
-                                                <td>${apprehended_vehicle_plate_no}</td>
+                                                <td>${response.equipment_status}</td>
+                                                <td>${response.equipment_condition}</td>
+                                                <td>${response.remarks}</td>
+                                                <td>${response.created_on}</td>
+                                                
                                             </tr>
                                         </table>
                                     </div>
@@ -705,19 +695,17 @@ $hasId = !empty($id);
                         showConfirmButton: false,
                         didOpen: () => {
                             document.querySelector('.swal2-popup').style.width = '90%';
-                            // document.querySelector('.swal2-popup').style.height = '100%';
 
                             document.querySelectorAll('.delete-button').forEach(button => {//delete icon button
                                 button.addEventListener('click', function() {
                                     let buttonId = this.getAttribute('data-id');
                                     $.ajax({
-                                        url: '/inventory-tree/delete-image.php',
+                                        url: '/equipments/delete-image.php',
                                         type: 'POST',
                                         data: { image_id: buttonId },
                                         dataType: 'json',
                                         success: function(response) {
                                             if (response.success) {
-                                                fetchDataFromDB();
                                                 Swal.fire({
                                                     title: 'Success',
                                                     text: response.message,
@@ -746,6 +734,7 @@ $hasId = !empty($id);
                                     });
                                 });
                             });
+
                             // add new image button
                             const buttonAddImage = document.getElementById('addImage');
                             buttonAddImage.addEventListener('click', addImage);
@@ -797,7 +786,7 @@ $hasId = !empty($id);
                                     }
 
                                     $.ajax({
-                                        url: '/inventory-tree/upload-image.php',
+                                        url: '/equipments/upload-image.php',
                                         type: 'POST',
                                         data: formData,
                                         processData: false,
@@ -839,14 +828,13 @@ $hasId = !empty($id);
                                     });
                                 }
                             }
-
                         }
                     }).then(() => {
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
-                        const newUrl = new URL('inventory-card-view.php', window.location.origin);// Construct the new URL to be used
-                        window.history.replaceState({}, '', newUrl.href);// Update the URL without reloading the page
+                        const newUrl = new URL('/equipments/equipment-table-view.php', window.location.origin);// Construct the new URL to be used
+                        window.history.replaceState({}, '', newUrl.href);
                     });
                     
                 } else {
@@ -854,6 +842,8 @@ $hasId = !empty($id);
                         title: "Error",
                         text: "Invalid response from server",
                         icon: "error"
+                    }).then(() => {
+                        $('#dataTable').show();
                     });
                 }
             },
@@ -868,13 +858,91 @@ $hasId = !empty($id);
             }
         });
     }
-    function redirectToUrl() {
-         window.location.href = '/inventory-tree/add-record-view.php'; 
+
+    // print table view
+    function printTable() {
+        // Save the current column visibility states
+        let table = $('#dataTable').DataTable();
+        let columnVisibility = [];
+
+        table.columns().every(function () {
+            columnVisibility.push(this.visible());
+        });
+
+        // Show all columns
+        table.columns().visible(true);
+
+        // Hide everything except the table and its parent div
+        $('body > *').not('.container-div').hide();
+
+        // Get the table and its parent div
+        var tableDiv = document.querySelector('.container-div');
+        var tableElement = tableDiv.querySelector('table');
+
+        // Hide the table footer
+        $(tableElement).find('tfoot').hide();
+
+        // Remove the action column temporarily
+        var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
+
+        // Reduce font size for printing
+        $(tableElement).css('font-size', '8px');
+
+        // Create a copy of the table
+        var tableClone = tableElement.cloneNode(true);
+
+        // Create a title element
+        var titleElement = document.createElement('h1');
+        titleElement.innerText = "INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
+        titleElement.style.textAlign = 'center';
+        titleElement.style.fontSize = '12px';
+
+        var printContainer = document.createElement('div');
+        printContainer.appendChild(titleElement);
+        printContainer.appendChild(tableClone);
+
+        document.body.appendChild(printContainer);
+
+        window.addEventListener('beforeprint', function () {
+            console.log("Print initiated");
+        });
+
+        window.addEventListener('afterprint', function () {
+            console.log("Print cancelled or completed");
+            // Restore the original column visibility states
+            table.columns().every(function (index) {
+                this.visible(columnVisibility[index]);
+            });
+
+            // Refresh the page
+            window.location.reload();
+        });
+
+        window.print();
+
+        document.body.removeChild(printContainer);
+
+        $(tableElement).css('font-size', '');
+
+        $(tableElement).find('tfoot').show();
+
+        // Restore the action column
+        $(tableElement).find('thead tr').append(actionColumn.clone());
+        $(tableElement).find('tbody tr').each(function () {
+            $(this).append(actionColumn.clone());
+        });
     }
+    //Add new record
+    function redirectToUrl() {
+         window.location.href = '/equipments/add-record-view.php'; 
+    }
+
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
 <?php
-include  "templates/nav-bar2.php"; 
+include  "../templates/nav-bar2.php"; 
 ?>
 </body>
 </html>
+

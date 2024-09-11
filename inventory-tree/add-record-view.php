@@ -265,7 +265,15 @@ $hasId = !empty($id);
                         console.log(response.apprehended_volume);
                         Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
                         let queryString = id;
-                        window.location.href = '/inventory.php?' + queryString;//redirect to inventory table view
+                        let viewType = sessionStorage.getItem('viewType');//get session value
+                        
+                            if(viewType=='card'){
+                                window.location.href = '/inventory-card-view.php?' + queryString;//redirect to inventory table view
+                                sessionStorage.removeItem('viewType');
+                            }else{
+                                window.location.href = '/inventory.php?' + queryString;//redirect to inventory table view 
+                                sessionStorage.removeItem('viewType');  
+                            }
                         });
                     } else {
                         Swal.fire('Error!', response.message || 'An error occurred while updating the record.', 'error');
@@ -323,7 +331,7 @@ $hasId = !empty($id);
                 success: function(data) {
                     if (data.status === 'success') {
                         Swal.fire('Success!', 'Your record has been submitted.', 'success').then(() => {
-                            window.location.href = '/inventory.php?';
+                            window.location.href = '/inventory.php';
                         });
                     } else {
                         Swal.fire('Error!', data.message || 'An error occurred while submitting the form.', 'error');

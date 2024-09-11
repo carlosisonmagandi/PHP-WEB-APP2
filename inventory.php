@@ -30,6 +30,14 @@ $hasId = !empty($id);
 <link rel="stylesheet" type="text/css" href="/Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="/Styles/darkmode.css">
 
+<?php 
+ if ($_SESSION['mode'] == 'light') {
+        echo '<link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home.css">';
+    } else if ($_SESSION['mode'] == 'dark') {
+        echo '<link rel="stylesheet" type="text/css" href="/Styles/inventory/inventoryMainViewDM.css">';
+    }
+?>
+
 <style>
     body{
         font-family: 'Poppins', sans-serif;        
@@ -47,7 +55,7 @@ $hasId = !empty($id);
     }
 
     .flex-item-right {
-    flex: 20%;
+    flex: 5%;
     }
     .flex-container .flex-item-right button:hover{
         background-color:#D3D3D3;
@@ -98,6 +106,9 @@ $hasId = !empty($id);
     .flex-container {
         flex-direction: column;
     }
+    .content{
+        overflow-x:scroll; 
+    }
     } 
 </style>
 </head>
@@ -122,55 +133,29 @@ include ("templates/nav-bar.php");
 
 <!-- bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+<div class="mainContaier" >
+    <div class="flex-container">
+        <div class="flex-item-left" id="titleContainer">
+            <!-- title -->
+            <h3 style="font-size:12px; font-weight:bold"><center>100% INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES AND OTHER IMPLEMENTS<br> DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+        </div>
+        <div class="flex-item-right">
+            <button onclick="redirectToUrl()" class='btn btn-default' id="addNewButton" style="border:1px solid #e0e0e0;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); font-size:12px; padding:9px;  ">
+                Add New
+            </button>
 
-<div class="flex-container">
-    <div class="flex-item-left" id="titleContainer">
-        <!-- title -->
-        <h3 style="font-size:12px; font-weight:bold"><center>100% INVENTORY OF INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES <br>AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+            <!-- Print icon button -->
+            <button onclick="printTable()" class='btn btn-default' id="printTableButton" style="border:1px solid #e0e0e0; margin-left: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);">
+                <i class="bi bi-printer"></i> 
+            </button>
+        </div>
     </div>
-    <div class="flex-item-right">
-        <button onclick="redirectToUrl()" class='btn btn-default' style="border:1px solid #e0e0e0;  ">
-            ( + )
-        </button>
 
-        <!-- Print icon button -->
-        <button onclick="printTable()" class='btn btn-default' style="border:1px solid #e0e0e0; margin-left: 5px;">
-            <i class="bi bi-printer"></i> 
-        </button>
-    </div>
-</div>
-
-<div class="container-div" style="display: flex;flex-direction: column; margin-top:12px; font-size:10px;padding:10px">
-    <div class="content" style="flex-grow: 1; overflow-x:scroll" ><!--Removed overflow-x:scroll; -->
-        <!-- overflow-x:scroll; -->
-        <table id="dataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
-        <thead style="text-align:center; " >
-        <tr>
-            <th style="width:10%;">ID</th>
-            <th>Date of Apprehension</th>
-            <th>SITIO</th>
-            <th>BARANGAY</th>
-            <th>CITY/MUNICIPALITY</th>
-            <th>PROVINCE</th>
-            <th>APPREHENDING OFFICER</th>
-            <th>APPREHENDED ITEMS(Species,Pieces,Volume,Conveyance,Implements, etc.)</th>
-            <th>ESTIMATED MARKET VALUE OF FOREST PRODUCTS</th>
-            <th>ESTIMATED VALUE OF CONVEYANCE & IMPLEMENTS</th>
-            <th>INVOLVE PERSONALITIES</th>
-            <th>CUSTODIAN</th>
-            <th>acp STATUS/ CASES NO.</th>
-            <th>DATE OF CONFISCATION ORDER</th>
-            <th>REMARKS(Status of apprehended Item)</th>
-            <th>APPREHENDED PERSON</th>
-            <th>DATE CREATED</th>
-            
-            <th>ACTIONS</th>
-        </tr>
-        </thead>
-        <tbody id="dataBody" style="text-align:center;">
-        </tbody>
-
-        <tfoot>
+    <div class="container-div" style="display: flex;flex-direction: column; margin-top:12px; font-size:10px;padding:10px">
+        <div class="content" style="flex-grow: 1; " ><!--Removed overflow-x:scroll; -->
+            <!-- overflow-x:scroll; -->
+            <table id="dataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
+            <thead style="text-align:center; " >
             <tr>
                 <th style="width:10%;">ID</th>
                 <th>Date of Apprehension</th>
@@ -189,57 +174,87 @@ include ("templates/nav-bar.php");
                 <th>REMARKS(Status of apprehended Item)</th>
                 <th>APPREHENDED PERSON</th>
                 <th>DATE CREATED</th>
-                <th >ACTIONS</th>
+                
+                <th>ACTIONS</th>
             </tr>
-        </tfoot>
-        </table>
+            </thead>
+            <tbody id="dataBody" style="text-align:center;">
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <th style="width:10%;">ID</th>
+                    <th>Date of Apprehension</th>
+                    <th>SITIO</th>
+                    <th>BARANGAY</th>
+                    <th>CITY/MUNICIPALITY</th>
+                    <th>PROVINCE</th>
+                    <th>APPREHENDING OFFICER</th>
+                    <th>APPREHENDED ITEMS(Species,Pieces,Volume,Conveyance,Implements, etc.)</th>
+                    <th>ESTIMATED MARKET VALUE OF FOREST PRODUCTS</th>
+                    <th>ESTIMATED VALUE OF CONVEYANCE & IMPLEMENTS</th>
+                    <th>INVOLVE PERSONALITIES</th>
+                    <th>CUSTODIAN</th>
+                    <th>acp STATUS/ CASES NO.</th>
+                    <th>DATE OF CONFISCATION ORDER</th>
+                    <th>REMARKS(Status of apprehended Item)</th>
+                    <th>APPREHENDED PERSON</th>
+                    <th>DATE CREATED</th>
+                    <th >ACTIONS</th>
+                </tr>
+            </tfoot>
+            </table>
+        </div>
     </div>
+
 </div>
 
+
 <script>
-  let tableData = [];
-  let currentPage = 1;
-  const pageSize = 5;
+    let tableData = [];
+    let currentPage = 1;
+    const pageSize = 5;
 
-  new DataTable('#dataTable', {
-    initComplete: function () {
-        const api = this.api();
+    new DataTable('#dataTable', {
+        initComplete: function () {
+            const api = this.api();
 
-        // Hide columns in a single operation
-        api.columns([2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-            .visible(false);
+            // Hide columns in a single operation
+            api.columns([2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16])
+                .visible(false);
 
-        api.columns().every(function () {
-            const column = this;
-            const footer = column.footer();
-            
-            const input = document.createElement('input');// Create input element
-            input.placeholder = column.footer().textContent;
+            api.columns().every(function (index) { 
+                const column = this;
+                const footer = column.footer();
 
-            
-            if (footer) {// Clear the footer and append the input
-                footer.innerHTML = ''; 
-                footer.appendChild(input);
-                
-                // Event listener for user input
-                input.addEventListener('keyup', debounce(() => {
-                    if (column.search() !== input.value) {
-                        column.search(input.value).draw();
+                if (index !== 17) { 
+                    const input = document.createElement('input'); 
+                    input.placeholder = column.footer().textContent;
+
+                    if (footer) { // Clear the footer and append the input
+                        footer.innerHTML = ''; 
+                        footer.appendChild(input);
+
+                        // Event listener for user input
+                        input.addEventListener('keyup', debounce(() => {
+                            if (column.search() !== input.value) {
+                                column.search(input.value).draw();
+                            }
+                        }, 300));
                     }
-                }, 300)); // Debounce input to limit redraws
-            }
-        });
-    }
-});
+                }
+            });
+        }
+    });
 
-// Debounce function to limit the rate at which the search is performed
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
+    // Debounce function to limit the rate at which the search is performed
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
 
     // function fetchTitleFromDB() {//Get title details
     //     $.ajax({
@@ -319,7 +334,7 @@ function debounce(func, wait) {
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item edit-action"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
                     <li><a class="dropdown-item delete-action"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
-                    <li><a class="dropdown-item qr-action">Add Specs<i class="fas fa-qrcode" style="float:right"></i></a></li>
+                    <!--<li><a class="dropdown-item qr-action">Add Specs<i class="fas fa-qrcode" style="float:right"></i></a></li>-->
                 </ul>
             </div>
             `);
@@ -419,6 +434,8 @@ function debounce(func, wait) {
         // Event listener for edit action
         $('#dataTable').on('click', '.edit-action', function() {
             const id = $(this).closest('tr').find('td:first').text();
+            sessionStorage.setItem('viewType', 'table');
+            let viewType = sessionStorage.getItem('viewType');
             editAction(id);
         });
 
@@ -429,10 +446,10 @@ function debounce(func, wait) {
         });
 
         // Event listener for generate QR
-        $('#dataTable').on('click', '.qr-action', function() {
-            const id = $(this).closest('tr').find('td:first').text();
-            generateQrAction(id);
-        });
+        // $('#dataTable').on('click', '.qr-action', function() {
+        //     const id = $(this).closest('tr').find('td:first').text();
+        //     generateQrAction(id);
+        // });
     });
 
     //Edit function
@@ -497,10 +514,10 @@ function debounce(func, wait) {
         });
     }
 
-    function generateQrAction(id) {
-        //alert('QR ID: ' + id);
-        generateQrModal(id);
-    }
+    // function generateQrAction(id) {
+    //     //alert('QR ID: ' + id);
+    //     generateQrModal(id);
+    // }
 
     function clickableId(){
         //clickable id
@@ -592,7 +609,7 @@ function debounce(func, wait) {
                                 <div class="flex-container">
                                     <div class="flex-item-left-img">
                                         <p style="display:none">${image.id}</p>
-                                        <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;border:1px solid gray">
+                                        <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
                                     </div> 
                                     <button data-id="${image.id}" class="button-trash delete-button" id="buttonId">
                                         <i class="fas fa-trash-alt"></i>
@@ -794,7 +811,7 @@ function debounce(func, wait) {
                                                 <td>${apprehending_officer}</td>
                                                 <td>${title}</td>
                                                 <td>${EMV_forest_product}</td>
-                                                <td>${EMV_conveyance_implements}</td>
+                                                <td>Php. ${EMV_conveyance_implements}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -913,13 +930,12 @@ function debounce(func, wait) {
                                     showConfirmButton: false,
                                     showCancelButton: false,
                                     allowOutsideClick: true
+                                }).then(() => {
+                                    // $('#dataTable').hide();
+                                    Swal.fire({
+                                        html: itemClickId(id)
+                                    });
                                 });
-                                // .then(() => {
-                                //     $('#dataTable').hide();
-                                //     Swal.fire({
-                                //         html: itemClickId(id)
-                                //     });
-                                // });
 
                                 // Call AJAX for upload button
                                 const buttonUploadImage = document.getElementById('uploadImage');
@@ -994,7 +1010,7 @@ function debounce(func, wait) {
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
                         const newUrl = new URL('/inventory.php', window.location.origin);// Construct the new URL to be used
-                        window.history.replaceState({}, '', newUrl.href);// Update the URL without reloading the page
+                        window.history.replaceState({}, '', newUrl.href);
                     });
                     
                 } else {
