@@ -22,7 +22,7 @@
     </style>
 </head>
 <body>
-<input type="button" id="addBtn" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
+<input type="button" id="addSpeciesBtn" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
 <table id="speciesTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
@@ -105,7 +105,7 @@ $(document).ready(function() {
         //console.log("edit was clicked");
     });
 
-    $('#addBtn').on('click', function() {
+    $('#addSpeciesBtn').on('click', function() {
         addNewRecord();
     });
 

@@ -270,14 +270,14 @@ if(isset($_POST['Logout'])){
                                 <div class="collapse" id="collapsePassword" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseRequest" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                            Request Items
+                                            Incidents
                                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                         </a>
                                         <div class="collapse" id="pagesCollapseRequest" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
                                                 <a class="nav-link" href="/monitor-item-trees.php">Trees</a>
                                                 <a class="nav-link" href="register.html">Equipment</a>
-                                                <!-- <a class="nav-link" href="password.html">Vehicle</a> -->
+                                                <a class="nav-link" href="password.html">Vehicle</a>
                                             </nav>
                                         </div>
 
@@ -355,9 +355,9 @@ if(isset($_POST['Logout'])){
                             ';}
                             else{
                                 echo '
-                                <a class="nav-link" href="/requestForm.php">
+                                <a class="nav-link" href="/Request/my-request.php">
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Create Request
+                                    My Request
                                 </a>
                                 ';
                             }
@@ -370,12 +370,18 @@ if(isset($_POST['Logout'])){
                                 Reports
                             </a>
 
+                            <!-- Reported Incidents -->
+                            <a class="nav-link" href="/qr-list.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-flag"></i></div>
+                                Reported Incidents
+                            </a>
+
                             <!-- reference data -->
-                            <a class="nav-link" href="/manage-reference-data/manage-ref-data-home.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                            <a id="manage-ref-data-link" class="nav-link" href="/manage-reference-data/manage-ref-data-home.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div>
                                 Manage Reference data
                             </a>
-                            
+
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">

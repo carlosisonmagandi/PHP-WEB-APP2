@@ -75,7 +75,9 @@ $hasId = !empty($id);
                 </div>
                 <div class="form-group">
                     <label for="type">Type</label>
-                    <input type="text" class="form-control" id="type" name="type">
+                    <select class="form-control" id="type" name="type">
+                        <option value="">Select Type</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="serialNo">Serial Number</label>
@@ -91,7 +93,9 @@ $hasId = !empty($id);
                 </div>
                 <div class="form-group">
                     <label for="condition">Condition</label>
-                    <input type="text" class="form-control" id="condition" name="condition">
+                    <select class="form-control" id="condition" name="condition">
+                        <option value="">Select Condition</option>
+                    </select>
                 </div>
             </fieldset>
 
@@ -110,7 +114,9 @@ $hasId = !empty($id);
                     <legend>Additional Information:</legend>
                     <div class="form-group">
                         <label for="status">Equipment Status</label>
-                        <input type="text" class="form-control" id="status" name="status">
+                        <select class="form-control" id="status" name="status">
+                            <option value="">Select Status</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="location">Location</label>
@@ -278,7 +284,71 @@ $hasId = !empty($id);
             });
         }
 
+        //Get Condition
+        $.ajax({
+            url: '/equipments/get-condition.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var conditionDropdown = $('#condition');
+                
+                conditionDropdown.empty();
+                
+                conditionDropdown.append('<option value="">Select Condition</option>');
+                
+                $.each(data, function(index, conditionTitle) {
+                    conditionDropdown.append('<option value="' + conditionTitle + '">' + conditionTitle + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching condition data: ', error);
+            }
+        });
+
+        //Get Type
+        $.ajax({
+            url: '/equipments/get-type.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var conditionDropdown = $('#type');
+                
+                conditionDropdown.empty();
+                
+                conditionDropdown.append('<option value="">Select Type</option>');
+                
+                $.each(data, function(index, typeTitle) {
+                    conditionDropdown.append('<option value="' + typeTitle + '">' + typeTitle + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching condition data: ', error);
+            }
+        });
+
+        //Get Status
+        $.ajax({
+            url: '/equipments/get-status.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var conditionDropdown = $('#status');
+                
+                conditionDropdown.empty();
+                
+                conditionDropdown.append('<option value="">Select Status</option>');
+                
+                $.each(data, function(index, statusTitle) {
+                    conditionDropdown.append('<option value="' + statusTitle + '">' + statusTitle + '</option>');
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching condition data: ', error);
+            }
+        });
+
     });
+
 </script>
 
 

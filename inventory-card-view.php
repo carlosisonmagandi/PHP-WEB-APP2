@@ -28,6 +28,14 @@ $hasId = !empty($id);
 <link rel="stylesheet" type="text/css" href="/Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="/Styles/darkmode.css">
 
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css"/>
+                                
+
+
 </head>
 <body>
     <?php 
@@ -372,46 +380,180 @@ $hasId = !empty($id);
                     const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
 
                     let htmlContent = ``;
+                    let mapsContent=``;
 
 
                     if (response.images.length > 0) {
                         response.images.forEach(function(image) {
+                            // --------------------------------------------------------
+                            //Maps COntent
+                            mapsContent +=`
+                                <style>
+                                    
+                                
+
+                                .geocoder {
+                                    position: absolute;
+                                    z-index: 1;
+                                    width: 50%;
+                                    left: 50%;
+                                    margin-left: -25%;
+                                    top: 10px;
+                                }
+                                .mapboxgl-ctrl-geocoder {
+                                    min-width: 100%;
+                                }
+                                // #map {
+                                //     margin-top: 75px;
+                                // }
+                                .coordinates{
+                                    background-color:#000;
+                                    color:#FFF;
+                                    position:absolute;
+                                    bottom:40px;
+                                    left:10px;
+                                    padding: 5px 10px;
+                                    margin:0;
+                                    font-size:12px;
+                                    line-height:18px;
+                                    display:none;
+                                }
+                                </style>   
+                                
+                                <div id="map" style="height:100%"></div>
+                                <div id="coordinates" class="coordinates"></div>
+                            `;
+
+                            //const map = document.getElementById('map');
+                            mapboxgl.accessToken = 'pk.eyJ1IjoiY200NzcyNSIsImEiOiJjbHc4MWd4cGgxbXEzMmt0OWhqbTlvcHY4In0.bJ3Gb8OgbBs6KEw3xCSF_g';
+
+                            // var barangay = 'brgy'.barangay;
+                            var city = city_municipality;
+                            var province = province;
+                            var fullAddress = ` ${city}, ${province},`+' Philippines';
+
+                            // Function to call Geocoding API
+                            function geocodeAddress(address) {
+                                const query = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
+                                return fetch(query)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.features && data.features.length > 0) {
+                                            return data.features[0].center;  // Return the first result's coordinates
+                                        } else {
+                                            throw new Error('No results found for the address.');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Geocoding error:', error);
+                                    });
+                            }
+
+                            // Geocode the address and initialize the map
+                            geocodeAddress(fullAddress).then(coordinates => {
+                                if (coordinates) {
+                                    // Initialize the map with the geocoded center
+                                    const map = new mapboxgl.Map({
+                                        container: 'map',
+                                        style: 'mapbox://styles/mapbox/streets-v12',
+                                        center: coordinates,  // Use the geocoded coordinates
+                                        zoom: 14
+                                    });
+
+                                    // Add the initial marker based on geocoded coordinates
+                                    const initialMarker = new mapboxgl.Marker({
+                                        draggable: true
+                                    }).setLngLat(coordinates).addTo(map);
+
+                                    // Show coordinates of the initial marker
+                                    var coordinatesDiv = document.querySelector('#coordinates');
+                                    if (coordinatesDiv) {
+                                        coordinatesDiv.style.display = 'block';
+                                        coordinatesDiv.innerHTML = `Longitude: ${coordinates[0]} <br/> Latitude: ${coordinates[1]}`;
+                                    }
+
+                                    // Update coordinates when dragging the marker
+                                    initialMarker.on('dragend', function() {
+                                        var lngLat = initialMarker.getLngLat();
+                                        var lng = lngLat.lng;
+                                        var lat = lngLat.lat;
+
+                                        coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+                                    });
+
+                                    // Map click event
+                                    map.on('click', function(e){
+                                        console.log(e.lngLat.wrap());
+
+                                        // Check if the #coordinates div exists
+                                        var coordinatesDiv = document.querySelector('#coordinates');
+                                        if (coordinatesDiv) {
+                                            // Handle the display of coordinates and marker creation
+                                            var markers = document.querySelectorAll('.mapboxgl-marker');
+                                            markers.forEach(function(el){
+                                                el.style.display = 'none';
+                                            });
+
+                                            var lng = e.lngLat.lng;
+                                            var lat = e.lngLat.lat;
+
+                                            coordinatesDiv.style.display = 'block';
+                                            coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+
+                                            var newMarker = new mapboxgl.Marker({
+                                                draggable: true
+                                            }).setLngLat([lng, lat]).addTo(map);
+
+                                            newMarker.on('dragend', function() {
+                                                var lngLat = newMarker.getLngLat();
+                                                lng = lngLat.lng;
+                                                lat = lngLat.lat;
+
+                                                coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+                                            });
+                                        } else {
+                                            console.error('#coordinates div not found in the DOM.');
+                                        }
+                                    });
+                                }
+                            });
+                            //---------------------------------------------------------
                             htmlContent += `
                             <style>
-                            .flex-container {
-                                display: flex;
-                                flex-direction: row; 
-                            }
+                                .flex-container {
+                                    display: flex;
+                                    flex-direction: row; 
+                                }
 
-                            .flex-item-left-img {
-                                background-color: #f1f1f1;
-                                width:20% !important; 
-                                margin: 5px; 
-                            }
-                            .button-trash {
-                                background-color: rgba(0, 0, 0, 0.5);
-                                border: none; 
-                                color: white; 
-                                height:100%;
-                                padding:6px;
-                                border-radius:3px;
-                                font-size: 15px;
-                                float: right;
-                                margin-top:10px;
-                                margin-left: 55%;
-                                display: flex;
-                                align-items: center; 
-                                justify-content: center; 
-                                transition: background-color 0.3s; 
-                            }
+                                .flex-item-left-img {
+                                    background-color: #f1f1f1;
+                                    width:20% !important; 
+                                    margin: 5px; 
+                                }
+                                .button-trash {
+                                    background-color: rgba(0, 0, 0, 0.5);
+                                    border: none; 
+                                    color: white; 
+                                    height:100%;
+                                    padding:6px;
+                                    border-radius:3px;
+                                    font-size: 15px;
+                                    float: right;
+                                    margin-top:10px;
+                                    margin-left: 55%;
+                                    display: flex;
+                                    align-items: center; 
+                                    justify-content: center; 
+                                    transition: background-color 0.3s; 
+                                }
 
-                            .button-trash:hover {
-                                background-color: rgba(0, 0, 0, 0.7);
-                            }
+                                .button-trash:hover {
+                                    background-color: rgba(0, 0, 0, 0.7);
+                                }
 
-                            .button-trash i {
-                                margin-bottom: 10px; 
-                            }
+                                .button-trash i {
+                                    margin-bottom: 10px; 
+                                }
                         
                             </style>
                             <div>    
@@ -587,7 +729,7 @@ $hasId = !empty($id);
                                 height: 90%;
                                 width: 100%;
                                 position: absolute;
-                                background: #f90;
+                                /*background: #f90;*/
                                 color: #000;
                                 right: -100%; /* Initially placed outside to the right, relative to the modal */
                                 transition: right 0.6s ease-in-out; /* Slide-in effect */
@@ -609,7 +751,9 @@ $hasId = !empty($id);
                                     <label for="slideToggle" class="btn btn-success">View Location</label>
                                     <label for="slideToggle" class="btn btn-success">Another Button</label>
                                     <input type="checkbox" id="slideToggle">
-                                    <div class="hidden">Here I am! I will not exceed the modal.</div>
+                                    <div class="hidden">
+                                        ${mapsContent}
+                                    </div>
                                     
                                     <div class="grid-item item1">
                                         <table>
@@ -871,6 +1015,10 @@ $hasId = !empty($id);
     function redirectToUrl() {
          window.location.href = '/inventory-tree/add-record-view.php'; 
     }
+
+    // -----------------------------------------------------------
+    
+    // -----------------------------------------------------------
 </script>
 
 <?php

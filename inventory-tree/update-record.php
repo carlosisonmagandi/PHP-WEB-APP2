@@ -43,7 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $remarks = $_POST['remarks'] ?? '';
         $apprehended_persons = $_POST['apprehended_persons'] ?? '';
 
-        $stmt = $connection->prepare("UPDATE inventory SET 
+        $user_name = $_SESSION['session_username'];
+
+        $stmt = $connection->prepare("UPDATE inventory SET
             sitio=?, 
             barangay=?, 
             city_municipality=?, 
@@ -63,14 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ACP_status_or_case_no=?, 
             date_of_confiscation_order=?, 
             remarks=?, 
-            apprehended_persons=? 
+            apprehended_persons=?,
+            update_by=?
             WHERE id=?");
 
         if ($stmt === false) {
             file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
         }
 
-        $stmt->bind_param('ssssssssssssssssssssi',
+        $stmt->bind_param('sssssssssssssssssssssi',
             $sitio, 
             $barangay, 
             $city_municipality, 
@@ -90,8 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ACP_status_or_case_no, 
             $date_of_confiscation_order,
             $remarks, 
-            $apprehended_persons, 
+            $apprehended_persons,
+            $user_name, 
             $inventory_id
+            
         );
 
         if ($stmt->execute()) {

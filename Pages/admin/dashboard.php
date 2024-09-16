@@ -35,7 +35,7 @@ if(isset($_POST['Logout'])){
         <div class="row">
             <div class="col-xl-3 col-md-6">
                 <div class="card bg-primary text-white mb-4">
-                    <div class="card-body">Active Cases</div>
+                    <div class="card-body">Confiscated Record:</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small text-white stretched-link" href="#">View Details</a>
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -53,7 +53,7 @@ if(isset($_POST['Logout'])){
             </div>
             <div class="col-xl-3 col-md-6">
                 <div class="card bg-success text-white mb-4">
-                    <div class="card-body">Completed Cases</div>
+                    <div class="card-body">Active User</div>
                     <div class="card-footer d-flex align-items-center justify-content-between">
                         <a class="small text-white stretched-link" href="#">View Details</a>
                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
@@ -99,22 +99,64 @@ if(isset($_POST['Logout'])){
 include  "../../templates/nav-bar2.php"; 
 ?>
 <script>
+    $(document).ready(function() {
+        getDate();
+    });
+    function getDate(){
+        var today = new Date();
+
+        var day = today.getDate();  // Get the day of the month (1-31)
+        var month = today.getMonth() + 1;  // Get the month (0-11, so we add 1)
+        var year = today.getFullYear();  // Get the full year (e.g., 2024)
+
+        // Format the date as Month/Day/Year
+        var formattedDate = month + '/' + day + '/' + year;
+
+        console.log(formattedDate);  // Output: "9/16/2024" (example for September 16, 2024)
+
+    }
     var ctxLine = document.getElementById('lineChart').getContext('2d');
     var lineChart = new Chart(ctxLine, {
         type: 'line',
         data: {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [{
-                label: 'Cases Over Time',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            }]
+            datasets: [
+                {
+                    label: 'Trees/Logs',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Equipment',
+                    data: [28, 48, 40, 19, 86, 27, 90],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Vehicle',
+                    data: [18, 48, 77, 9, 100, 27, 40],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Cases Over Time',
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true
@@ -122,13 +164,15 @@ include  "../../templates/nav-bar2.php";
             }
         }
     });
+
+
     var ctxPie = document.getElementById('pieChart').getContext('2d');
     var pieChart = new Chart(ctxPie, {
         type: 'pie',
         data: {
-            labels: ['Active Cases', 'Seized Items', 'Completed Cases', 'Urgent Cases'],
+            labels: ['Bucal', 'Real', 'Canlubang', 'Lawa'],
             datasets: [{
-                label: 'Case Distribution',
+                label: 'Activity Distribution',
                 data: [12, 19, 3, 5],
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.2)',
@@ -147,16 +191,26 @@ include  "../../templates/nav-bar2.php";
         },
         options: {
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Illegal Activities',
+                    font: {
+                        size: 14
+                    }
+                }
+            }
         }
     });
+
     var ctxBar = document.getElementById('barChart').getContext('2d');
     var barChart = new Chart(ctxBar, {
         type: 'bar',
         data: {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: [{
-                label: 'Monthly Cases',
+                label: 'Monthly Donations',
                 data: [65, 59, 80, 81, 56, 55, 40],
                 backgroundColor: 'rgba(153, 102, 255, 0.2)',
                 borderColor: 'rgba(153, 102, 255, 1)',

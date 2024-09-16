@@ -13,7 +13,7 @@ if (isset($_POST['Logout'])) {
 
 // Get the active tab from session
 $activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
-$activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : 'Species'; // Default value if not set
+$activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : ''; // Default value if not set
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,8 +98,8 @@ include("../templates/nav-bar.php");
         <input type="radio" name="tabset" id="tab2" aria-controls="Condition" <?php echo ($activeTab == 'tab2') ? 'checked' : ''; ?> onclick="setActiveTab('tab2', 'Condition Status')">
         <label for="tab2">Condition Status</label>
         <!-- Tab 3 -->
-        <input type="radio" name="tabset" id="tab3" aria-controls="Receive" <?php echo ($activeTab == 'tab3') ? 'checked' : ''; ?> onclick="setActiveTab('tab3', 'Others')">
-        <label for="tab3">Others</label>
+        <input type="radio" name="tabset" id="tab3" aria-controls="Type" <?php echo ($activeTab == 'tab3') ? 'checked' : ''; ?> onclick="setActiveTab('tab3', 'Type')">
+        <label for="tab3">Types</label>
 
         <div class="tab-panels">
             <section id="Species" class="tab-panel">
@@ -113,9 +113,10 @@ include("../templates/nav-bar.php");
 
             </section>
 
-            <section id="Receive" class="tab-panel">
-                <h2>C. Others</h2>
-                <p><strong>OTHERS:</strong> More specification about the trees</p>
+            <section id="Type" class="tab-panel">
+                <!-- Call the table type -->
+                <?php include("../manage-reference-data/logsType/type-display.php"); ?>
+                
             </section>
         </div>
     </div>

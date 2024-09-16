@@ -246,8 +246,8 @@ $hasId = !empty($id);
             formData.append('remarks', $('#remarks').val());
             formData.append('apprehended_persons', $('#apprehended_persons').val());
 
-            console.log('Sending request with ID:', id);
-            console.log('Form data:', formData);
+            // console.log('Sending request with ID:', id);
+            // console.log('Form data:', formData);
 
             $.ajax({
                 url: '/inventory-tree/update-record.php',
@@ -260,9 +260,6 @@ $hasId = !empty($id);
                     //console.log('Response received:', response);
                     
                     if (response.status === 'success') {
-                        console.log('Success:', response);
-                        console.log('volume is: ');
-                        console.log(response.apprehended_volume);
                         Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
                         let queryString = id;
                         let viewType = sessionStorage.getItem('viewType');//get session value
@@ -338,6 +335,7 @@ $hasId = !empty($id);
                     }
                 },
                 error: function(xhr, status, error) {
+                    console.log(xhr.messageText);
                     Swal.fire('Error!', 'An error occurred while submitting the form.', 'error');
                 }
             });

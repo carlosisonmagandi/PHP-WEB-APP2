@@ -10,6 +10,8 @@ if (isset($_POST['Logout'])) {
     header("Location: ../../index.php");
     exit;
 }
+
+// echo "<script>alert('" . $_SESSION['activeTabName'] . "');</script>";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,7 +29,7 @@ if (isset($_POST['Logout'])) {
             echo '<link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home-dm.css">';
         }
     ?>
-    <!-- Assuming you are using Font Awesome for icons -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
@@ -37,11 +39,44 @@ include("../templates/nav-bar.php");
 
 <div class="container">
     <div class="centered">
-        <a href="/manage-reference-data/manage-ref-data.php" class="button" data-text="Trees" ><i class="fas fa-tree"></i> </a>
-        <a class="button" data-text="Vehicle"><i class="fas fa-car" ></i> </a>
-        <a href="/manage-equipments-ref-data/equipment-reference-data.php" class="button" data-text="Equipment"><i class="fas fa-tools"></i></a>
+        <a class="button" data-text="Trees" data-href="/manage-reference-data/manage-ref-data.php"><i class="fas fa-tree"></i></a>
+        <a class="button" data-text="Vehicle" data-href="#"><i class="fas fa-car"></i></a>
+        <a class="button" data-text="Equipment" data-href="/manage-equipments-ref-data/equipment-reference-data.php"><i class="fas fa-tools"></i></a>
     </div>
 </div>
+
+<script>
+// Get all anchor tags with class 'button'
+const buttons = document.querySelectorAll('.button');
+
+buttons.forEach(button => {
+    button.addEventListener('click', function(event) {
+        event.preventDefault(); 
+        const text = this.getAttribute('data-text'); 
+        $.ajax({
+            url: '/manage-reference-data/manage-ref-data-tab-name.php',
+            type: 'POST',
+            data: { tabName: text }, 
+            success: function(response) {
+                // console.log("Session set for " + text + response);
+                //sessionStorage.setItem('tabName',response);
+            },
+            error: function() {
+                console.error("An error occurred ");
+            }
+        });
+
+        // Redirect if href exists and is not '#'
+        const href = this.getAttribute('data-href');
+        if (href && href !== "#") {
+            window.location.href = href; 
+        }
+    });
+});
+</script>
+
+
+
 
 <?php 
 include("../templates/nav-bar2.php");

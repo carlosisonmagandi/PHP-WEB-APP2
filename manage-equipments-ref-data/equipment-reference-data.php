@@ -13,7 +13,7 @@ if (isset($_POST['Logout'])) {
 
 // Get the active tab from session
 $activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
-$activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : 'Equipment Type'; // Default value if not set
+$activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : ''; // Default value if not set
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,10 +95,10 @@ include("../templates/nav-bar.php");
         <input type="radio" name="tabset" id="tab1" aria-controls="equipmentType" <?php echo ($activeTab == 'tab1') ? 'checked' : ''; ?> onclick="setActiveTab('tab1', 'Equipment Type')">
         <label for="tab1">Equipment type</label>
         <!-- Tab 2 -->
-        <input type="radio" name="tabset" id="tab2" aria-controls="equipmentCondition" <?php echo ($activeTab == 'tab2') ? 'checked' : ''; ?> onclick="setActiveTab('tab2', 'Equipment Status')">
+        <input type="radio" name="tabset" id="tab2" aria-controls="equipmentCondition" <?php echo ($activeTab == 'tab2') ? 'checked' : ''; ?> onclick="setActiveTab('tab2', 'Equipment Condition')">
         <label for="tab2">Equipment condition</label>
         <!-- Tab 3 -->
-        <input type="radio" name="tabset" id="tab3" aria-controls="equipmentStatus" <?php echo ($activeTab == 'tab3') ? 'checked' : ''; ?> onclick="setActiveTab('tab3', 'Equipment Condition')">
+        <input type="radio" name="tabset" id="tab3" aria-controls="equipmentStatus" <?php echo ($activeTab == 'tab3') ? 'checked' : ''; ?> onclick="setActiveTab('tab3', 'Equipment Status')">
         <label for="tab3">Equipment status</label>
 
         <div class="tab-panels">
@@ -108,19 +108,15 @@ include("../templates/nav-bar.php");
             </section>
             
             <section id="equipmentCondition" class="tab-panel">
-                <!-- Call the table display -->
-                <?php //include("../manage-reference-data/condition-status-display.php"); ?>
-
+                <?php include("../manage-equipments-ref-data/EquipmentCondition/condition-display.php"); ?>
             </section>
 
             <section id="equipmentStatus" class="tab-panel">
-                <h2>C. Others</h2>
-                <p><strong>OTHERS:</strong> More specification about the trees</p>
+                <?php include("../manage-equipments-ref-data/EquipmentStatus/status-display.php"); ?>
             </section>
         </div>
     </div>
 </div>
-
 
 <?php 
 include("../templates/nav-bar2.php");
