@@ -238,7 +238,7 @@ $hasId = !empty($id);
                                 </div>
                                 <br>
                                 <div class="buttonsDiv">
-                                    <input class="button" type="button" value="view location">
+                                    <input class="button" type="button" value="start navigation">
                                     <input class="button" id="moreDetails" data-id="${id}" type="button" value="more details">
                                 </div>
                             </div>
@@ -250,8 +250,7 @@ $hasId = !empty($id);
         },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
-                console.log(xhr.messageText);
-                // Handle error gracefully, e.g., show an error message to the user
+                // console.log(xhr.messageText);
                 alert("Error fetching data from the server. See console for details.");
             }
         });
@@ -332,8 +331,6 @@ $hasId = !empty($id);
                 if (data.status === 'success') {
                     // Construct query string with data
                     let queryString = id;
-                    // console.log('test');
-                    // console.log(queryString);
 
                     // Redirect with query parameters
                     window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
@@ -390,8 +387,6 @@ $hasId = !empty($id);
                             mapsContent +=`
                                 <style>
                                     
-                                
-
                                 .geocoder {
                                     position: absolute;
                                     z-index: 1;
@@ -427,11 +422,11 @@ $hasId = !empty($id);
                             //const map = document.getElementById('map');
                             mapboxgl.accessToken = 'pk.eyJ1IjoiY200NzcyNSIsImEiOiJjbHc4MWd4cGgxbXEzMmt0OWhqbTlvcHY4In0.bJ3Gb8OgbBs6KEw3xCSF_g';
 
-                            // var barangay = 'brgy'.barangay;
+                            //var barangay = barangay;
                             var city = city_municipality;
-                            var province = province;
-                            var fullAddress = ` ${city}, ${province},`+' Philippines';
-
+                            //var province = province;
+                            var fullAddress = `${response.barangay} , ${city}` +' City, ' + `${response.province},`+' Philippines';
+                            // console.log(fullAddress);
                             // Function to call Geocoding API
                             function geocodeAddress(address) {
                                 const query = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
@@ -452,6 +447,79 @@ $hasId = !empty($id);
                             // Geocode the address and initialize the map
                             geocodeAddress(fullAddress).then(coordinates => {
                                 if (coordinates) {
+                                    
+                                    function clickLocation(id) {
+                                        // Use .off to remove any previous click event to prevent stacking/continous id response
+                                        $(document).off('click', '#viewLocation').on('click', '#viewLocation', function() {
+                                            console.log("button was clicked", coordinates[0], coordinates[1]);
+                                            getMapRecordFromDB(id, coordinates);
+                                        });
+                                    }
+
+                                    function setLocationButton() {
+                                        // Use .off to remove any previous click event to prevent stacking/continous id response
+                                        $(document).off('click', '#setLocation').on('click', '#setLocation', function() {
+                                            var coordinatesDiv = document.querySelector('#coordinates');
+                                            console.log("here");
+                                            // Extracting longitude and latitude using REGEX
+                                            var textContent = coordinatesDiv.innerHTML;
+                                            var regex = /Longitude:\s([\d.]+)\s*<br>\s*Latitude:\s([\d.]+)/;
+                                            var match = textContent.match(regex);
+                                            
+                                            if (match) {
+                                                var longitude = match[1];
+                                                var latitude = match[2];
+                                                console.log('Longitude:', longitude);
+                                                console.log('Latitude:', latitude);
+                                            } else {
+                                                console.log('Coordinates not found');
+                                            }
+                                            
+                                        });
+                                    }
+                                    
+                                    
+                                    function getMapRecordFromDB(id, lng = null, lat = null) {
+                                        console.log("id", id);
+                                        $.ajax({
+                                            url: '/Maps/get-record.php',
+                                            type: 'GET',
+                                            data: { inventory_id: id, lng: lng, lat: lat },
+                                            dataType: 'json',
+                                            success: function(response) {
+                                                var coordinatesDiv = document.querySelector('#coordinates');
+                                                
+                                                if (response.length === 0) {
+                                                    console.log("No records found.", coordinatesDiv,lng);
+                                                    
+                                                    // Extracting longitude and latitude using REGEX
+                                                    var textContent = coordinatesDiv.innerHTML;
+                                                    var regex = /Longitude:\s([\d.]+)\s*<br>\s*Latitude:\s([\d.]+)/;
+                                                    var match = textContent.match(regex);
+                                                    
+                                                    if (match) {
+                                                        var longitude = match[1];
+                                                        var latitude = match[2];
+                                                        console.log('Longitude:', longitude);
+                                                        console.log('Latitude:', latitude);
+                                                    } else {
+                                                        console.log('Coordinates not found');
+                                                    }
+                                                } else {
+                                                    console.log("Data found Response: ", response);
+                                                    
+                                                    if (coordinatesDiv) {
+                                                        coordinatesDiv.innerHTML = `Longitude: ${response[0].longitude} <br/> Latitude: ${response[0].latitude}`;
+                                                    }
+                                                }
+                                            },
+                                            error: function(xhr, status, error) {
+                                                console.error('Error:', error);
+                                                alert("Error fetching data. See console for details.");
+                                            }
+                                        });
+                                    }
+
                                     // Initialize the map with the geocoded center
                                     const map = new mapboxgl.Map({
                                         container: 'map',
@@ -470,6 +538,9 @@ $hasId = !empty($id);
                                     if (coordinatesDiv) {
                                         coordinatesDiv.style.display = 'block';
                                         coordinatesDiv.innerHTML = `Longitude: ${coordinates[0]} <br/> Latitude: ${coordinates[1]}`;
+                                        clickLocation(id);
+                                        setLocationButton();
+                                        
                                     }
 
                                     // Update coordinates when dragging the marker
@@ -478,17 +549,19 @@ $hasId = !empty($id);
                                         var lng = lngLat.lng;
                                         var lat = lngLat.lat;
 
-                                        coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+                                        // Update the coordinates div
+                                        if (coordinatesDiv) {
+                                            coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+                                        }
+
+                                        // Fetch the record from DB for the new position
+                                        getMapRecordFromDB(id, lng, lat);
                                     });
 
                                     // Map click event
-                                    map.on('click', function(e){
-                                        console.log(e.lngLat.wrap());
-
-                                        // Check if the #coordinates div exists
+                                    map.on('click', function(e) {
                                         var coordinatesDiv = document.querySelector('#coordinates');
                                         if (coordinatesDiv) {
-                                            // Handle the display of coordinates and marker creation
                                             var markers = document.querySelectorAll('.mapboxgl-marker');
                                             markers.forEach(function(el){
                                                 el.style.display = 'none';
@@ -500,16 +573,21 @@ $hasId = !empty($id);
                                             coordinatesDiv.style.display = 'block';
                                             coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
 
+                                            // Create a new marker at the clicked position
                                             var newMarker = new mapboxgl.Marker({
                                                 draggable: true
                                             }).setLngLat([lng, lat]).addTo(map);
 
+                                            // Update coordinates and fetch new data when dragging the new marker
                                             newMarker.on('dragend', function() {
                                                 var lngLat = newMarker.getLngLat();
                                                 lng = lngLat.lng;
                                                 lat = lngLat.lat;
 
                                                 coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+
+                                                // Fetch the record from DB for the new position
+                                                getMapRecordFromDB(id, lng, lat);
                                             });
                                         } else {
                                             console.error('#coordinates div not found in the DOM.');
@@ -517,6 +595,7 @@ $hasId = !empty($id);
                                     });
                                 }
                             });
+
                             //---------------------------------------------------------
                             htmlContent += `
                             <style>
@@ -748,8 +827,8 @@ $hasId = !empty($id);
                             <div class="flex-container-right">
                                 <br>
                                 <div class="grid-container">
-                                    <label for="slideToggle" class="btn btn-success">View Location</label>
-                                    <label for="slideToggle" class="btn btn-success">Another Button</label>
+                                    <label for="slideToggle" class="btn btn-success" id="viewLocation">View Location</label>
+                                    <button  id="setLocation" class="btn btn-success">Set Location</button>
                                     <input type="checkbox" id="slideToggle">
                                     <div class="hidden">
                                         ${mapsContent}
@@ -970,7 +1049,6 @@ $hasId = !empty($id);
                                                         html: itemClickId(id)
                                                     })
                                                 });
-                                                //console.log(response.message);
                                             }
                                         },
                                         error: function(xhr, status, error) {
@@ -1017,6 +1095,7 @@ $hasId = !empty($id);
     }
 
     // -----------------------------------------------------------
+    //Maps functions
     
     // -----------------------------------------------------------
 </script>

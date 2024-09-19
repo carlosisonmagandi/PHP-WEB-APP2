@@ -131,7 +131,6 @@ $(document).ready(function() {
                             dataType: 'json',
                             data: JSON.stringify(data),
                             success: function(data) {
-                                console.log('Success:', data);
                                 Swal.fire("Saved!", `Condition Type: ${conditionType}, Condition Description: ${conditionDescription}`, "success");
                                 
                                 fetchDataFromDB(); // Refresh the table
@@ -193,7 +192,6 @@ $(document).ready(function() {
                     dataType: 'json',
                     data: JSON.stringify(data),
                     success: function(data) {
-                        console.log('Success:', data);
                         Swal.fire("Deleted!", "was successfully deletd", "success");
                         fetchDataFromDB(); // Call this function to refresh the table
                     },
@@ -237,7 +235,6 @@ $(document).ready(function() {
                     dataType: 'json',
                     data: JSON.stringify(updateData), // Corrected to updateData
                     success: function(response) {
-                        console.log('Success:', response);
                         Swal.fire("Updated!", response.message, "success");
                         fetchDataFromDB(); // Call this function to refresh the table
                     },

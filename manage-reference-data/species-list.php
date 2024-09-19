@@ -10,7 +10,6 @@ if ($result->num_rows > 0) {
         $data[] = $row;
     }
 }
-
 $connection->close();
 
 header('Content-Type: application/json');

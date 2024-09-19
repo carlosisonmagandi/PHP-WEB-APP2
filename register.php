@@ -290,7 +290,7 @@ if(isset($_POST['submit'])){
         });
     </script> -->
 
-    <script>
+<script>
     // validation to security questions  
     document.querySelector('form').addEventListener('submit', function(event) {
         var answerText1 = document.getElementById('answerText1').textContent.trim();
@@ -343,10 +343,7 @@ if(isset($_POST['submit'])){
 
 }
 
-
-
-
-    </script>
+</script>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="/Javascript/sb-admin/sb-admin-script.js"></script>

@@ -144,7 +144,6 @@ $(document).ready(function() {
                             dataType: 'json',
                             data: JSON.stringify(data),
                             success: function(data) {
-                                console.log('Success:', data);
                                 Swal.fire("Saved!", `Species Name: ${speciesName}, Species Description: ${speciesDescription}`, "success");
                                 
                                 fetchDataFromDB(); // Refresh the table
@@ -208,7 +207,6 @@ $(document).ready(function() {
                     dataType: 'json',
                     data: JSON.stringify(data),
                     success: function(data) {
-                        console.log('Success:', data);
                         Swal.fire("Deleted!", "was successfully deletd", "success");
                         fetchDataFromDB(); // Call this function to refresh the table
                     },
@@ -252,7 +250,6 @@ $(document).ready(function() {
                     dataType: 'json',
                     data: JSON.stringify(updateSpeciesData), // Corrected to updateData
                     success: function(response) {
-                        console.log('Success:', response);
                         Swal.fire("Updated!", response.message, "success");
                         fetchDataFromDB(); // Call this function to refresh the table
                     },

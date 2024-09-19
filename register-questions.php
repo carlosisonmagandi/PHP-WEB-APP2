@@ -154,7 +154,6 @@
             <tr>
                 <td>30. What is your favorite holiday?</td>
             </tr>
-            <!-- Add more rows dynamically if needed -->
         </tbody>
     </table>
 

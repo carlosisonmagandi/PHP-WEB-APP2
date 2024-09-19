@@ -5,7 +5,6 @@ require_once("templates/alert-message.php");
 session_start();
 $response = array('status' => '', 'message' => '');
 
-
 if (isset($_POST['forgotPasswordId'])) {
     $_SESSION['forgotPasswordId'] = $_POST['forgotPasswordId'];
     $password = $_POST['password'];
@@ -40,8 +39,6 @@ if (isset($_POST['forgotPasswordId'])) {
     $response['status'] = 'danger';
     $response['message'] = 'Error: forgotPasswordId not set.';
 }
-
-// Return the response as JSON
 header('Content-Type: application/json');
 echo json_encode($response);
 ?>

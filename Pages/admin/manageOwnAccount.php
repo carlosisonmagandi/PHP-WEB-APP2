@@ -90,7 +90,6 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
 
     <script>
         <?php
-        // Echo JavaScript code to update the input fields with the new values
         echo "document.getElementById('username').value = '" . $userData['username'] . "';";
         echo "document.getElementById('password').value = '" . $userData['password'] . "';";
         ?>

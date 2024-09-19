@@ -3,7 +3,6 @@ require_once("includes/db_connection.php");
 
 $inventory_id = $_GET['inventory_id'];
 
-// Fetch the apprehended item from the inventory table
 $inventory_stmt = $connection->prepare("SELECT apprehended_items, date_of_apprehension, sitio, barangay, city_municipality, province, 
         apprehending_officer, EMV_forest_product, EMV_conveyance_implements, involve_personalities, custodian, ACP_status_or_case_no, 
         date_of_confiscation_order, remarks, apprehended_persons, apprehended_quantity, apprehended_volume, apprehended_vehicle, 

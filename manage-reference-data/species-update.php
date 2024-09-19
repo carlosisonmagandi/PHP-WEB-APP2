@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
 
     if ($stmt->execute()) {
         http_response_code(200); 
-        // echo json_encode(array("message" => "Record updated successfully."));
         echo json_encode(array("message" => "Record updated successfully.".$speciesName));
     } else {
         http_response_code(500);

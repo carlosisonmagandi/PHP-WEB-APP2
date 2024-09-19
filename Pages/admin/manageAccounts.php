@@ -131,7 +131,7 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                 $.ajax({
                     url: 'approve_account.php',
                     type: 'GET',
-                    data: { id: id, buttonValue: buttonValue }, // Pass the ID as data in the AJAX request
+                    data: { id: id, buttonValue: buttonValue }, 
                     success: function(response) {
                         $("body").append(response); // Display response from approve.php (alert)
 

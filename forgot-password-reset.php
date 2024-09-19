@@ -1,12 +1,7 @@
 <?php
-//database connection
 require_once("includes/db_connection.php");
 require_once("templates/alert-message.php");
-
-//echo "<script> alert(sessionStorage.getItem('forgotPasswordId'));</script>";
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,9 +18,6 @@ require_once("templates/alert-message.php");
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-
-    <!-- <link href="/Styles/sb-admin/sb-admin-styles.css" rel="stylesheet" /> -->
         
     <!-- sweetalert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -56,7 +48,6 @@ require_once("templates/alert-message.php");
         flex: 50%;
         }
 
-       
         /* Responsive layout - makes a one column-layout instead of two-column layout */
         @media (max-width: 800px) {
         .flex-container {
@@ -78,28 +69,25 @@ require_once("templates/alert-message.php");
                     <h3 class="text-center font-weight-light my-4">Password Reset</h3>
                     <div class="container" style="padding: 10px;">
                         <br><br>
-                            <div class="password-wrapper">
-                                
-                                <input require type="password" id="password" name="password" oninput="strengthChecker()" placeholder="Enter New Password" >
-                                <span id="toggle" onclick="toggle()">
-                                    <i class="fas fa-eye"></i>
-                                </span>
-                            </div>
-                            <div id="strength-bar"></div>
-                            
-                            <p id="msg" name='msg'></p>
-                            <br>
-                            <div class="confirmPassword-wrapper">
-                                <input require type="password" id="confirmPassword" name="confirmPassword"  placeholder="Confirm Password" >
-
-                                <span id="toggle2" onclick="toggle2()">
-                                    <i class="fas fa-eye"></i>
-                                </span>
-                            </div>
-                            <br>
-                            <input type="submit" name="submit" value="Submit" id="submit">
-                            <a style="color:red;font-size:12px;">**Password must contain atleast one number,special character and Uppercase letter.</a>
+                        <div class="password-wrapper">  
+                            <input require type="password" id="password" name="password" oninput="strengthChecker()" placeholder="Enter New Password" >
+                            <span id="toggle" onclick="toggle()">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div id="strength-bar"></div>
                         
+                        <p id="msg" name='msg'></p>
+                        <br>
+                        <div class="confirmPassword-wrapper">
+                            <input require type="password" id="confirmPassword" name="confirmPassword"  placeholder="Confirm Password" >
+                            <span id="toggle2" onclick="toggle2()">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <br>
+                        <input type="submit" name="submit" value="Submit" id="submit">
+                        <a style="color:red;font-size:12px;">**Password must contain atleast one number,special character and Uppercase letter.</a>
                     </div>
                 </div>
             </div>
@@ -116,7 +104,6 @@ require_once("templates/alert-message.php");
     <!--Script-->
     <script src="Javascript/passwordChecker.js"></script>
     
-
     <script>
         $(document).ready(function() {
             if(sessionStorage.getItem("forgotPasswordId")=='' ||sessionStorage.getItem("forgotPasswordId")==null){

@@ -4,8 +4,6 @@ require("includes/session.php");
 require("includes/darkmode.php");
 require("includes/authentication.php");
 
-
-//action after logout button
 if(isset($_POST['Logout'])){
     session_destroy();
     header("Location: ../../index.php");
@@ -206,9 +204,7 @@ include ("templates/nav-bar.php");
             </table>
         </div>
     </div>
-
 </div>
-
 
 <script>
     let tableData = [];
@@ -305,7 +301,6 @@ include ("templates/nav-bar.php");
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                // console.log('Success:', response);
                 updateTable(response);//call updateTable
             },
             error: function(xhr, status, error) {
@@ -366,66 +361,6 @@ include ("templates/nav-bar.php");
         });
     }
 
-    //qr sweet alert modal
-    function generateQrModal(id){
-        const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-            confirmButton: "btn btn-success",
-            cancelButton: "btn btn-danger"
-        },
-        buttonsStyling: false
-        });
-        swalWithBootstrapButtons.fire({
-        title: "Unable to generate QR",
-        text: "No coordinates value found. Do you want to update the record?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, add location!",
-        cancelButtonText: "No, cancel!",
-        reverseButtons: true
-        }).then((result) => {
-        // if (result.isConfirmed) {
-        //     swalWithBootstrapButtons.fire({
-        //     title: "Success",
-        //     text: "QR generated successfully",
-        //     icon: "success"
-        //     });
-        // }
-        if (result.isConfirmed) {
-            swalWithBootstrapButtons.fire({
-            title: "Set pin location",
-            confirmButtonText: "Done",
-            html: 
-                `<div class="main-map-container">
-                    <div class="container">
-                        <div class="content">
-                        <div id="coordinates" class="coordinates">
-                            <p>Latitude: 120.9842</p>
-                            <p>Latitude: 14.5995</p>
-                        </div>
-                        <iframe width="100%" height="1200px" src="https://maps.google.com/maps?width=100%&amp;&amp;hl=en&amp;coord=14.1755,121.2413&amp;q=Los%20Ba%C3%B1os%2C%20Lalakay%2C%20Laguna%2C%20Philippines&amp;ie=UTF8&amp;t=&amp;z=14&amp;iwloc=B&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><br />
-                        </div>
-                    </div>
-                </div>`
-            }).then((innerResult) => {
-                if (innerResult.isConfirmed) {
-                    // Call function here or modal
-                   alert("Actions:\n1.Run Update query on specific record to add the coordinate value.\n2. show success modal for generated QR");
-                }
-            });
-        }else if (
-            /* Read more about handling dismissals below */
-            result.dismiss === Swal.DismissReason.cancel
-        ) {
-            swalWithBootstrapButtons.fire({
-            title: "Cancelled",
-            text: "No QR has been generate",
-            icon: "error"
-            });
-        }
-        });
-    }
-
     //Fetching id using eventlistener instead of onlick 
     $(document).ready(function() {
         //fetchTitleFromDB();//get title details on page load
@@ -444,12 +379,6 @@ include ("templates/nav-bar.php");
             const id = $(this).closest('tr').find('td:first').text();
             deleteAction(id);
         });
-
-        // Event listener for generate QR
-        // $('#dataTable').on('click', '.qr-action', function() {
-        //     const id = $(this).closest('tr').find('td:first').text();
-        //     generateQrAction(id);
-        // });
     });
 
     //Edit function
@@ -463,9 +392,7 @@ include ("templates/nav-bar.php");
                 if (data.status === 'success') {
                     // Construct query string with data
                     let queryString = id;
-                    // console.log('test');
-                    // console.log(queryString);
-
+                    
                     // Redirect with query parameters
                     window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
                 } else {
@@ -480,8 +407,6 @@ include ("templates/nav-bar.php");
 
 
     function deleteAction(id) {
-        // alert('Delete successful for ID: ' + id);
-
         $.ajax({
             url: '/inventory-tree/delete-record.php',
             type: 'POST',
@@ -489,7 +414,6 @@ include ("templates/nav-bar.php");
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    // console.log(response);
                     fetchDataFromDB();//reload the table
                     Swal.fire({
                         title: 'Success',
@@ -514,15 +438,9 @@ include ("templates/nav-bar.php");
         });
     }
 
-    // function generateQrAction(id) {
-    //     //alert('QR ID: ' + id);
-    //     generateQrModal(id);
-    // }
-
     function clickableId(){
         //clickable id
         $('#dataTable').on('click', '.clickable-id', function() {
-            //alert('You clicked on id: ' + $(this).text());
             var id = $(this).text();
             itemClickId(id);
         });
@@ -536,9 +454,6 @@ include ("templates/nav-bar.php");
             data: { inventory_id: id },
             dataType: 'json',
             success: function(response) { 
-                // console.log('here');
-                //  console.log(response); // Log the response to help debug
-
                 // Expected data
                 if (response) {
                     const barangay=response.barangay
@@ -563,7 +478,6 @@ include ("templates/nav-bar.php");
                     const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
 
                     let htmlContent = ``;
-
 
                     if (response.images.length > 0) {
                         response.images.forEach(function(image) {
@@ -745,8 +659,6 @@ include ("templates/nav-bar.php");
                                 text-align: center;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;
-                                
-            
                             }
                             .category-header {
                                 background-color: #002f6c;
@@ -761,7 +673,6 @@ include ("templates/nav-bar.php");
                             .table-container {
                                 margin-bottom: 20px;
                             }
-
                             /*Mobile responsive style*/
                             @media (max-width: 600px) {
                                     th, td {
@@ -864,7 +775,6 @@ include ("templates/nav-bar.php");
                         </div>
                         `;
                     }
-
                     Swal.fire({
                         text: `Inventory ID: ${id}`,
                         html: getHtmlContent(),
@@ -990,7 +900,6 @@ include ("templates/nav-bar.php");
                                                         html: itemClickId(id)
                                                     })
                                                 });
-                                                //console.log(response.message);
                                             }
                                         },
                                         error: function(xhr, status, error) {
@@ -1003,7 +912,6 @@ include ("templates/nav-bar.php");
                                     });
                                 }
                             }
-
                         }
                     }).then(() => {
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
@@ -1081,7 +989,7 @@ include ("templates/nav-bar.php");
         document.body.appendChild(printContainer);
 
         window.addEventListener('beforeprint', function () {
-            console.log("Print initiated");
+            // console.log("Print initiated");
         });
 
         window.addEventListener('afterprint', function () {

@@ -36,8 +36,6 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                     var res = JSON.parse(response);
                     if (res.status === 'success') {
                         //To check if the click was successfully working
-                        // console.log(res);
-                        // console.log("Active tab updated successfully");
 
                         updateActiveTabName(tabName);
                     } else {
@@ -71,8 +69,6 @@ include("../templates/nav-bar.php");
 
 <!-- Prefixfree -->
 <script src="http://thecodeplayer.com/uploads/js/prefixfree-1.0.7.js" type="text/javascript"></script>
-
-
 
 <div class="container">
     <!-- a simple div with some links -->

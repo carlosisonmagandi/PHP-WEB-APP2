@@ -170,7 +170,6 @@ $(document).ready(function() {
         });
     };
     function checkLogsNameExists(logsTypeTitle) {
-        console.log("here");
         return new Promise((resolve, reject) => {
             $.ajax({
                 url: '/manage-reference-data/logsType/logs-type-check-record.php',

@@ -1,8 +1,6 @@
 <?php
-// Retrieve data from the database
 require_once("includes/db_connection.php");
-    
-// Prepare and execute SQL query to fetch data
+
 $sql = "SELECT id,
     date_of_apprehension,
     sitio,
@@ -34,11 +32,8 @@ if ($result->num_rows > 0) {
         $data[] = $row;
     }
 }
-
-// Close database connection
 $connection->close();
 
-// Return data as JSON
 header('Content-Type: application/json');
 echo json_encode($data);
 ?>

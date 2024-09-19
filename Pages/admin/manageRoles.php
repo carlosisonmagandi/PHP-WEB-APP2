@@ -4,9 +4,7 @@ require("../../includes/session.php");
 require("../../includes/darkmode.php");
 
 require_once "../../includes/db_connection.php";
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

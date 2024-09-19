@@ -4,7 +4,6 @@ require("includes/session.php");
 require("includes/darkmode.php");
 require("includes/authentication.php");
 
-// Action after logout button
 if (isset($_POST['Logout'])) {
     session_destroy();
     header("Location: ../../index.php");

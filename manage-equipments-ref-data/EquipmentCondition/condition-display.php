@@ -100,7 +100,7 @@ $(document).ready(function() {
         var conditionTitle = $(this).closest('tr').find('td:eq(1)').text(); 
         var conditionDescription = $(this).closest('tr').find('td:eq(2)').text();
         
-        updateSpeciesRecord(id,statusTitle,statusDescription);
+        updateConditionRecord(id,conditionTitle,conditionDescription);
     });
 
     $('#addConditionButton').on('click', function() {
@@ -219,33 +219,33 @@ $(document).ready(function() {
     };
 
     //Update button
-    function updateSpeciesRecord(id, statusTitle, statusDescription) {
+    function updateConditionRecord(id, conditionTitle, conditionDescription) {
         Swal.fire({
             title: "Are you sure you want to update this record?",
             html:
-            '<input id="inputStatusTitle" class="swal2-input" placeholder="Equipment Type" value="' + (statusTitle ? statusTitle : '') + '">' +
-            '<textarea id="inputStatusDescription" class="swal2-textarea" placeholder="Equipment Description">' + (statusDescription ? statusDescription : '') + '</textarea>',
+            '<input id="inputConditionTitle" class="swal2-input" placeholder="Equipment Type" value="' + (conditionTitle ? conditionTitle : '') + '">' +
+            '<textarea id="inputConditionDescription" class="swal2-textarea" placeholder="Equipment Description">' + (conditionDescription ? conditionDescription : '') + '</textarea>',
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes, update it!",
             denyButtonText: `No, keep it`
         }).then((result) => {
             if (result.isConfirmed) {
-                const updatedStatusTitle= $('#inputStatusTitle').val(); 
-                const updatedStatusDescription = $('#inputStatusDescription').val();
+                const updatedConditionTitle= $('#inputConditionTitle').val(); 
+                const updatedConditionDescription = $('#inputConditionDescription').val();
 
-                const updateStatusData = {
+                const updateConditionData = {
                     id: id,
-                    statusTitle: updatedStatusTitle,
-                    statusDescription: updatedStatusDescription
+                    conditionTitle: updatedConditionTitle,
+                    conditionDescription: updatedConditionDescription
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentStatus/status-update.php',
+                    url: '/manage-equipments-ref-data/EquipmentCondition/condition-update.php',
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',
-                    data: JSON.stringify(updateStatusData), // Corrected to updateData
+                    data: JSON.stringify(updateConditionData), // Corrected to updateData
                     success: function(response) {
                         Swal.fire("Updated!", response.message, "success");
                         fetchDataFromDB(); // Call this function to refresh the table

@@ -1,12 +1,7 @@
 <?php
-
-//database connection
 require_once("includes/db_connection.php");
-
-//login form
 require("login.php");
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -25,28 +20,28 @@ require("login.php");
             background-repeat: no-repeat;
             background-size: contain;
             background-position: right bottom;
-        }
-        .card {
-                /*background-color: rgba(255, 255, 255, 0.7);  Adjust the opacity here */
             }
-        
-        .btn{
-            border:none; 
-            background-color:#5CAB7D;
-            padding-right:10%;
-            padding-left:10%;
-        }
-        .btn:hover{
-            border:none; 
-            background-color:#8BD3B3;
-            padding-right:10%;
-            padding-left:10%;
-        }
-        @media (max-width: 992px) {
             .card {
-                background-color: rgba(255, 255, 255, 0.8);  Adjust the opacity here
+                    /*background-color: rgba(255, 255, 255, 0.7);  Adjust the opacity here */
+                }
+            
+            .btn{
+                border:none; 
+                background-color:#5CAB7D;
+                padding-right:10%;
+                padding-left:10%;
             }
-        }
+            .btn:hover{
+                border:none; 
+                background-color:#8BD3B3;
+                padding-right:10%;
+                padding-left:10%;
+            }
+            @media (max-width: 992px) {
+                .card {
+                    background-color: rgba(255, 255, 255, 0.8);  Adjust the opacity here
+                }
+            }
         </style>
     </head>
     <body>

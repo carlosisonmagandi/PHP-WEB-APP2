@@ -1,20 +1,14 @@
 <?php
-// database connection
 require_once("includes/db_connection.php");
-
 $response = ['status' => false, 'message' => 'Unknown error occurred'];
 
 if (isset($_POST['userName'])) {
     $userName = $_POST['userName'];
 
-    // Initialize variables to store security questions
     $question1 = '';
     $question2 = '';
     $answer_1='';
     $answer_2='';
- 
-  
-   
 
     if ($connection === false) {
         $response['message'] = "ERROR: Could not connect. " . mysqli_connect_error();
@@ -48,8 +42,7 @@ if (isset($_POST['userName'])) {
                                 $question1 = $rowQuestion['question1'];
                                 $question2 = $rowQuestion['question2'];
                                 $answer_1 = strtolower(preg_replace('/\s+/', '', $rowQuestion['answer1'])); 
-                                $answer_2 = strtolower(preg_replace('/\s+/', '', $rowQuestion['answer2']));
-                                
+                                $answer_2 = strtolower(preg_replace('/\s+/', '', $rowQuestion['answer2']));                    
                             }
                         } else {
                             $response['message'] = "Error: " . mysqli_error($connection);
@@ -66,9 +59,7 @@ if (isset($_POST['userName'])) {
                     $response['question1'] = $question1;
                     $response['question2'] = $question2;
                     $response['answer1']=$answer_1;
-                    $response['answer2']=$answer_2;
-                    
-                      
+                    $response['answer2']=$answer_2;   
                 } else {
                     $response['message'] = 'No results found';
                 }

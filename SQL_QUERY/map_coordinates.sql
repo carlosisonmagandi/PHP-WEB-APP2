@@ -1,0 +1,11 @@
+CREATE TABLE map_coordinates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    inventory_id INT NOT NULL,
+    longitude VARCHAR(255) NOT NULL,
+    latitude VARCHAR(255) NOT NULL,
+    activity_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_by VARCHAR(255) NOT NULL,
+    updated_by VARCHAR(255) NOT NULL,
+    FOREIGN KEY (inventory_id) REFERENCES inventory(id) ON DELETE CASCADE
+);
