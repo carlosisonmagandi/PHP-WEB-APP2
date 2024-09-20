@@ -445,23 +445,22 @@ $hasId = !empty($id);
                             }
 
                             // Geocode the address and initialize the map
+                            let initialMarker;
+
                             geocodeAddress(fullAddress).then(coordinates => {
                                 if (coordinates) {
-                                    
+                                    // Click event for viewing location
                                     function clickLocation(id) {
-                                        // Use .off to remove any previous click event to prevent stacking/continous id response
                                         $(document).off('click', '#viewLocation').on('click', '#viewLocation', function() {
-                                            console.log("button was clicked", coordinates[0], coordinates[1]);
+                                            //console.log("button was clicked", coordinates[0], coordinates[1]);
                                             getMapRecordFromDB(id, coordinates);
                                         });
                                     }
 
+                                    // Set location button event
                                     function setLocationButton() {
-                                        // Use .off to remove any previous click event to prevent stacking/continous id response
                                         $(document).off('click', '#setLocation').on('click', '#setLocation', function() {
                                             var coordinatesDiv = document.querySelector('#coordinates');
-                                            console.log("here");
-                                            // Extracting longitude and latitude using REGEX
                                             var textContent = coordinatesDiv.innerHTML;
                                             var regex = /Longitude:\s([\d.]+)\s*<br>\s*Latitude:\s([\d.]+)/;
                                             var match = textContent.match(regex);
@@ -469,18 +468,59 @@ $hasId = !empty($id);
                                             if (match) {
                                                 var longitude = match[1];
                                                 var latitude = match[2];
-                                                console.log('Longitude:', longitude);
-                                                console.log('Latitude:', latitude);
+                                                // console.log('Longitude:', longitude);
+                                                // console.log('Latitude:', latitude);
+
+                                                // AJAX for UPDATE logic
+                                                $.ajax({
+                                                    url: '/Maps/update-record.php',
+                                                    type: 'POST',
+                                                    contentType: 'application/json',  
+                                                    data: JSON.stringify({
+                                                        inventory_id: id,
+                                                        longitude: longitude,
+                                                        latitude: latitude
+                                                    }), 
+                                                    success: function(response) {
+                                                        //console.log("ln", response);
+                                                        const responseData = typeof response === "string" ? JSON.parse(response) : response;
+                                                        const lng = parseFloat(responseData.longitude);
+                                                        const lat = parseFloat(responseData.latitude);
+                                                        //console.log("Parsed Longitude:", lng, "Parsed Latitude:", lat);
+                                                        const coordinates = [lng, lat];
+                                                        
+                                                        Swal.fire({
+                                                            title: 'Success!',
+                                                            text: 'Location updated successfully',
+                                                            icon: 'success', 
+                                                            confirmButtonText: 'Ok'
+                                                        }).then(() => {
+                                                            // Call the function to update and reopen the modal
+                                                            Swal.fire({
+                                                                html: itemClickId(id)
+                                                            })
+                                                        });
+                                                        // Update or create the initial marker
+                                                        if (initialMarker) {
+                                                            initialMarker.setLngLat(coordinates);
+                                                        } else {
+                                                            initialMarker = new mapboxgl.Marker({ draggable: false })
+                                                                .setLngLat(coordinates)
+                                                                .addTo(map);
+                                                        }
+                                                    },
+                                                    error: function(xhr, status, error) {
+                                                        console.error(error);
+                                                    }
+                                                });
                                             } else {
                                                 console.log('Coordinates not found');
                                             }
-                                            
                                         });
                                     }
-                                    
-                                    
+
+                                    // Function to get map record from the database
                                     function getMapRecordFromDB(id, lng = null, lat = null) {
-                                        console.log("id", id);
                                         $.ajax({
                                             url: '/Maps/get-record.php',
                                             type: 'GET',
@@ -490,8 +530,7 @@ $hasId = !empty($id);
                                                 var coordinatesDiv = document.querySelector('#coordinates');
                                                 
                                                 if (response.length === 0) {
-                                                    console.log("No records found.", coordinatesDiv,lng);
-                                                    
+                                                    // console.log("No records found.", coordinatesDiv, lng);
                                                     // Extracting longitude and latitude using REGEX
                                                     var textContent = coordinatesDiv.innerHTML;
                                                     var regex = /Longitude:\s([\d.]+)\s*<br>\s*Latitude:\s([\d.]+)/;
@@ -500,16 +539,42 @@ $hasId = !empty($id);
                                                     if (match) {
                                                         var longitude = match[1];
                                                         var latitude = match[2];
-                                                        console.log('Longitude:', longitude);
-                                                        console.log('Latitude:', latitude);
+                                                        
+                                                        //AJAX for INSERT logic
+                                                        $.ajax({
+                                                            url: '/Maps/insert-record.php',
+                                                            type: 'POST',
+                                                            contentType: 'application/json',  
+                                                            data: JSON.stringify({
+                                                                inventory_id: id,
+                                                                longitude: longitude,
+                                                                latitude: latitude
+                                                            }), 
+                                                            success: function(response) {
+                                                                //console.log(response);
+                                                            },
+                                                            error: function(xhr, status, error) {
+                                                                console.error(error);
+                                                            }
+                                                        });
+                                                    
                                                     } else {
                                                         console.log('Coordinates not found');
                                                     }
                                                 } else {
-                                                    console.log("Data found Response: ", response);
-                                                    
+                                                    // console.log("Data found Response: ", response);
                                                     if (coordinatesDiv) {
                                                         coordinatesDiv.innerHTML = `Longitude: ${response[0].longitude} <br/> Latitude: ${response[0].latitude}`;
+                                                        // Update marker position
+                                                        const lng = parseFloat(response[0].longitude);
+                                                        const lat = parseFloat(response[0].latitude);
+                                                        if (initialMarker) {
+                                                            initialMarker.setLngLat([lng, lat]);
+                                                        } else {
+                                                            initialMarker = new mapboxgl.Marker({ draggable: false })
+                                                                .setLngLat([lng, lat])
+                                                                .addTo(map);
+                                                        }
                                                     }
                                                 }
                                             },
@@ -520,18 +585,18 @@ $hasId = !empty($id);
                                         });
                                     }
 
-                                    // Initialize the map with the geocoded center
+                                    // Initialize the map
                                     const map = new mapboxgl.Map({
                                         container: 'map',
                                         style: 'mapbox://styles/mapbox/streets-v12',
-                                        center: coordinates,  // Use the geocoded coordinates
+                                        center: coordinates,
                                         zoom: 14
                                     });
 
-                                    // Add the initial marker based on geocoded coordinates
-                                    const initialMarker = new mapboxgl.Marker({
-                                        draggable: true
-                                    }).setLngLat(coordinates).addTo(map);
+                                    // Create initial marker
+                                    initialMarker = new mapboxgl.Marker({ draggable: false })
+                                        .setLngLat(coordinates)
+                                        .addTo(map);
 
                                     // Show coordinates of the initial marker
                                     var coordinatesDiv = document.querySelector('#coordinates');
@@ -540,7 +605,6 @@ $hasId = !empty($id);
                                         coordinatesDiv.innerHTML = `Longitude: ${coordinates[0]} <br/> Latitude: ${coordinates[1]}`;
                                         clickLocation(id);
                                         setLocationButton();
-                                        
                                     }
 
                                     // Update coordinates when dragging the marker
@@ -549,12 +613,9 @@ $hasId = !empty($id);
                                         var lng = lngLat.lng;
                                         var lat = lngLat.lat;
 
-                                        // Update the coordinates div
                                         if (coordinatesDiv) {
                                             coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
                                         }
-
-                                        // Fetch the record from DB for the new position
                                         getMapRecordFromDB(id, lng, lat);
                                     });
 
@@ -563,7 +624,7 @@ $hasId = !empty($id);
                                         var coordinatesDiv = document.querySelector('#coordinates');
                                         if (coordinatesDiv) {
                                             var markers = document.querySelectorAll('.mapboxgl-marker');
-                                            markers.forEach(function(el){
+                                            markers.forEach(function(el) {
                                                 el.style.display = 'none';
                                             });
 
@@ -574,19 +635,16 @@ $hasId = !empty($id);
                                             coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
 
                                             // Create a new marker at the clicked position
-                                            var newMarker = new mapboxgl.Marker({
-                                                draggable: true
-                                            }).setLngLat([lng, lat]).addTo(map);
+                                            var newMarker = new mapboxgl.Marker({ draggable: false })
+                                                .setLngLat([lng, lat])
+                                                .addTo(map);
 
-                                            // Update coordinates and fetch new data when dragging the new marker
                                             newMarker.on('dragend', function() {
                                                 var lngLat = newMarker.getLngLat();
                                                 lng = lngLat.lng;
                                                 lat = lngLat.lat;
 
                                                 coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
-
-                                                // Fetch the record from DB for the new position
                                                 getMapRecordFromDB(id, lng, lat);
                                             });
                                         } else {
@@ -595,6 +653,7 @@ $hasId = !empty($id);
                                     });
                                 }
                             });
+
 
                             //---------------------------------------------------------
                             htmlContent += `
@@ -1064,6 +1123,7 @@ $hasId = !empty($id);
 
                         }
                     }).then(() => {
+                        
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
