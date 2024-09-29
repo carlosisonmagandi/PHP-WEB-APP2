@@ -39,9 +39,10 @@ include("../templates/nav-bar.php");
 
 <div class="container">
     <div class="centered">
-        <a class="button" data-text="Trees" data-href="/manage-reference-data/manage-ref-data.php"><i class="fas fa-tree"></i></a>
-        <a class="button" data-text="Vehicle" data-href="#"><i class="fas fa-car"></i></a>
-        <a class="button" data-text="Equipment" data-href="/manage-equipments-ref-data/equipment-reference-data.php"><i class="fas fa-tools"></i></a>
+        <a class="button" data-text="Logs" data-href="/manage-reference-data/manage-ref-data.php"><i class="fas fa-tree"></i></a>
+        <a class="button" data-text="Vehicle" data-href="/manage-vehicle-ref-data/vehicle-reference-data.php"><i class="fas fa-car"></i></a>
+        <a class="button" data-text="Equipment" data-href="/manage-equipments-ref-data/equipment-reference-data.php"><i class="fas fa-tractor"></i>
+        </a>
     </div>
 </div>
 

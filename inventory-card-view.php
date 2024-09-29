@@ -43,110 +43,110 @@ $hasId = !empty($id);
     ?>
 
     <style>
-    * {
-    box-sizing: border-box;
-    }
+        * {
+        box-sizing: border-box;
+        }
 
-    body {
-    font-family: Arial, Helvetica, sans-serif;
-    }
+        body {
+        font-family: Arial, Helvetica, sans-serif;
+        }
 
-    .column {
-    float: left;
-    width: 25%;
-    padding: 0 10px;
-    }
+        .column {
+        float: left;
+        width: 25%;
+        padding: 0 10px;
+        }
 
-    .row {margin: 0 -5px;}
+        .row {margin: 0 -5px;}
 
-    .row:after {
-    content: "";
-    display: table;
-    clear: both;
-    }
+        .row:after {
+        content: "";
+        display: table;
+        clear: both;
+        }
 
-    /* Responsive columns */
-    @media screen and (max-width: 600px) {
-    .column {
-        width: 100%;
-        display: block;
-        margin-bottom: 20px;
-    }
-   
-    }
-
-    /* Style the counter cards */
-    .card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    padding: 16px;
-    text-align: center;
-    background-color: #f1f1f1;
-    margin: 10px 0;
-    }
-
-    /* custom card style */
-    .totalItemDiv{
-        background-color:#002f6c; 
-        padding:5px; 
-        position:absolute;
-        right:2%;
-        top:2%;
-        font-size:10px;
-        color:#FFF;
-        border-radius:20%
-    }
+        /* Responsive columns */
+        @media screen and (max-width: 600px) {
+        .column {
+            width: 100%;
+            display: block;
+            margin-bottom: 20px;
+        }
     
-    .editButtonIcon{
-        background-color:#003d7a;
-        border:none; 
-        position:absolute;
-        right:6%;
-        bottom:43%;
-        font-size:10px;
-        color:#fefefe;
-        border-radius:20%;
-       
-    }
-   
-    .detailDiv{
-        background-color:#003d7a;
-        padding:5%;
-        color:#f8f9fa;
-        font-size:12px
-    }
-    .imageDiv{
-        background-color:#FFF;
+        }
+
+        /* Style the counter cards */
+        .card {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        text-align: center;
+        background-color: #f1f1f1;
+        margin: 10px 0;
+        }
+
+        /* custom card style */
+        .totalItemDiv{
+            background-color:#002f6c; 
+            padding:5px; 
+            position:absolute;
+            right:2%;
+            top:2%;
+            font-size:10px;
+            color:#FFF;
+            border-radius:20%
+        }
         
-    }
-    .img{
-        width: 100%;
-        height: 150px;
-        object-fit: cover; 
-        display: block; 
-    }
-    .button{
-        background-color: #f8f9fa;
-        color: #002f6c;
-        border: 1px solid #002f6c;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        font-size: 11px;
-        border-radius: 1px;
-        padding:6px;
-        width:40%;
-    }
-    .button:hover{
-        background-color: #002f6c;
-        color:#d1d1d1;  
-    } 
-    .flex-item-left {
-    flex: 100%;
-    }
+        .editButtonIcon{
+            background-color:#003d7a;
+            border:none; 
+            position:absolute;
+            right:6%;
+            bottom:43%;
+            font-size:10px;
+            color:#fefefe;
+            border-radius:20%;
+        
+        }
+    
+        .detailDiv{
+            background-color:#003d7a;
+            padding:5%;
+            color:#f8f9fa;
+            font-size:12px
+        }
+        .imageDiv{
+            background-color:#FFF;
+            
+        }
+        .img{
+            width: 100%;
+            height: 150px;
+            object-fit: cover; 
+            display: block; 
+        }
+        .button{
+            background-color: #f8f9fa;
+            color: #002f6c;
+            border: 1px solid #002f6c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 11px;
+            border-radius: 1px;
+            padding:6px;
+            width:40%;
+        }
+        .button:hover{
+            background-color: #002f6c;
+            color:#d1d1d1;  
+        } 
+        .flex-item-left {
+        flex: 100%;
+        }
 
 
-    .flex-container .flex-item-right button:hover{
-        background-color:#D3D3D3;
-    } 
-   
+        .flex-container .flex-item-right button:hover{
+            background-color:#D3D3D3;
+        } 
+    
     </style>
 
     <!-- Scripts -->
@@ -238,7 +238,7 @@ $hasId = !empty($id);
                                 </div>
                                 <br>
                                 <div class="buttonsDiv">
-                                    <input class="button" type="button" value="start navigation">
+                                    <input class="button" id="startNavigation" data-id="${id}" type="button" value="start navigation">
                                     <input class="button" id="moreDetails" data-id="${id}" type="button" value="more details">
                                 </div>
                             </div>
@@ -257,6 +257,69 @@ $hasId = !empty($id);
     }
 
     $(document).ready(function() {
+        //Navigation click button
+        $(document).on('click', '#startNavigation', function() {
+            var id = $(this).data('id'); 
+
+            $.ajax({
+                url: '/Maps/get-record.php',
+                type: 'GET',
+                data: { inventory_id: id },
+                success: function(response) {
+                    if (Array.isArray(response) && response.length > 0) {
+                        const latitude = response[0].latitude;
+                        const longitude = response[0].longitude;
+                        // console.log('Records found:', latitude, longitude);
+                        // Use Geolocation API to get current position
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                                const userLatitude = position.coords.latitude;
+                                const userLongitude = position.coords.longitude;
+                                // Open Google Maps with user's current location
+                                const url = `https://www.google.com/maps/dir/?api=1&origin=${userLatitude},${userLongitude}&destination=${latitude},${longitude}`;
+                                window.open(url, "_blank");
+                            }, function() {
+                                console.log('Unable to retrieve your location');
+                            });
+                        } else {
+                            console.log('Geolocation is not supported by this browser.');
+                        }
+                    } else {
+                        // call AJAX that will use the barangay+city+municipality as coordinates
+                        $.ajax({
+                            url: '/inventory-tree/get-record.php',
+                            type: 'GET',
+                            data: { inventory_id: id },
+                            success: function(response) {
+                                //  console.log(response.data.barangay,response.data.city_municipality,response.data.province);
+                                 if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(function(position) {
+                                        const userLatitude = position.coords.latitude;
+                                        const userLongitude = position.coords.longitude;
+
+                                        // Open Google Maps with user's current location
+                                        const url = `https://www.google.com/maps/dir/?api=1&origin=${userLatitude},${userLongitude}&destination=${response.data.barangay}+${response.data.city_municipality}+${response.data.province}`;
+
+                                        window.open(url, "_blank");
+                                    }, function() {
+                                        console.log('Unable to retrieve your location');
+                                    });
+                                } else {
+                                    console.log('Geolocation is not supported by this browser.');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('AJAX error:', status, error);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error:', status, error);
+                }
+            });
+        });
+
         $(document).on('click', '#moreDetails', function() {
             var id = $(this).data('id');  
             //hide the content
@@ -454,6 +517,7 @@ $hasId = !empty($id);
                                         $(document).off('click', '#viewLocation').on('click', '#viewLocation', function() {
                                             //console.log("button was clicked", coordinates[0], coordinates[1]);
                                             getMapRecordFromDB(id, coordinates);
+  
                                         });
                                     }
 
@@ -488,6 +552,7 @@ $hasId = !empty($id);
                                                         const lat = parseFloat(responseData.latitude);
                                                         //console.log("Parsed Longitude:", lng, "Parsed Latitude:", lat);
                                                         const coordinates = [lng, lat];
+                                                        
                                                         
                                                         Swal.fire({
                                                             title: 'Success!',
@@ -539,6 +604,7 @@ $hasId = !empty($id);
                                                     if (match) {
                                                         var longitude = match[1];
                                                         var latitude = match[2];
+
                                                         
                                                         //AJAX for INSERT logic
                                                         $.ajax({
@@ -570,10 +636,12 @@ $hasId = !empty($id);
                                                         const lat = parseFloat(response[0].latitude);
                                                         if (initialMarker) {
                                                             initialMarker.setLngLat([lng, lat]);
+                                                            map.setCenter([lng, lat]);
+                                                            map.setZoom(14);
                                                         } else {
                                                             initialMarker = new mapboxgl.Marker({ draggable: false })
-                                                                .setLngLat([lng, lat])
-                                                                .addTo(map);
+                                                            .setLngLat([lng, lat])
+                                                            .addTo(map);
                                                         }
                                                     }
                                                 }
@@ -584,7 +652,7 @@ $hasId = !empty($id);
                                             }
                                         });
                                     }
-
+    
                                     // Initialize the map
                                     const map = new mapboxgl.Map({
                                         container: 'map',
@@ -651,9 +719,10 @@ $hasId = !empty($id);
                                             console.error('#coordinates div not found in the DOM.');
                                         }
                                     });
+
+                                    
                                 }
                             });
-
 
                             //---------------------------------------------------------
                             htmlContent += `
@@ -683,6 +752,7 @@ $hasId = !empty($id);
                                     align-items: center; 
                                     justify-content: center; 
                                     transition: background-color 0.3s; 
+                                    z-index:999;
                                 }
 
                                 .button-trash:hover {
@@ -692,13 +762,17 @@ $hasId = !empty($id);
                                 .button-trash i {
                                     margin-bottom: 10px; 
                                 }
+                                #image:hover{
+                                transform: scale(1.04); 
+                                z-index:-999;
+                                }
                         
                             </style>
                             <div>    
                                 <div class="flex-container">
                                     <div class="flex-item-left-img">
                                         <p style="display:none">${image.id}</p>
-                                        <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
+                                        <img id="image" src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
                                     </div> 
                                     <button data-id="${image.id}" class="button-trash delete-button" id="buttonId">
                                         <i class="fas fa-trash-alt"></i>
@@ -781,6 +855,7 @@ $hasId = !empty($id);
                                 text-decoration: none; 
                                 transition: background-color 0.3s, box-shadow 0.3s; 
                                 margin-top:10px;
+                                 
                             }
                             .addImageButton:hover {
                                 background-color: #0056b3;
@@ -869,7 +944,8 @@ $hasId = !empty($id);
                                 position: absolute;
                                 /*background: #f90;*/
                                 color: #000;
-                                right: -100%; /* Initially placed outside to the right, relative to the modal */
+                                top:0;
+                                right: -200%; /* Initially placed outside to the right, relative to the modal */
                                 transition: right 0.6s ease-in-out; /* Slide-in effect */
                             }
 
@@ -886,13 +962,13 @@ $hasId = !empty($id);
                             <div class="flex-container-right">
                                 <br>
                                 <div class="grid-container">
-                                    <label for="slideToggle" class="btn btn-success" id="viewLocation">View Location</label>
-                                    <button  id="setLocation" class="btn btn-success">Set Location</button>
+                                    <label for="slideToggle" class="btn btn-success" id="viewLocation" style="z-index:999;">View Location</label>
+                                    <button  id="setLocation" class="btn btn-success" style="z-index:999;">Set Location</button>
+                                    
                                     <input type="checkbox" id="slideToggle">
                                     <div class="hidden">
                                         ${mapsContent}
                                     </div>
-                                    
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
@@ -942,7 +1018,7 @@ $hasId = !empty($id);
                                                 <td><b>ACP Status or Case No</b></td>
                                                 <td><b>Date of Confiscation Order</b></td>
                                                 <td><b>Remarks</b></td>
-                                                <td><b>Apprehended Person</b></td>
+                                                <td><b>Apprehended Person/s</b></td>
                                             </tr>
                                             <tr>
                                                 <td>${involve_personalities}</td>
@@ -978,6 +1054,8 @@ $hasId = !empty($id);
                                 </div>
                             </div>
                         </div>
+                            
+                        
                         `;
                     }
 

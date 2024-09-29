@@ -1,9 +1,11 @@
 <?php
 session_start();
-require("includes/session.php");
-require("includes/darkmode.php");
-require("includes/authentication.php");
+require("../includes/session.php");
+require("../includes/darkmode.php");
+require("../includes/authentication.php");
 
+
+//action after logout button
 if(isset($_POST['Logout'])){
     session_destroy();
     header("Location: ../../index.php");
@@ -112,7 +114,7 @@ $hasId = !empty($id);
 </head>
 <body>
 <?php 
-include ("templates/nav-bar.php");
+include ("../templates/nav-bar.php");
 ?>
 <br>
 
@@ -122,9 +124,9 @@ include ("templates/nav-bar.php");
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
 <!-- data table -->
-<script src="Styles/data-table/jquery-3.7.1.js"></script>
-<script src="Styles/data-table/dataTables.js"></script>
-<link href="Styles/data-table/dataTables.css" rel="stylesheet" />
+<script src="/Styles/data-table/jquery-3.7.1.js"></script>
+<script src="/Styles/data-table/dataTables.js"></script>
+<link href="/Styles/data-table/dataTables.css" rel="stylesheet" />
 
 <!-- sweetalert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -135,7 +137,7 @@ include ("templates/nav-bar.php");
     <div class="flex-container">
         <div class="flex-item-left" id="titleContainer">
             <!-- title -->
-            <h3 style="font-size:12px; font-weight:bold"><center>100% INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES AND OTHER IMPLEMENTS<br> DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+            <h3 style="font-size:12px; font-weight:bold"><center>INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
         </div>
         <div class="flex-item-right">
             <button onclick="redirectToUrl()" class='btn btn-default' id="addNewButton" style="border:1px solid #e0e0e0;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); font-size:12px; padding:9px;  ">
@@ -156,23 +158,19 @@ include ("templates/nav-bar.php");
             <thead style="text-align:center; " >
             <tr>
                 <th style="width:10%;">ID</th>
-                <th>Date of Apprehension</th>
-                <th>SITIO</th>
-                <th>BARANGAY</th>
-                <th>CITY/MUNICIPALITY</th>
-                <th>PROVINCE</th>
-                <th>APPREHENDING OFFICER</th>
-                <th>APPREHENDED ITEMS(Species,Pieces,Volume,Conveyance,Implements, etc.)</th>
-                <th>ESTIMATED MARKET VALUE OF FOREST PRODUCTS</th>
-                <th>ESTIMATED VALUE OF CONVEYANCE & IMPLEMENTS</th>
-                <th>INVOLVE PERSONALITIES</th>
-                <th>CUSTODIAN</th>
-                <th>acp STATUS/ CASES NO.</th>
-                <th>DATE OF CONFISCATION ORDER</th>
-                <th>REMARKS(Status of apprehended Item)</th>
-                <th>APPREHENDED PERSON</th>
+                <th>EQUIPMENT NAME</th>
+                <th>TYPE</th>
+                <th>SERIAL NUMBER</th>
+                <th>BRAND</th>
+                <th>MODEL</th>
+                <th>STATUS</th>
+                <th>LOCATION</th>
+                <th>DATE OF CONFISCATION</th>
+                <th>OWNER</th>
+                <th>CONDITION</th>
+                <th>REMARKS</th>
                 <th>DATE CREATED</th>
-                
+    
                 <th>ACTIONS</th>
             </tr>
             </thead>
@@ -181,30 +179,29 @@ include ("templates/nav-bar.php");
 
             <tfoot>
                 <tr>
-                    <th style="width:10%;">ID</th>
-                    <th>Date of Apprehension</th>
-                    <th>SITIO</th>
-                    <th>BARANGAY</th>
-                    <th>CITY/MUNICIPALITY</th>
-                    <th>PROVINCE</th>
-                    <th>APPREHENDING OFFICER</th>
-                    <th>APPREHENDED ITEMS(Species,Pieces,Volume,Conveyance,Implements, etc.)</th>
-                    <th>ESTIMATED MARKET VALUE OF FOREST PRODUCTS</th>
-                    <th>ESTIMATED VALUE OF CONVEYANCE & IMPLEMENTS</th>
-                    <th>INVOLVE PERSONALITIES</th>
-                    <th>CUSTODIAN</th>
-                    <th>acp STATUS/ CASES NO.</th>
-                    <th>DATE OF CONFISCATION ORDER</th>
-                    <th>REMARKS(Status of apprehended Item)</th>
-                    <th>APPREHENDED PERSON</th>
-                    <th>DATE CREATED</th>
-                    <th >ACTIONS</th>
+                <th style="width:10%;">ID</th>
+                <th>EQUIPMENT NAME</th>
+                <th>TYPE</th>
+                <th>SERIAL NUMBER</th>
+                <th>BRAND</th>
+                <th>MODEL</th>
+                <th>STATUS</th>
+                <th>LOCATION</th>
+                <th>DATE OF CONFISCATION</th>
+                <th>OWNER</th>
+                <th>CONDITION</th>
+                <th>REMARKS</th>
+                <th>DATE CREATED</th>
+    
+                <th>ACTIONS</th>
                 </tr>
             </tfoot>
             </table>
         </div>
     </div>
+
 </div>
+
 
 <script>
     let tableData = [];
@@ -214,16 +211,21 @@ include ("templates/nav-bar.php");
     new DataTable('#dataTable', {
         initComplete: function () {
             const api = this.api();
-
-            // Hide columns in a single operation
-            api.columns([2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16])
-                .visible(false);
+             // Hide columns in a single operation
+            api.columns([
+                6,//Status
+                7,//Location
+                8,//Date of Confiscation
+                10,//Condition
+                11,//Remarks
+                12//Date Created
+            ]).visible(false);
 
             api.columns().every(function (index) { 
                 const column = this;
                 const footer = column.footer();
 
-                if (index !== 17) { 
+                if (index !== 13) { 
                     const input = document.createElement('input'); 
                     input.placeholder = column.footer().textContent;
 
@@ -252,60 +254,19 @@ include ("templates/nav-bar.php");
         };
     }
 
-    // function fetchTitleFromDB() {//Get title details
-    //     $.ajax({
-    //         url: '/inventory-get-title.php',
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         success: function(response) {
-    //             var percent = response[0].percentage;
-    //             var title = response[0].title;
-    //             var startYear = response[0].cy_start_year; 
-    //             var endYear = response[0].cy_end_year;
-
-    //             var dynamicContent = percent + "% INVENTORY OF " + title.toUpperCase() 
-    //             // + " AS OF CY "
-    //             //  + startYear + "-"
-    //             +  
-    //             `<select name="endYear" id="endYear" >
-    //                 <option selected>${endYear}</option>
-    //                 <option >2025</option>
-    //                 <option >2026</option>
-    //                 <option >2027</option>
-    //                 <option >2028</option>
-    //                 <option >2029</option>
-    //                 <option >2030</option>
-    //                 <option >2031</option>
-    //                 <option >2032</option>
-    //                 <option >2033</option>
-    //                 <option >2034</option>
-    //                 <option >2035</option>
-    //                 <option >2036</option>
-    //                 <option >2037</option>
-    //                 <option >2038</option>
-    //                 <option >2039</option>
-    //                 <option >2040</option>
-    //             </select>` ;
-    //             document.getElementById("titleContainer").innerHTML = '<h3 style="font-family: \'Poppins\', sans-serif; font-size:12px; font-weight:bold"><center>' + dynamicContent + '</center></h3>';
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.error('Error:', error);
-    //             alert("Error fetching data from the server. See console for details.");
-    //         }
-    //     });
-    // }
-
     function fetchDataFromDB() {
         $.ajax({
-            url: '/inventory-get-data.php',
+            url: '/equipments/get-record.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
+                // console.log('Success:', response);
                 updateTable(response);//call updateTable
             },
             error: function(xhr, status, error) {
-                console.error('Error:', error);
-                alert("Error fetching data from the server. See console for details.");
+                // console.error('Error:', error);
+                // console.log(xhr.messageText);
+                // console.log(xhr);
             }
         });
     }
@@ -329,16 +290,17 @@ include ("templates/nav-bar.php");
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item edit-action"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
                     <li><a class="dropdown-item delete-action"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
-                    <!--<li><a class="dropdown-item qr-action">Add Specs<i class="fas fa-qrcode" style="float:right"></i></a></li>-->
                 </ul>
             </div>
             `);
             table.row.add(rowDataArray);// Add the row to the DataTable
         });
-        table.order([16, 'desc']).draw();// Redraw the DataTable
+        table.order([12, 'desc']).draw();// Redraw the DataTable
     }
 
     $(document).ready(function() {//call fetchDataFromDb on page load
+        clickableId();
+        
         var hasId = <?php echo json_encode($hasId); ?>;
         var id = <?php echo json_encode($id); ?>;
 
@@ -347,30 +309,13 @@ include ("templates/nav-bar.php");
         }else{
             fetchDataFromDB();
         };
-    });
-
-    //Adding Action column at the end
-
-    // Custom sweet alert
-    function success(){
-        Swal.fire({
-            title: "Success.",
-            text:"Data inserted successfully.",
-            icon:"success"
-
-        });
-    }
-
-    //Fetching id using eventlistener instead of onlick 
-    $(document).ready(function() {
-        //fetchTitleFromDB();//get title details on page load
-        clickableId()//Call function for click ID
 
         // Event listener for edit action
         $('#dataTable').on('click', '.edit-action', function() {
             const id = $(this).closest('tr').find('td:first').text();
             sessionStorage.setItem('viewType', 'table');
             let viewType = sessionStorage.getItem('viewType');
+            // console.log(viewType);
             editAction(id);
         });
 
@@ -381,20 +326,32 @@ include ("templates/nav-bar.php");
         });
     });
 
+    function clickableId(){
+        //clickable id
+        $('#dataTable').on('click', '.clickable-id', function() {
+            //alert('You clicked on id: ' + $(this).text());
+            var id = $(this).text();
+            itemClickId(id);
+        });
+    }
+
     //Edit function
     function editAction(id) {
+        //console.log(id);
         $.ajax({
-            url: '/inventory-tree/get-record.php',
+            url: '/equipments/get-record-by-id.php',
             type: 'GET',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(data) {
                 if (data.status === 'success') {
                     // Construct query string with data
                     let queryString = id;
-                    
+                    // console.log(data);
+                    // console.log(queryString);
+
                     // Redirect with query parameters
-                    window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
+                    window.location.href = '/equipments/add-record-view.php?' + queryString;
                 } else {
                     Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                 }
@@ -405,15 +362,18 @@ include ("templates/nav-bar.php");
         });
     }
 
-
+    //Delete function
     function deleteAction(id) {
+        // alert('Delete successful for ID: ' + id);
+
         $.ajax({
-            url: '/inventory-tree/delete-record.php',
+            url: '/equipments/delete-record.php',
             type: 'POST',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
+                    // console.log(response);
                     fetchDataFromDB();//reload the table
                     Swal.fire({
                         title: 'Success',
@@ -437,47 +397,21 @@ include ("templates/nav-bar.php");
             }
         });
     }
-
-    function clickableId(){
-        //clickable id
-        $('#dataTable').on('click', '.clickable-id', function() {
-            var id = $(this).text();
-            itemClickId(id);
-        });
-    }
-
     function itemClickId(id) {
+        console.log(id);
         //Image pane funtions
         $.ajax({
-            url: '/inventory-get-images.php',
+            url: '/equipments/equipment-get-images.php',
             type: 'GET',
-            data: { inventory_id: id },
+            data: { equipment_id: id },
             dataType: 'json',
             success: function(response) { 
+                  //console.log(response); 
+
                 // Expected data
                 if (response) {
-                    const barangay=response.barangay
-                    const title=response.apprehended_items;
-                    const sitio=response.sitio;
-                    const city_municipality=response.city_municipality;
-                    const province=response.province;
-                    const apprehending_officer=response.apprehending_officer;
-                    const EMV_forest_product=response.EMV_forest_product;
-                    const EMV_conveyance_implements=response.EMV_conveyance_implements;
-                    const involve_personalities=response.involve_personalities;
-                    const custodian=response.custodian;
-                    const ACP_status_or_case_no=response.ACP_status_or_case_no;
-                    const date_of_confiscation_order=response.date_of_confiscation_order;
-                    const remarks=response.remarks;
-                    const apprehended_persons=response.apprehended_persons;
-
-                    const apprehended_quantity=response.apprehended_quantity;
-                    const apprehended_volume=response.apprehended_volume;
-                    const apprehended_vehicle=response.apprehended_vehicle;
-                    const apprehended_vehicle_type=response.apprehended_vehicle_type;
-                    const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
-
                     let htmlContent = ``;
+
 
                     if (response.images.length > 0) {
                         response.images.forEach(function(image) {
@@ -659,6 +593,8 @@ include ("templates/nav-bar.php");
                                 text-align: center;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;
+                                
+            
                             }
                             .category-header {
                                 background-color: #002f6c;
@@ -673,6 +609,7 @@ include ("templates/nav-bar.php");
                             .table-container {
                                 margin-bottom: 20px;
                             }
+
                             /*Mobile responsive style*/
                             @media (max-width: 600px) {
                                     th, td {
@@ -691,19 +628,21 @@ include ("templates/nav-bar.php");
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Site</th>
+                                                <th colspan="5" class="sub-category-header">Equipment detail</th>
                                             </tr>
                                             <tr>
-                                                <td><b>SITIO</b></td>
-                                                <td><b>BARANGAY</b></td>
-                                                <td><b>City</b></td>
-                                                <td><b>Province</b></td>
+                                                <td><b>Equipment Name</b></td>
+                                                <td><b>Type</b></td>
+                                                <td><b>Serial Number</b></td>
+                                                <td><b>Brand</b></td>
+                                                <td><b>Model</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${sitio}</td>
-                                                <td >${barangay}</td>
-                                                <td>${city_municipality}</td>
-                                                <td>${province}</td>
+                                                <td>${response.equipment_name}</td>
+                                                <td>${response.equipment_type}</td>
+                                                <td>${response.serial_no}</td>
+                                                <td>${response.brand}</td>
+                                                <td>${response.model}</td>
                                             </tr>
                                         </table>
                                     </div>  
@@ -713,60 +652,34 @@ include ("templates/nav-bar.php");
                                                 <th colspan="4" class="sub-category-header">Apprehension Details</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Apprehending Officer</b></td>
-                                                <td><b>Apprehended Items</b></td>
-                                                <td><b>EMV Forest Product</b></td>
-                                                <td><b>EMV Conveyance Implements</b></td>
+                                                <td><b>Location</b></td>
+                                                <td><b>Confiscation Date</b></td>
+                                                <td><b>Owner</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${apprehending_officer}</td>
-                                                <td>${title}</td>
-                                                <td>${EMV_forest_product}</td>
-                                                <td>Php. ${EMV_conveyance_implements}</td>
+                                                <td>${response.location}</td>
+                                                <td>${response.date_of_compiscation}</td>
+                                                <td>${response.equipment_owner}</td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="grid-item item3">
                                         <table>
                                             <tr>
-                                                <th colspan="6" class="category-header">Case Information</th>
+                                                <th colspan="6" class="category-header">Other Information</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Involve Personalities</b></td>
-                                                <td><b>Custodian</b></td>
-                                                <td><b>ACP Status or Case No</b></td>
-                                                <td><b>Date of Confiscation Order</b></td>
+                                                <td><b>Status</b></td>
+                                                <td><b>Condition</b></td>
                                                 <td><b>Remarks</b></td>
-                                                <td><b>Apprehended Person/s</b></td>
+                                                <td><b>Date Created</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${involve_personalities}</td>
-                                                <td>${custodian}</td>
-                                                <td>${ACP_status_or_case_no}</td>
-                                                <td>${date_of_confiscation_order}</td>
-                                                <td>${remarks}</td>
-                                                <td>${apprehended_persons}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="grid-item item4">
-                                        <table>
-                                            <tr>
-                                                <th colspan="6" class="category-header">Apprehension Metrics</th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Quantity</b></td>
-                                                <td><b>Volume</b></td>
-                                                <td><b>Vehicle</b></td>
-                                                <td><b>Type of vehicle</b></td>
-                                                <td><b>Plate #</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>${apprehended_quantity}</td>
-                                                <td>${apprehended_volume}</td>
-                                                <td>${apprehended_vehicle}</td>
-                                                <td>${apprehended_vehicle_type}</td>
-                                                <td>${apprehended_vehicle_plate_no}</td>
+                                                <td>${response.equipment_status}</td>
+                                                <td>${response.equipment_condition}</td>
+                                                <td>${response.remarks}</td>
+                                                <td>${response.created_on}</td>
+                                                
                                             </tr>
                                         </table>
                                     </div>
@@ -775,6 +688,7 @@ include ("templates/nav-bar.php");
                         </div>
                         `;
                     }
+
                     Swal.fire({
                         text: `Inventory ID: ${id}`,
                         html: getHtmlContent(),
@@ -786,7 +700,7 @@ include ("templates/nav-bar.php");
                                 button.addEventListener('click', function() {
                                     let buttonId = this.getAttribute('data-id');
                                     $.ajax({
-                                        url: '/inventory-tree/delete-image.php',
+                                        url: '/equipments/delete-image.php',
                                         type: 'POST',
                                         data: { image_id: buttonId },
                                         dataType: 'json',
@@ -820,6 +734,7 @@ include ("templates/nav-bar.php");
                                     });
                                 });
                             });
+
                             // add new image button
                             const buttonAddImage = document.getElementById('addImage');
                             buttonAddImage.addEventListener('click', addImage);
@@ -871,7 +786,7 @@ include ("templates/nav-bar.php");
                                     }
 
                                     $.ajax({
-                                        url: '/inventory-tree/upload-image.php',
+                                        url: '/equipments/upload-image.php',
                                         type: 'POST',
                                         data: formData,
                                         processData: false,
@@ -900,6 +815,7 @@ include ("templates/nav-bar.php");
                                                         html: itemClickId(id)
                                                     })
                                                 });
+                                                //console.log(response.message);
                                             }
                                         },
                                         error: function(xhr, status, error) {
@@ -917,7 +833,7 @@ include ("templates/nav-bar.php");
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
-                        const newUrl = new URL('/inventory.php', window.location.origin);// Construct the new URL to be used
+                        const newUrl = new URL('/equipments/equipment-table-view.php', window.location.origin);// Construct the new URL to be used
                         window.history.replaceState({}, '', newUrl.href);
                     });
                     
@@ -942,7 +858,6 @@ include ("templates/nav-bar.php");
             }
         });
     }
-
 
     // print table view
     function printTable() {
@@ -978,7 +893,7 @@ include ("templates/nav-bar.php");
 
         // Create a title element
         var titleElement = document.createElement('h1');
-        titleElement.innerText = "APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
+        titleElement.innerText = "INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
         titleElement.style.textAlign = 'center';
         titleElement.style.fontSize = '12px';
 
@@ -989,7 +904,7 @@ include ("templates/nav-bar.php");
         document.body.appendChild(printContainer);
 
         window.addEventListener('beforeprint', function () {
-            // console.log("Print initiated");
+            console.log("Print initiated");
         });
 
         window.addEventListener('afterprint', function () {
@@ -1017,16 +932,16 @@ include ("templates/nav-bar.php");
             $(this).append(actionColumn.clone());
         });
     }
-
     //Add new record
     function redirectToUrl() {
-         window.location.href = '/inventory-tree/add-record-view.php'; 
+         window.location.href = '/equipments/add-record-view.php'; 
     }
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 
 <?php
-include  "templates/nav-bar2.php"; 
+include  "../templates/nav-bar2.php"; 
 ?>
 </body>
 </html>

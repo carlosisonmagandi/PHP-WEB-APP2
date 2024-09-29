@@ -270,14 +270,25 @@ if(isset($_POST['Logout'])){
                                 <div class="collapse" id="collapsePassword" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseRequest" aria-expanded="false" aria-controls="pagesCollapseAuth">
-                                            Incidents
+                                            Incident Reports
                                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                         </a>
                                         <div class="collapse" id="pagesCollapseRequest" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
-                                                <a class="nav-link" href="/monitor-item-trees.php">Trees</a>
+                                                <a class="nav-link" href="/monitor-item-trees.php">Forest Products</a>
                                                 <a class="nav-link" href="register.html">Equipment</a>
                                                 <a class="nav-link" href="password.html">Vehicle</a>
+                                            </nav>
+                                        </div>
+
+                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                            Confiscations
+                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                        </a>
+                                        <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                            <nav class="sb-sidenav-menu-nested nav">
+                                                <a class="nav-link" href="401.html">Forest Products</a>
+                                                <!-- <a class="nav-link" href="404.html">Closed case</a> -->
                                             </nav>
                                         </div>
 
@@ -287,20 +298,9 @@ if(isset($_POST['Logout'])){
                                         </a>
                                         <div class="collapse" id="pagesCollapseDonations" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
-                                                <a class="nav-link" href="/monitor-item-trees.php">Trees</a>
-                                                <a class="nav-link" href="register.html">Equipment</a>
+                                                <a class="nav-link" href="/monitor-item-trees.php">Forest Products</a>
+                                                <!-- <a class="nav-link" href="register.html">Equipment</a> -->
                                                 <!-- <a class="nav-link" href="password.html">Vehicle</a> -->
-                                            </nav>
-                                        </div>
-
-                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                            Cases
-                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                        </a>
-                                        <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                            <nav class="sb-sidenav-menu-nested nav">
-                                                <a class="nav-link" href="401.html">Active case</a>
-                                                <a class="nav-link" href="404.html">Closed case</a>
                                             </nav>
                                         </div>
                                     </nav>
@@ -314,7 +314,7 @@ if(isset($_POST['Logout'])){
                             <div class="collapse" id="collapseInventory" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseTrees" aria-expanded="false" aria-controls="pagesCollapseTrees">
-                                        Trees
+                                        Forest Products
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseTrees" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
@@ -357,7 +357,7 @@ if(isset($_POST['Logout'])){
                                 echo '
                                 <a class="nav-link" href="/Request/my-request.php">
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    My Request
+                                    Wood Donations
                                 </a>
                                 ';
                             }

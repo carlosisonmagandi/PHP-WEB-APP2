@@ -26,8 +26,8 @@
     </style>
 </head>
 <body>
-<input type="button" id="addEquipmentTypeBtn" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
-<table id="equipmentTypeTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
+<input type="button" id="addVehicleTypeBtn" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
+<table id="vehicleTypeTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
             <th>Id</th>
@@ -55,18 +55,18 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
-    $('#equipmentTypeTable').DataTable({
+    $('#vehicleTypeTable').DataTable({
         "order": [[ 3, "desc" ]],//order based on the latest created record
         "responsive": true
     });
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/manage-equipments-ref-data/EquipmentType/equipment-list.php',
+            url: '/manage-vehicle-ref-data/VehicleType/vehicle-list.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var table = $('#equipmentTypeTable').DataTable();
+                var table = $('#vehicleTypeTable').DataTable();
                 table.clear();
                 
                 var rows = [];
@@ -93,30 +93,30 @@ $(document).ready(function() {
     }
     fetchDataFromDB();
 
-    $('#equipmentTypeTable').on('click', '.delete-btn', function() {
+    $('#vehicleTypeTable').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
         deleteRecord(id);
         //console.log("delete was clicked");
     });
 
-    $('#equipmentTypeTable').on('click', '.edit-btn', function() {
+    $('#vehicleTypeTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
-        var equipmentTitle = $(this).closest('tr').find('td:eq(1)').text(); 
-        var equipmentDescription = $(this).closest('tr').find('td:eq(2)').text();
+        var vehicleTitle = $(this).closest('tr').find('td:eq(1)').text(); 
+        var vehicleDescription = $(this).closest('tr').find('td:eq(2)').text();
         
-        updateSpeciesRecord(id,equipmentTitle,equipmentDescription);
+        updateVehicleRecord(id,vehicleTitle,vehicleDescription);
         //console.log("edit was clicked");
     });
 
-    $('#addEquipmentTypeBtn').on('click', function() {
+    $('#addVehicleTypeBtn').on('click', function() {
         addNewRecord();
     });
 
     function addNewRecord() {
         Swal.fire({
             html:
-                '<input id="equipmentTitle" class="swal2-input" placeholder="Equipment Type">' +
-                '<textarea id="equipmentDescription" class="swal2-textarea" placeholder="Equipment Description"></textarea>',
+                '<input id="vehicleTitle" class="swal2-input" placeholder="Vehicle Type">' +
+                '<textarea id="vehicleDescription" class="swal2-textarea" placeholder="Vehicle Description"></textarea>',
             showDenyButton: true,
             showCancelButton: false,
             showCloseButton: true,  
@@ -126,34 +126,35 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                
-                const equipmentTitle = document.getElementById('equipmentTitle').value;
-                const equipmentDescription = document.getElementById('equipmentDescription').value;
-                if (equipmentTitle === '' || equipmentDescription === '') {// Validate if inputs are empty
+                const vehicleTitle = document.getElementById('vehicleTitle').value;
+                const vehicleDescription = document.getElementById('vehicleDescription').value;
+                if (vehicleTitle === '' || vehicleDescription === '') {// Validate if inputs are empty
                     Swal.fire("Error", "Inputs required", "error");
                     return;
                 }
-                checkEquipmentNameExists(equipmentTitle).then(exists => {// Check if speciesName already exists
+                checkVehicleNameExists(vehicleTitle).then(exists => {
                     if (exists) {
-                        Swal.fire("Error", "Equipment Type already exists", "error");
+                        Swal.fire("Error", "vehicle Type already exists", "error");
                     } else {
+
                         const data = {
-                            equipmentTitle: equipmentTitle,
-                            equipmentDescription: equipmentDescription
+                            vehicleTitle: vehicleTitle,
+                            vehicleDescription: vehicleDescription
                         };
                         $.ajax({//Insert record
-                            url: '/manage-equipments-ref-data/EquipmentType/equipment-insert.php',
+                            url: '/manage-vehicle-ref-data/VehicleType/vehicle-insert.php',
                             type: 'POST',
                             contentType: 'application/json',
                             dataType: 'json',
                             data: JSON.stringify(data),
                             success: function(data) {
-                                Swal.fire("Saved!", `Equipmet type: ${equipmentTitle}, Equipment Description: ${equipmentDescription}`, "success");
+                                Swal.fire("Saved!", `Vehicle type: ${vehicleTitle}, Vehicle Description: ${vehicleDescription}`, "success");
                                 
                                 fetchDataFromDB(); // Refresh the table
                             },
                             error: function(xhr, status, error) {
                                 if (xhr.status === 409) {
-                                    Swal.fire("Error", "Species Name already exists", "error");
+                                    Swal.fire("Error", "vehicle Name already exists", "error");
                                 } else {
                                     console.error('Error:', error);
                                     // Handle other errors as needed
@@ -162,20 +163,20 @@ $(document).ready(function() {
                         });
                     }
                 }).catch(error => {
-                    console.error('Error checking equipment type:', error);
+                    console.error('Error checking vehicle type:', error);
                 });
             } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
             }
         });
     };
-    function checkEquipmentNameExists(equipmentTitle) {
+    function checkVehicleNameExists(vehicleTitle) {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: '/manage-equipments-ref-data/EquipmentType/equipment-type-check-record.php',
+                url: '/manage-vehicle-ref-data/VehicleType/vehicle-type-check-record.php',
                 type: 'GET',
                 data: {
-                    equipmentTitle: equipmentTitle
+                    vehicleTitle: vehicleTitle
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -204,7 +205,7 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentType/equipment-delete.php',
+                    url: '/manage-vehicle-ref-data/VehicleType/vehicle-delete.php',
                     type: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
@@ -225,33 +226,33 @@ $(document).ready(function() {
     };
 
     //Update button
-    function updateSpeciesRecord(id, equipmentTitle, equipmentDescription) {
+    function updateVehicleRecord(id, vehicleTitle, vehicleDescription) {
         Swal.fire({
             title: "Are you sure you want to update this record?",
             html:
-            '<input id="inputEquipmentTitle" class="swal2-input" placeholder="Equipment Type" value="' + (equipmentTitle ? equipmentTitle : '') + '">' +
-            '<textarea id="inputEquipmentDescription" class="swal2-textarea" placeholder="Equipment Description">' + (equipmentDescription ? equipmentDescription : '') + '</textarea>',
+            '<input id="inputVehicleTitle" class="swal2-input" placeholder="Vehicle Type" value="' + (vehicleTitle ? vehicleTitle : '') + '">' +
+            '<textarea id="inputVehicleDescription" class="swal2-textarea" placeholder="Vehicle Description">' + (vehicleDescription ? vehicleDescription : '') + '</textarea>',
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes, update it!",
             denyButtonText: `No, keep it`
         }).then((result) => {
             if (result.isConfirmed) {
-                const updatedEquipmentTitle= $('#inputEquipmentTitle').val(); 
-                const updatedEquipmentDescription = $('#inputEquipmentDescription').val();
+                const updatedVehicleTitle= $('#inputVehicleTitle').val(); 
+                const updatedVehicleDescription = $('#inputVehicleDescription').val();
 
-                const updateEquipmentData = {
+                const updateVehicleData = {
                     id: id,
-                    equipmentTitle: updatedEquipmentTitle,
-                    equipmentDescription: updatedEquipmentDescription
+                    vehicleTitle: updatedVehicleTitle,
+                    vehicleDescription: updatedVehicleDescription
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentType/equipment-update.php',
+                    url: '/manage-vehicle-ref-data/VehicleType/vehicle-update.php',
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',
-                    data: JSON.stringify(updateEquipmentData), // Corrected to updateData
+                    data: JSON.stringify(updateVehicleData), // Corrected to updateData
                     success: function(response) {
                         Swal.fire("Updated!", response.message, "success");
                         fetchDataFromDB(); // Call this function to refresh the table

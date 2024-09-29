@@ -2,12 +2,17 @@
 session_start();
 require("../../includes/session.php");
 require("../../includes/darkmode.php");
-
+require("../../includes/authentication.php");
 require_once "../../includes/db_connection.php";
 require_once("../../templates/alert-message.php");
 
 if (!isset($_SESSION['session_id'])) {// Check if the user is logged in
-    header("Location: login.php");
+    header("Location: ../../index.php");
+    exit();
+}
+
+if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
+    header("Location: ../../templates/page-restriction.php");
     exit();
 }
 

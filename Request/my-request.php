@@ -81,11 +81,24 @@ if (isset($_POST['Logout'])) {
         .request-box{
             border:1px solid #002f6c;
             margin-bottom:10px;
+            cursor:pointer;
+        }
+        .request-box:hover {
+            transform: scale(1.01); 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
         }
         .request-header{
             background-color:#335b99;
             color:white;
             padding:3px;
+            
+        }
+        .requestEditIcon{
+            background-color:#335b99;
+            color:white;
+            border:none;
+            z-index:999;
+            float:right;
         }
         .request-details{
             background-color:#fff;
@@ -184,128 +197,10 @@ include("../templates/nav-bar.php");
     <div class="flex-item-left">
         <div>FILTER DIV</div>
         <!-- ----------------------------------------------------------------------- -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
+        <div class="flex-item-left">
+            <div>FILTER DIV</div>
+            <!-- Request boxes will be dynamically inserted here by AJAX -->
         </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-        <div class="request-box">
-            <div class="request-header">REQ01234567</div>
-            <div class="request-details">
-                <span style="font-size:14px"><strong>Requestor Name</strong></span><br>
-                <span>Requested Trees</span>
-            </div>
-            <div class="request-footer">
-               <i> 09-14-2024</i>
-            </div>
-        </div>
-        <!-- ------------------------------------------------------------------------ -->
-
     </div>
     <div class="flex-item-right">
         <form action="" method="post" enctype="multipart/form-data">
@@ -314,7 +209,7 @@ include("../templates/nav-bar.php");
                     <strong>Status:</strong>
                 </div>
                 <div class="flex-item-status-right">
-                    <input type="text" id="status" name="status" disabled value="Pending for approval" style="font-style:italic" >
+                    <input type="text" id="status" name="status" disabled  style="font-style:italic" >
                 </div>
             </div>
 
@@ -346,10 +241,24 @@ include("../templates/nav-bar.php");
                 <div class="form-column">
                     <fieldset>
                         <legend>Donation Request Details</legend>
-                        <div class="form-group">
-                            <label for="item_type">Type of Item Requested </label>
-                            <input type="text" id="item_type" name="item_type" disabled >
-                        </div>
+                        <table>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="item_type">Type of Item Requested </label>
+                                        <input type="text" id="item_type" name="item_type" disabled >
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="form-group" id="itemNameDiv" style="display:none">
+                                        <label for="item_name">Name of requested item</label>
+                                        <input type="text" id="item_name" name="item_name" disabled >
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        
                         <div class="form-group">
                             <label for="quantity_needed">Quantity Needed </label>
                             <input type="number" id="quantity_needed" name="quantity_needed" disabled>
@@ -410,21 +319,23 @@ include("../templates/nav-bar.php");
                 </div>
             </div>
             
-
             <!-- Verification -->
             <fieldset>
                 <legend>Attachments</legend>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="supporting_documents">Supporting Documents <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Option to upload any supporting documents (e.g., proof of need, project plans, photos).</span></span></label>
                     <input type="file" id="supporting_documents" name="supporting_documents">
-                </div>
-                <div class="form-group">
+                </div> -->
+                <p>Supporting documents:</p>
+                <div id="file-list"></div>
+                <br>
+                <p><i>Press ctrl key + click to view the file or Click only to download the file.</i></p>
+                
+                <!-- <div class="form-group">
                     <label for="signature"><i class="star" >*</i> Signature <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">(Can be a soft copy of signature, image,screenshot)</span></span></label>
                     <input type="text" id="signature" name="signature" >
-                </div>
-        
+                </div> -->
             </fieldset>
-            
         </form>
     </div>
 </div>
@@ -435,7 +346,173 @@ include("../templates/nav-bar.php");
             
             window.location.href="/Request/requestForm.php";
         }); 
+
+        // Add click event for dynamically created .request-box elements
+        $('.flex-item-left').on('click', '.request-box', function() {
+            var id = $(this).data('id'); 
+            // console.log('clicked', id);
+            fetchDataById(id);
+            fetchFiles(id);
+
+        });
+
+        $('.flex-item-left').on('click', '.requestEditIcon', function() {
+            var id = $(this).data('id'); 
+
+            // Construct query string with data
+            let queryString = id;
+
+            // Redirect with query parameters
+            window.location.href = '/Request/requestForm.php?' + queryString;
+            
+        });
     });
+
+    function fetchDataFromDB() {
+        $.ajax({
+            url: '/Request/get-record.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // console.log(response);
+
+                // Clear the existing div content
+                $('.flex-item-left').html('<div>FILTER DIV</div>');
+
+                // Loop through the response data and create request boxes
+                response.forEach(function(record) {
+                    var requestBox = `
+                        <div class="request-box" data-id="${record.id}">
+                            <div class="request-header">
+                                ${record.request_number}
+                                
+                                <button class="requestEditIcon" id="requestEditIcon" data-id=${record.id} >
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                            <div class="request-details">
+                                <span style="font-size:14px"><strong>${record.requestor_name}</strong></span><br>
+                                <span>${record.type_of_requested_item}</span>
+                            </div>
+                            <div class="request-footer">
+                                <i>${record.created_on}</i>
+                            </div>
+                        </div>
+                        <!-- ------------------------------------------------------------------------ -->
+                    `;
+
+                    // Append the request box to the flex-item-left div
+                    $('.flex-item-left').append(requestBox);
+                });
+                //remoded the click event for dynamically created .request-box elements
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert("Error fetching data. See console for details.");
+            }
+        });
+
+    }
+
+    fetchDataFromDB();
+
+    function fetchDataById(id) {
+        // console.log("here");
+        $.ajax({
+            url: '/Request/get-record-by-id.php',
+            type: 'GET',
+            data:{requestId:id},
+            dataType: 'json',
+            success: function(response) {
+                // console.log("status",response.approval_status);
+                // console.log(response);
+                $('#requestor_name').val(response.requestor_name);
+                $('#organization').val(response.organization_name);
+                $('#phone_number').val(response.phone_number);
+                $('#email_address').val(response.email);
+                $('#address').val(response.address);
+                $('#item_type').val(response.type_of_requested_item);
+                $('#quantity_needed').val(response.quantity);
+                $('#item_description').val(response.request_description);
+                $('#purpose').val(response.purpose_of_donation);
+                $('#delivery_date').val(response.preferred_delivery_date);
+                $('#delivery_time').val(response.preferred_delivery_time);
+                $('#delivery_address').val(response.delivery_address);
+                $('#special_instructions').val(response.special_instructions);
+                $('#reason').val(response.reason_of_request);
+                $('#previous_donations').val(response.previous_donations);
+                $('#additional_comments').val(response.additional_comments);
+                $('#status').val(response.approval_status);
+                $('#item_name').val(response.name_of_requested_item);
+                
+
+                if (response.type_of_requested_item === 'trees' || 
+                    response.type_of_requested_item === 'Trees' || 
+                    response.type_of_requested_item === 'equipment' || 
+                    response.type_of_requested_item === 'Equipment') {
+                    $('#itemNameDiv').show(); // Show the div for Trees     
+                } else{
+                    $('#itemNameDiv').hide();
+                }
+            },
+            error: function(xhr, status, error) {
+                // console.log(xhr.messageText);
+                console.error('Error:', error);
+                alert("Error fetching data. See console for details.");
+            }
+        });
+    }
+
+    // fetch files
+    function fetchFiles(id) {
+        $.ajax({
+            url: '/Request/fetch-files.php',
+            type: 'POST',
+            data: { request_id: id },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    var files = response.files;
+                    var fileList = $('#file-list');
+                    fileList.empty(); 
+                    if (files.length > 0) {
+                        files.forEach(function(file) {
+                            var fileItem = `
+                                <div class="file-item">
+                                    <a href="${file.file_path}" download="${file.file_name}">
+                                        <i class="fas fa-download"></i> ${file.file_name}
+                                    </a>
+                                </div>
+                            `;
+                            var $fileItem = $(fileItem);
+                            $fileItem.find('a').on('click', function(e) {
+                                if (e.ctrlKey) {
+                                    // Open in new tab when Ctrl key is pressed
+                                    $(this).attr('target', '_blank');
+                                    $(this).removeAttr('download'); // Remove download if Ctrl is pressed
+                                } else {
+                                    // Set download if Ctrl is not pressed
+                                    $(this).attr('download', file.file_name);
+                                }
+                            });
+                            fileList.append($fileItem);
+                        });
+                    } else {
+                        fileList.html('<p>No files uploaded.</p>');
+                    }
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.messageText);
+                alert('Error fetching files.');
+            }
+        });
+    }
+
+    
+
 </script>
 <?php 
 include("../templates/nav-bar2.php");

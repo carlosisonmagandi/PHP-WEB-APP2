@@ -1,7 +1,3 @@
-<?php
-// echo "<script>alert('" . $_SESSION['activeTabName'] . "');</script>";
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,12 +22,12 @@
     </style>
 </head>
 <body>
-<input type="button" id="addEquipmentTypeBtn" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
-<table id="equipmentTypeTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
+<input type="button" id="addStatusButton" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
+<table id="equipmentStatusTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
             <th>Id</th>
-            <th>Name of Type</th>
+            <th>Status Title</th>
             <th>Description</th>
             <th>Date Created</th>
             <th>Actions</th>
@@ -43,7 +39,7 @@
     <tfoot>
         <tr>
             <th>Id</th>
-            <th>Name of Type</th>
+            <th>Status</th>
             <th>Description</th>
             <th>Date Created</th>
             <th>Actions</th>
@@ -55,18 +51,18 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
-    $('#equipmentTypeTable').DataTable({
+    $('#equipmentStatusTable').DataTable({
         "order": [[ 3, "desc" ]],//order based on the latest created record
         "responsive": true
     });
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/manage-equipments-ref-data/EquipmentType/equipment-list.php',
+            url: '/manage-equipments-ref-data/EquipmentStatus/status-list.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var table = $('#equipmentTypeTable').DataTable();
+                var table = $('#equipmentStatusTable').DataTable();
                 table.clear();
                 
                 var rows = [];
@@ -76,8 +72,8 @@ $(document).ready(function() {
                     
                     rows.push([
                         row.id,
-                        row.type_title,
-                        row.type_description,
+                        row.status_title,
+                        row.status_description,
                         row.created_on,
                         editButton + ' ' + deleteButton
                     ]);
@@ -93,30 +89,29 @@ $(document).ready(function() {
     }
     fetchDataFromDB();
 
-    $('#equipmentTypeTable').on('click', '.delete-btn', function() {
+    $('#equipmentStatusTable').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
         deleteRecord(id);
         //console.log("delete was clicked");
     });
 
-    $('#equipmentTypeTable').on('click', '.edit-btn', function() {
+    $('#equipmentStatusTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
-        var equipmentTitle = $(this).closest('tr').find('td:eq(1)').text(); 
-        var equipmentDescription = $(this).closest('tr').find('td:eq(2)').text();
+        var statusTitle = $(this).closest('tr').find('td:eq(1)').text(); 
+        var statusDescription = $(this).closest('tr').find('td:eq(2)').text();
         
-        updateSpeciesRecord(id,equipmentTitle,equipmentDescription);
-        //console.log("edit was clicked");
+        updateSpeciesRecord(id,statusTitle,statusDescription);
     });
 
-    $('#addEquipmentTypeBtn').on('click', function() {
+    $('#addStatusButton').on('click', function() {
         addNewRecord();
     });
 
     function addNewRecord() {
         Swal.fire({
             html:
-                '<input id="equipmentTitle" class="swal2-input" placeholder="Equipment Type">' +
-                '<textarea id="equipmentDescription" class="swal2-textarea" placeholder="Equipment Description"></textarea>',
+                '<input id="statusTitle" class="swal2-input" placeholder="Status Title">' +
+                '<textarea id="statusDescription" class="swal2-textarea" placeholder="Status Description"></textarea>',
             showDenyButton: true,
             showCancelButton: false,
             showCloseButton: true,  
@@ -126,56 +121,55 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                
-                const equipmentTitle = document.getElementById('equipmentTitle').value;
-                const equipmentDescription = document.getElementById('equipmentDescription').value;
-                if (equipmentTitle === '' || equipmentDescription === '') {// Validate if inputs are empty
+                const statusTitle = document.getElementById('statusTitle').value;
+                const statustDescription = document.getElementById('statusDescription').value;
+                if (statusTitle === '' || statusDescription === '') {// Validate if inputs are empty
                     Swal.fire("Error", "Inputs required", "error");
                     return;
                 }
-                checkEquipmentNameExists(equipmentTitle).then(exists => {// Check if speciesName already exists
+                checkEquipmentStatusNameExists(statusTitle).then(exists => {// Check if speciesName already exists
                     if (exists) {
-                        Swal.fire("Error", "Equipment Type already exists", "error");
+                        Swal.fire("Error", "Status already exists", "error");
                     } else {
                         const data = {
-                            equipmentTitle: equipmentTitle,
-                            equipmentDescription: equipmentDescription
+                            statusTitle: statusTitle,
+                            statustDescription: statustDescription
                         };
                         $.ajax({//Insert record
-                            url: '/manage-equipments-ref-data/EquipmentType/equipment-insert.php',
+                            url: '/manage-equipments-ref-data/EquipmentStatus/status-insert.php',
                             type: 'POST',
                             contentType: 'application/json',
                             dataType: 'json',
                             data: JSON.stringify(data),
                             success: function(data) {
-                                Swal.fire("Saved!", `Equipmet type: ${equipmentTitle}, Equipment Description: ${equipmentDescription}`, "success");
+                                Swal.fire("Saved!", `Status title: ${statusTitle}, Status Description: ${statustDescription}`, "success");
                                 
                                 fetchDataFromDB(); // Refresh the table
                             },
                             error: function(xhr, status, error) {
                                 if (xhr.status === 409) {
-                                    Swal.fire("Error", "Species Name already exists", "error");
+                                    Swal.fire("Error", "Record exists", "error");
                                 } else {
                                     console.error('Error:', error);
-                                    // Handle other errors as needed
                                 }
                             }
                         });
                     }
                 }).catch(error => {
-                    console.error('Error checking equipment type:', error);
+                    console.error('Error checking Status Title:', error);
                 });
             } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
             }
         });
     };
-    function checkEquipmentNameExists(equipmentTitle) {
+    function checkEquipmentStatusNameExists(statusTitle) {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: '/manage-equipments-ref-data/EquipmentType/equipment-type-check-record.php',
+                url: '/manage-equipments-ref-data/EquipmentStatus/status-type-check-record.php',
                 type: 'GET',
                 data: {
-                    equipmentTitle: equipmentTitle
+                    statusTitle: statusTitle
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -204,7 +198,7 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentType/equipment-delete.php',
+                    url: '/manage-equipments-ref-data/EquipmentStatus/status-delete.php',
                     type: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
@@ -225,33 +219,33 @@ $(document).ready(function() {
     };
 
     //Update button
-    function updateSpeciesRecord(id, equipmentTitle, equipmentDescription) {
+    function updateSpeciesRecord(id, statusTitle, statusDescription) {
         Swal.fire({
             title: "Are you sure you want to update this record?",
             html:
-            '<input id="inputEquipmentTitle" class="swal2-input" placeholder="Equipment Type" value="' + (equipmentTitle ? equipmentTitle : '') + '">' +
-            '<textarea id="inputEquipmentDescription" class="swal2-textarea" placeholder="Equipment Description">' + (equipmentDescription ? equipmentDescription : '') + '</textarea>',
+            '<input id="inputStatusTitle" class="swal2-input" placeholder="Equipment Type" value="' + (statusTitle ? statusTitle : '') + '">' +
+            '<textarea id="inputStatusDescription" class="swal2-textarea" placeholder="Equipment Description">' + (statusDescription ? statusDescription : '') + '</textarea>',
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Yes, update it!",
             denyButtonText: `No, keep it`
         }).then((result) => {
             if (result.isConfirmed) {
-                const updatedEquipmentTitle= $('#inputEquipmentTitle').val(); 
-                const updatedEquipmentDescription = $('#inputEquipmentDescription').val();
+                const updatedStatusTitle= $('#inputStatusTitle').val(); 
+                const updatedStatusDescription = $('#inputStatusDescription').val();
 
-                const updateEquipmentData = {
+                const updateStatusData = {
                     id: id,
-                    equipmentTitle: updatedEquipmentTitle,
-                    equipmentDescription: updatedEquipmentDescription
+                    statusTitle: updatedStatusTitle,
+                    statusDescription: updatedStatusDescription
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentType/equipment-update.php',
+                    url: '/manage-equipments-ref-data/EquipmentStatus/status-update.php',
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',
-                    data: JSON.stringify(updateEquipmentData), // Corrected to updateData
+                    data: JSON.stringify(updateStatusData), // Corrected to updateData
                     success: function(response) {
                         Swal.fire("Updated!", response.message, "success");
                         fetchDataFromDB(); // Call this function to refresh the table

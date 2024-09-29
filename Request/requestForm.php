@@ -1,4 +1,17 @@
-<?php session_start();?>
+<?php 
+session_start();
+
+require("../includes/session.php");
+require("../includes/darkmode.php");
+require("../includes/authentication.php");
+
+$requestUri = $_SERVER['REQUEST_URI'];
+$parsedUrl = parse_url($requestUri);
+$queryString = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
+
+$id = $queryString;
+$hasId = !empty($id);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +19,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Donation Request Form</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <link rel="stylesheet" type="text/css" href="/Styles/breadCrumbs.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- bootstrap -->
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,6 +76,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            padding:25px;
         }
         .form-column {
             flex: 1;
@@ -114,6 +135,7 @@
     </style>
 </head>
 <body>
+    
 <br>
 <div class="container">
     <?php if ($_SESSION['mode'] == 'light'): ?>
@@ -132,7 +154,7 @@
         </div>
     <?php endif; ?>
 </div>
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data" id="requestForm">
         <h3>Donation Request Form</h3>
         <div class="form-container">    
             <!-- Requestor Information -->
@@ -140,21 +162,21 @@
                 <fieldset>
                     <legend>Requestor Information</legend>
                     <div class="form-group">
-                        <label for="requestor_name"><i class="star" >*</i> Requestor Name <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Full name of the requestor.</span></span></label>
-                        <input type="text" id="requestor_name" name="requestor_name" required>
+                        <label for="requestor_name"><i class="star" >*</i> Requestee <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Full name of the requestor.</span></span></label>
+                        <input type="text" id="requestor_name" name="requestor_name" >
                     </div>
                     <div class="form-group">
-                        <label for="organization">Organization (if applicable) <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext"> Name of the organization making the request.</span></span></label>
+                        <label for="organization">Office (if applicable) <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext"> Name of the organization making the request.</span></span></label>
                         <input type="text" id="organization" name="organization">
                     </div>
                     <div class="form-group">
                         <label><i class="star" >*</i> Contact Information <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Contact information of the requestor.</span></span></label>
-                        <input type="tel" id="phone_number" name="phone_number" placeholder="Phone Number" required>
-                        <input type="email" id="email_address" name="email_address" placeholder="Email Address" required>
+                        <input type="tel" id="phone_number" name="phone_number" placeholder="Phone Number" >
+                        <input type="email" id="email_address" name="email_address" placeholder="Email Address" >
                     </div>
                     <div class="form-group">
                         <label for="address"><i class="star" >*</i> Address <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Location address of the requestor.</span></span></label>
-                        <input type="text" id="address" name="address" required>
+                        <input type="text" id="address" name="address" >
                     </div>
                 </fieldset>
             </div>
@@ -163,21 +185,86 @@
                 <fieldset>
                     <legend>Donation Request Details</legend>
                     <div class="form-group">
-                        <label for="item_type"><i class="star" >*</i> Type of Item Requested <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Type of item needed (e.g., logs, trees,coals etc..).</span></span></label>
-                        <input type="text" id="item_type" name="item_type" required>
+                        <!-- <label for="item_type"><i class="star" >*</i> Type of Item Requested <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Type of item needed (e.g., logs, trees,coals etc..).</span></span></label>
+                        <input type="text" id="item_type" name="item_type" > -->
+
+                        <table >
+                            <tr >
+                                <?php if ($hasId): ?>
+                                    <td><input type="text"  id="item_type_value" disabled /></td>
+                                <?php else: ?>
+                                    <label for="item_type" ><i class="star" >*</i>Type of requested forest products <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Type of item needed (e.g., logs, trees,coals etc..).</span></span></label>
+                                <?php endif; ?>
+                                
+                                <td>
+                                    
+                                    <select class="form-control" id="item_type" name="item_type" >
+                                        <option value="">Select Type</option>
+                                    </select>
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <?php if ($hasId): ?>
+                                    <td><input type="text" id="item_name_value" disabled /></td>
+                                <?php endif; ?>
+                                <td>
+                                    <?php if ($hasId): ?>
+                                    <?php else: ?>
+                                        <label for="item_name" ><i class="star" id="star" style="display: none;">*</i><span id="labelName" style="display: none;">Species</span> </label>
+                                    <?php endif; ?>
+                                    <select class="form-control" id="item_name" name="item_name" style="display: none;">
+                                        <option value="">Select available flitches</option>
+                                    </select>
+                                    
+                                    <?php if ($hasId): ?>
+                                    <?php else: ?>
+                                        <label for="equipment_name" ><i class="star" id="equipmentStar" style="display: none;" >*</i><span id="equipmentLabelName" style="display: none;" >Species</span> </label>
+                                    <?php endif; ?>
+                                    
+                                    <select class="form-control" id="equipment_name" name="equipment_name" style="display: none;">
+                                        <option value="">Select available equipment</option>
+                                    </select>    
+                                </td>
+                            </tr>            
+                        </table>
                     </div>
+
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    <label for="item_description"><i class="star" >*</i> Description of Items Requested <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Detailed description of the logs or trees (e.g., type of wood, size, condition, species of trees, age)</span></span></label>
+                                    <textarea id="item_description" name="item_description" ></textarea>
+                                </div>
+                            </td>
+                            
+                            <td>
+                                <div class="form-group" style="margin-left:20px;">
+                                    <label for="quantity_needed"><i class="star" >*</i> Quantity Needed <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext"> Number of items needed.</span></span></label>
+                                    <input type="number" id="quantity_needed" name="quantity_needed" min=0 >
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    
                     <div class="form-group">
-                        <label for="quantity_needed"><i class="star" >*</i> Quantity Needed <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext"> Number of items needed.</span></span></label>
-                        <input type="number" id="quantity_needed" name="quantity_needed" required>
+                        <label for="purpose"><i class="star" >*</i> Purpose of Request <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Explanation of how the donated items will be used (e.g., community project, reforestation, firewood).</span></span></label>
+                        <textarea id="purpose" name="purpose" ></textarea>
                     </div>
+
                     <div class="form-group">
-                        <label for="item_description"><i class="star" >*</i> Description of Items Requested <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Detailed description of the logs or trees (e.g., type of wood, size, condition, species of trees, age)</span></span></label>
-                        <textarea id="item_description" name="item_description" required></textarea>
+                        <label for="supporting_documents">Supporting Documents <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Option to upload any supporting documents (e.g., proof of need, project plans, photos).</span></span></label>
+                        <input type="file" id="supporting_documents" name="supporting_documents[]" multiple>
+                        <div id="file-list"></div>
                     </div>
-                    <div class="form-group">
-                        <label for="purpose"><i class="star" >*</i> Purpose of Donation <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Explanation of how the donated items will be used (e.g., community project, reforestation, firewood).</span></span></label>
-                        <textarea id="purpose" name="purpose" required></textarea>
-                    </div>
+
+                    <?php if ($hasId): ?>
+                        <button type="submit" name="updateRequestButton" id="updateRequestButton" >Update</button>
+                        <a class="cancelButton" href="/Request/my-request.php">Cancel</a>
+                    <?php else: ?>
+                        <button type="submit" name="submit">Submit Request</button>
+                    <?php endif; ?>
                 </fieldset>
             </div>
         </div>
@@ -188,16 +275,16 @@
                 <fieldset>
                     <legend>Collection/Delivery Information</legend>
                     <div class="form-group">
-                        <label for="delivery_date"><i class="star" >*</i> Preferred Delivery Date <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Date when the requestor needs the items to be delivered.</span></span></label>
-                        <input type="date" id="delivery_date" name="delivery_date" required>
+                        <label for="delivery_date">Preferred Delivery Date <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Date when the requestor needs the items to be delivered.</span></span></label>
+                        <input type="date" id="delivery_date" name="delivery_date" >
                     </div>
                     <div class="form-group">
-                        <label for="delivery_time"><i class="star" >*</i> Preferred Delivery Time <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Time slot for delivery.</span></span></label>
-                        <input type="time" id="delivery_time" name="delivery_time" required>
+                        <label for="delivery_time"> Preferred Delivery Time <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Time slot for delivery.</span></span></label>
+                        <input type="time" id="delivery_time" name="delivery_time" >
                     </div>
                     <div class="form-group">
                         <label for="delivery_address"><i class="star" >*</i> Delivery Address <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Address where the items should be delivered.</span></span></label>
-                        <input type="text" id="delivery_address" name="delivery_address" required>
+                        <input type="text" id="delivery_address" name="delivery_address" >
                     </div>
                     <div class="form-group">
                         <label for="special_instructions">Special Instructions <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Any specific instructions regarding the delivery of the items</span></span></label>
@@ -209,26 +296,25 @@
             <!-- Additional Information -->
             <div class="form-column">
                 <fieldset>
-                    <legend>Additional Information</legend>
+                    <legend>Document Submitted</legend>
                     <div class="form-group">
-                        <label for="reason"><i class="star" >*</i> Reason for Request <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Explanation of why the donation is needed.</span></span></label>
-                        <textarea id="reason" name="reason" required></textarea>
+                        <label for="reason"><i class="star" >*</i> Letter of Intent <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Letter of intent.</span></span></label>
+                        <textarea id="reason" name="reason" ></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="previous_donations">Previous Donations <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Information about any previous donations received and how they were used.</span></span></label>
+                        <label for="previous_donations">Certification by the project engineer<span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Information about any previous donations received and how they were used.</span></span></label>
                         <textarea id="previous_donations" name="previous_donations"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="additional_comments">Additional Comments <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Any additional information or comments from the requestor.</span></span></label>
+                        <label for="additional_comments">Certification by the budget officer <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Any additional information or comments from the requestor.</span></span></label>
                         <textarea id="additional_comments" name="additional_comments"></textarea>
                     </div>
                 </fieldset>
             </div>
         </div>
         
-
         <!-- Acknowledgment and Consent -->
-        <fieldset>
+        <!-- <fieldset>
             <legend>Acknowledgment and Consent</legend>
             <div class="form-group checkbox-group">
                 <input type="checkbox" id="terms_conditions" name="terms_conditions" required>
@@ -238,24 +324,458 @@
                 <input type="checkbox" id="consent_contact" name="consent_contact" required>
                 <label for="consent_contact"><i class="star" >*</i> I consent to being contacted by potential donors <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Checkbox for the requestor to consent to being contacted by potential donors.</span></span></label>
             </div>
-        </fieldset>
+        </fieldset> -->
 
         <!-- Verification -->
         <fieldset>
             <legend>Verification</legend>
-            <div class="form-group">
-                <label for="supporting_documents">Supporting Documents <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Option to upload any supporting documents (e.g., proof of need, project plans, photos).</span></span></label>
-                <input type="file" id="supporting_documents" name="supporting_documents">
-            </div>
-            <div class="form-group">
-                <label for="signature"><i class="star" >*</i> Signature <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">(Can be a soft copy of signature, image,screenshot)</span></span></label>
-                <input type="text" id="signature" name="signature" required>
-            </div>
-            <button type="submit" name="submit" href="/Pages/admin/dashboard.php">Submit Request</button> <a class="cancelButton" href="/Request/my-request.php">Cancel</a>
+            
+            <input type="text" id="status" />
         </fieldset>
         
     </form>
+    
+    <script>
+        $(document).ready(function(){
+            fetchFiles(id);
+            // update(typeTitles);
+            $('#requestForm').on('submit', function(e){
+                 e.preventDefault(); // Prevent default form submission
+                // var formData = new FormData(this); 
+                const formData = new FormData();
+                formData.append('requestor_name', $('#requestor_name').val());
+                formData.append('organization', $('#organization').val());
+                formData.append('phone_number', $('#phone_number').val());
+                formData.append('email_address', $('#email_address').val());
+                formData.append('address', $('#address').val());
+                formData.append('item_type', $('#item_type').val());
+                formData.append('quantity_needed', $('#quantity_needed').val());
+                formData.append('item_description', $('#item_description').val());
+                formData.append('purpose', $('#purpose').val());
+                formData.append('delivery_date', $('#delivery_date').val());
+                formData.append('delivery_time', $('#delivery_time').val());
+                formData.append('delivery_address', $('#delivery_address').val());
+                formData.append('special_instructions', $('#special_instructions').val());
+                formData.append('reason', $('#reason').val());
+                formData.append('previous_donations', $('#previous_donations').val());
+                formData.append('additional_comments', $('#additional_comments').val());
 
+                let fileDocument = $('#supporting_documents')[0].files;
+                for (let i = 0; i < fileDocument.length; i++) {
+                    formData.append('supporting_documents[]', fileDocument[i]);
+                }
+
+                $.ajax({
+                    url: '/Request/insert-record-with-file.php',
+                    type: 'POST',
+                    processData: false, // Prevent jQuery from automatically transforming the data into a query string
+                    contentType: false, // Let jQuery set the content type
+                    data: formData, // Send the FormData object directly
+                    success: function(response){
+                        Swal.fire('Record Added Successfully!').then((result) => {
+                            window.location.href = '/Request/my-request.php';
+                        });
+
+                    },
+                    error: function(xhr, status, error){
+                        console.error('Error: ' + xhr.responseText);
+                        alert('There was an error submitting the form.');
+                    }
+                });
+            });
+
+            //Get Type
+            $.ajax({
+                url: '/Request/get-type.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var typeDropdown = $('#item_type');
+                    
+                    typeDropdown.empty();
+                    
+                    typeDropdown.append('<option value="">Select Type</option>');
+                    var typeTitles = [];
+
+                    $.each(data, function(index, typeTitle) {
+                        typeDropdown.append('<option value="' + typeTitle + '">' + typeTitle + '</option>');
+                    });
+                    update(typeTitles, [],id); 
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching condition data: ', error);
+                }
+            });
+
+            // Get Tree/Flitches
+            $.ajax({
+                url: '/Request/get-tree.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var treeDropdown = $('#item_name');
+                    
+                    treeDropdown.empty();
+                    
+                    treeDropdown.append('<option value="">Select available flitches</option>');
+                    var treeTitles = [];
+
+                    $.each(data, function(index, treeData) {
+                        // Append both the item name and quantity in the dropdown
+                        treeDropdown.append(
+                            '<option value="' + treeData.item + '">' + treeData.item + ' (Quantity: ' + treeData.quantity +  ' pcs.'+')</option>'
+                        );
+                    });
+                    update([], treeTitles,id); 
+                    
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching tree data: ', error);
+                }
+            });
+
+
+            //Get Equipment
+            $.ajax({
+                url: '/Request/get-equipment.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var equipmentDropdown = $('#equipment_name');
+                    
+                    equipmentDropdown.empty();
+                    
+                    equipmentDropdown.append('<option value="">Select available equipment</option>');
+                    
+                    $.each(data, function(index, equipmentTitle) {
+                        equipmentDropdown.append('<option value="' + equipmentTitle + '">' + equipmentTitle + '</option>');
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching condition data: ', error);
+                }
+            });
+        });
+
+        //Display tree/flitches name 
+        $('#item_type').change(function() {
+        var selectedType = $(this).val().toLowerCase();
+        
+        if (selectedType === 'Flitches' || selectedType === 'flitches')  {
+            $('#item_name').show();
+            $('#star').show();
+            $('#labelName').show();
+
+            $('#equipmentStar').hide();
+            $('#equipmentLabelName').hide();
+            $('#equipment_name').hide();
+
+            
+        } else if (selectedType === 'Equipment' || selectedType === 'equipment'){
+            $('#equipmentStar').show();
+            $('#equipmentLabelName').show();
+            $('#equipment_name').show();
+
+            $('#item_name').hide();
+            $('#star').hide();
+            $('#labelName').hide();
+
+        }else {
+            $('#item_name').hide();
+            $('#star').hide();
+            $('#labelName').hide();
+
+            $('#equipmentStar').hide();
+            $('#equipmentLabelName').hide();
+            $('#equipment_name').hide();
+        }
+    });
+
+    //Get record by id when edit
+    function convertTo24HourFormat(time) {
+    
+        let timeParts = time.match(/(\d+):(\d+)\s?(AM|PM)?/i);// Check if the time is in the 12-hour format with AM/PM
+        if (!timeParts) return time; // If the time is already in 24-hour format or invalid
+
+        let hours = parseInt(timeParts[1], 10);
+        let minutes = timeParts[2];
+        let period = timeParts[3] ? timeParts[3].toUpperCase() : null;
+
+        if (period === "PM" && hours < 12) {
+            hours += 12;
+        } else if (period === "AM" && hours === 12) {
+            hours = 0; // Midnight case
+        }
+
+        // Format the hours and minutes into HH:MM
+        return (hours < 10 ? "0" : "") + hours + ":" + minutes;
+    }
+
+    var id = "<?php echo $id; ?>";
+    if (id) {
+        getRecordById();
+        function getRecordById(){
+            $.ajax({
+                url: '/Request/get-record-by-id.php',
+                type: 'GET',
+                data: { requestId: id },
+                dataType: 'json',
+                success: function(response) {
+                    // Populate the form fields with data from the response
+                    $('#requestor_name').val(response.requestor_name);
+                    $('#organization').val(response.organization_name);
+                    $('#phone_number').val(response.phone_number);
+                    $('#email_address').val(response.email);
+                    $('#address').val(response.address);
+                    $('#quantity_needed').val(response.quantity);
+                    $('#item_description').val(response.request_description);
+                    $('#purpose').val(response.purpose_of_donation);
+                    $('#delivery_address').val(response.delivery_address);
+                    $('#special_instructions').val(response.special_instructions);
+                    $('#reason').val(response.reason_of_request);
+                    $('#previous_donations').val(response.previous_donations);
+                    $('#additional_comments').val(response.additional_comments);
+                    $('#item_name').val(response.name_of_requested_item);
+                    $('#status').val(response.approval_status);
+                    $('#delivery_date').val(response.preferred_delivery_date);
+                    $('#status').val(response.approval_status);
+                    
+
+                    // Handle delivery time with conversion to 24-hour format
+                    let time = response.preferred_delivery_time;
+                    if (time) {
+                        let convertedTime = convertTo24HourFormat(time);
+                        $('#delivery_time').val(convertedTime);
+                    }
+
+                    // Populate the item type (ensure options are available in the select element)
+                    let itemType = response.type_of_requested_item;
+                    let itemName = response.name_of_requested_item;
+                    if (itemType) {
+                        $('#item_type_value').val(itemType);
+                        $('#item_name_value').val(itemName);
+                        
+                    }
+
+                    if (itemType === 'Trees' || itemType === 'trees')  {
+                        $('#item_name').show();
+                        $('#star').show();
+                        $('#labelName').show();
+
+                        $('#equipmentStar').hide();
+                        $('#equipmentLabelName').hide();
+                        $('#equipment_name').hide();
+
+                        
+                    } else if (itemType === 'Equipment' || itemType === 'equipment'){
+                        $('#equipmentStar').show();
+                        $('#equipmentLabelName').show();
+                        $('#equipment_name').show();
+
+                        $('#item_name').hide();
+                        $('#star').hide();
+                        $('#labelName').hide();
+
+                    }else {
+                        $('#item_name').hide();
+                        $('#star').hide();
+                        $('#labelName').hide();
+
+                        $('#equipmentStar').hide();
+                        $('#equipmentLabelName').hide();
+                        $('#equipment_name').hide();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert("Error fetching data. See console for details.");
+                }
+            });
+        }
+        
+    }
+
+    // update button 
+    function update(typeTitles, treeTitles,id) {
+        $('#updateRequestButton').on('click', function(e) {
+            e.preventDefault(); 
+            var selectedType = $('#item_type').val();
+            var selectedName = $('#item_name').val();
+            var selectedEquipmentName = $('#equipment_name').val();
+            var status= document.getElementById("status").value;
+
+            // console.log('Selected Type: ' + selectedType + ' Selected Name: ' + selectedName + selectedEquipmentName);
+            // console.log("ID:", id);
+            const formData = new FormData();
+            formData.append('request_id',id);
+            formData.append('requestor_name', $('#requestor_name').val());
+            formData.append('organization', $('#organization').val());
+            formData.append('phone_number', $('#phone_number').val());
+            formData.append('email_address', $('#email_address').val());
+            formData.append('address', $('#address').val());
+            formData.append('quantity_needed', $('#quantity_needed').val());
+            formData.append('item_description', $('#item_description').val());
+            formData.append('purpose', $('#purpose').val());
+            formData.append('delivery_date', $('#delivery_date').val());
+            formData.append('delivery_time', $('#delivery_time').val());
+            formData.append('delivery_address', $('#delivery_address').val());
+            formData.append('special_instructions', $('#special_instructions').val());
+            formData.append('reason', $('#reason').val());
+            formData.append('previous_donations', $('#previous_donations').val());
+            formData.append('additional_comments', $('#additional_comments').val());
+            formData.append('item_type', $('#item_type').val());
+            if(selectedEquipmentName!=''){
+                formData.append('item_name', $('#equipment_name').val());
+            }else{
+                formData.append('item_name', $('#item_name').val());
+            }
+            
+            if(status=='Pending for Approval'){
+                //Updating  records
+                $.ajax({
+                    url: '/Request/update-request.php',
+                    type: 'POST',
+                    processData: false, 
+                    contentType: false, 
+                    data: formData, 
+                    success: function(response){
+                        Swal.fire('Record Updated Successfully!').then((result) => {
+                        //    console.log(response);
+                        getRecordById();
+                        });
+                    },
+                    error: function(xhr, status, error){
+                        console.error('Error: ' + xhr.responseText);
+                        alert('There was an error submitting the form.');
+                    }
+                });
+                // for (let pair of formData.entries()) {
+                //     console.log(pair[0] + ': ' + pair[1]);
+                // } 
+            }else{
+                console.log('Need admin approval');
+            }
+                
+        }); 
+
+    }
+
+    //update button manual
+    $('#updateRequestButton').on('click', function(e) {
+        e.preventDefault();
+        var status2= document.getElementById("status").value;
+
+        if(status2=='Pending for Approval'){
+            insertFile(id);
+        }else{
+            console.log('Need Admin approval for updating files');
+        }
+        
+       
+    }); 
+
+    //insert Files
+    function insertFile(id){
+        var formData = new FormData();
+        formData.append('request_id',id);
+        var request_id = id;
+            let fileDocument = $('#supporting_documents')[0].files;
+            for (let i = 0; i < fileDocument.length; i++) {
+                formData.append('supporting_documents[]', fileDocument[i]);
+            }
+        //Inserting file
+        $.ajax({
+            url: '/Request/insert-file.php',
+            type: 'POST',
+            processData: false, 
+            contentType: false, 
+            data: formData, 
+            success: function(response){
+               fetchFiles(id);
+            },
+            error: function(xhr, status, error){
+                console.error('Error: ' + xhr.responseText);
+                alert('There was an error submitting the form.');
+            }
+        });
+    }
+
+    // fetch files
+    function fetchFiles(id) {
+        $.ajax({
+            url: '/Request/fetch-files.php', 
+            type: 'POST',
+            data: { request_id: id },
+            dataType: 'json',
+            success: function(response) {
+                //console.log("files:", response);
+                if (response.status === 'success') {
+                    var files = response.files;
+                    var fileList = $('#file-list');
+                    fileList.empty(); // Clear any existing file list
+                    if (files.length > 0) {
+                        files.forEach(function(file) {
+                            console.log(file.id);
+                            var fileItem = `
+                                <div class="file-item" style="display: flex; align-items: center;">
+                                    <a href="${file.file_path}" download="${file.file_name}">
+                                        <i class="fas fa-download"></i> ${file.file_name}
+                                    </a>
+                                    <button data-id="${file.id}" class="buttonTrash" style="background-color:white;color:gray">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            `;
+                            fileList.append(fileItem);
+                        });
+
+                        // Delete file logic
+                        fileList.on('click', '.buttonTrash', function(event) {
+                            event.preventDefault(); // Prevent default action
+                            var fileId = $(this).data('id'); // Get the data-id attribute
+                            console.log('here',fileId);
+                            // Confirm deletion
+                            if (confirm('Are you sure you want to delete this file?')) {
+                                $.ajax({
+                                    url: '/Request/delete-file.php', // Your delete file script
+                                    type: 'POST',
+                                    data: { request_id: fileId },
+                                    dataType: 'json',
+                                    success: function(deleteResponse) {
+                                        if (deleteResponse.status === 'success') {
+                                            console.log('File deleted successfully.');
+                                            // Optionally, remove the file item from the list
+                                            $(event.target).closest('.file-item').remove();
+                                        } else {
+                                            alert(deleteResponse.message);
+                                        }
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.log(xhr.messageText);
+                                        alert('Error deleting file.');
+                                    }
+                                });
+                            }
+                        });
+
+                    } else {
+                        fileList.html('<p>No files uploaded.</p>');
+                    }
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.messageText);
+                alert('Error fetching files.');
+            }
+        });
+    }
+
+
+    
+
+    </script>
     <?php
     // PHP code here
     ?>

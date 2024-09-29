@@ -4,6 +4,13 @@ require("../../includes/session.php");
 require("../../includes/darkmode.php");
 
 require_once "../../includes/db_connection.php";
+
+require("../../includes/authentication.php");
+
+if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
+    header("Location: ../../templates/page-restriction.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
