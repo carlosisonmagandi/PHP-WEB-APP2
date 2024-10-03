@@ -22,8 +22,8 @@
     </style>
 </head>
 <body>
-<input type="button" id="addStatusButton" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
-<table id="equipmentStatusTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
+<input type="button" id="addVehicleStatusButton" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
+<table id="vehicleStatusTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
             <th>Id</th>
@@ -51,18 +51,18 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
-    $('#equipmentStatusTable').DataTable({
+    $('#vehicleStatusTable').DataTable({
         "order": [[ 3, "desc" ]],//order based on the latest created record
         "responsive": true
     });
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/manage-equipments-ref-data/EquipmentStatus/status-list.php',
+            url: '/manage-vehicle-ref-data/VehicleStatus/status-list.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var table = $('#equipmentStatusTable').DataTable();
+                var table = $('#vehicleStatusTable').DataTable();
                 table.clear();
                 
                 var rows = [];
@@ -89,13 +89,13 @@ $(document).ready(function() {
     }
     fetchDataFromDB();
 
-    $('#equipmentStatusTable').on('click', '.delete-btn', function() {
+    $('#vehicleStatusTable').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
         deleteRecord(id);
         //console.log("delete was clicked");
     });
 
-    $('#equipmentStatusTable').on('click', '.edit-btn', function() {
+    $('#vehicleStatusTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
         var statusTitle = $(this).closest('tr').find('td:eq(1)').text(); 
         var statusDescription = $(this).closest('tr').find('td:eq(2)').text();
@@ -103,7 +103,7 @@ $(document).ready(function() {
         updateSpeciesRecord(id,statusTitle,statusDescription);
     });
 
-    $('#addStatusButton').on('click', function() {
+    $('#addVehicleStatusButton').on('click', function() {
         addNewRecord();
     });
 
@@ -127,7 +127,7 @@ $(document).ready(function() {
                     Swal.fire("Error", "Inputs required", "error");
                     return;
                 }
-                checkEquipmentStatusNameExists(statusTitle).then(exists => {// Check if speciesName already exists
+                checkVehicleStatusNameExists(statusTitle).then(exists => {// Check if speciesName already exists
                     if (exists) {
                         Swal.fire("Error", "Status already exists", "error");
                     } else {
@@ -136,7 +136,7 @@ $(document).ready(function() {
                             statustDescription: statustDescription
                         };
                         $.ajax({//Insert record
-                            url: '/manage-equipments-ref-data/EquipmentStatus/status-insert.php',
+                            url: '/manage-vehicle-ref-data/VehicleStatus/status-insert.php',
                             type: 'POST',
                             contentType: 'application/json',
                             dataType: 'json',
@@ -163,10 +163,10 @@ $(document).ready(function() {
             }
         });
     };
-    function checkEquipmentStatusNameExists(statusTitle) {
+    function checkVehicleStatusNameExists(statusTitle) {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: '/manage-equipments-ref-data/EquipmentStatus/status-type-check-record.php',
+                url: '/manage-vehicle-ref-data/VehicleStatus/status-type-check-record.php',
                 type: 'GET',
                 data: {
                     statusTitle: statusTitle
@@ -198,7 +198,7 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentStatus/status-delete.php',
+                    url: '/manage-vehicle-ref-data/VehicleStatus/status-delete.php',
                     type: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
@@ -241,7 +241,7 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentStatus/status-update.php',
+                    url: '/manage-vehicle-ref-data/VehicleStatus/status-update.php',
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',

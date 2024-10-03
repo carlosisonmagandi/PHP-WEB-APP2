@@ -1,6 +1,6 @@
 <?php
 require_once("../../includes/db_connection.php");
-
+session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Read JSON input from PUT request
     $json = file_get_contents('php://input');
@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $vehicleId = isset($data['id']) ? intval($data['id']) : 0;
     $vehicleTitle = isset($data['vehicleTitle']) ? trim($data['vehicleTitle']) : '';
     $vehicleDescription = isset($data['vehicleDescription']) ? trim($data['vehicleDescription']) : '';
+    $updatedBy = isset($_SESSION['session_username']) ? $_SESSION['session_username'] : '';
 
     if (empty($vehicleTitle) || empty($vehicleDescription) || $vehicleId === 0) {
         http_response_code(400);
@@ -21,10 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     }
 
     // Update query
-    $sql = "UPDATE vehicle_type_ref_data SET type_title = ?, type_description = ? WHERE id = ?";
+    $sql = "UPDATE vehicle_type_ref_data SET type_title = ?, type_description = ? ,updated_by = ? WHERE id = ?";
     
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("ssi", $vehicleTitle, $vehicleDescription, $vehicleId);
+    $stmt->bind_param("sssi", $vehicleTitle, $vehicleDescription,$updatedBy, $vehicleId);
 
     if (!$stmt->execute()) {
         http_response_code(500);

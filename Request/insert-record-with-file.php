@@ -18,9 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $deliveryTime = $_POST['delivery_time'] ?? '';
     $deliveryAddress = $_POST['delivery_address'] ?? '';
     $specialInstructions = $_POST['special_instructions'] ?? '';
-    $reason = $_POST['reason'] ?? '';
-    $previousDonations = $_POST['previous_donations'] ?? '';
-    $additionalComments = $_POST['additional_comments'] ?? '';
+    $letter_of_intent = $_POST['letter_of_intent'] ?? '';
+    $project_eng_certification = $_POST['project_eng_certification'] ?? '';
+    $budget_officer_certification = $_POST['budget_officer_certification'] ?? '';
 
     $createdBy = $_SESSION['session_username'];
     $approvalStatus = 'Pending';
@@ -45,10 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insert into the request_form table
-    $sql = "INSERT INTO request_form (request_number,requestor_name, organization_name, phone_number, email, address, type_of_requested_item, quantity, request_description, purpose_of_donation, preferred_delivery_date, preferred_delivery_time, delivery_address, special_instructions, reason_of_request, previous_donations, additional_comments, created_by, approval_status) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO request_form (request_number,requestor_name, organization_name, phone_number, email, address, type_of_requested_item, quantity, request_description, purpose_of_donation, preferred_delivery_date, preferred_delivery_time, delivery_address, special_instructions, letter_of_intent, project_eng_certification, budget_officer_certification, created_by, approval_status) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("sssssssssssssssssss", $requestNumber,$requestorName, $organization, $phoneNumber, $emailAddress, $address, $itemType, $quantityNeeded, $itemDescription, $purpose, $deliveryDate, $deliveryTime, $deliveryAddress, $specialInstructions, $reason, $previousDonations, $additionalComments, $createdBy, $approvalStatus);
+    $stmt->bind_param("sssssssssssssssssss", $requestNumber,$requestorName, $organization, $phoneNumber, $emailAddress, $address, $itemType, $quantityNeeded, $itemDescription, $purpose, $deliveryDate, $deliveryTime, $deliveryAddress, $specialInstructions, $letter_of_intent, $project_eng_certification, $budget_officer_certification, $createdBy, $approvalStatus);
 
     if ($stmt->execute()) {
         $record_id = $stmt->insert_id;  

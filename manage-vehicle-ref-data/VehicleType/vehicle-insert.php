@@ -1,5 +1,6 @@
 <?php
 require_once("../../includes/db_connection.php");
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -9,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $vehicleTitle = isset($data['vehicleTitle']) ? trim($data['vehicleTitle']) : '';
     $vehicleDescription = isset($data['vehicleDescription']) ? trim($data['vehicleDescription']) : '';
+    $createdBy = isset($_SESSION['session_username']) ? $_SESSION['session_username'] : '';
 
     // Check if inputs are empty
     if (empty($vehicleTitle) || empty($vehicleDescription)) {
@@ -22,10 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Connection failed: " . $connection->connect_error);
     }
 
-    // Insert into the database
-    $sql = "INSERT INTO vehicle_type_ref_data (type_title, type_description) VALUES (?, ?)";
+    $sql = "INSERT INTO vehicle_type_ref_data (type_title, type_description, created_by) VALUES (?, ?, ?)";
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("ss", $vehicleTitle, $vehicleDescription);
+    $stmt->bind_param("sss", $vehicleTitle, $vehicleDescription,$createdBy);
 
     if ($stmt->execute()) {
         http_response_code(201); 
@@ -35,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(array("message" => "Error: " . $stmt->error));
     }
 
-    // Close connection
     $stmt->close();
     $connection->close();
 

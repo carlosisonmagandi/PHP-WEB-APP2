@@ -87,10 +87,11 @@ input:focus-visible + label {
 
 
 .tabset {
-  max-width: 65em;
+  max-width: 90em;
 }
 
 /* custom */
 .container{
 	padding:30px;
+  overflow-x: auto;
 }

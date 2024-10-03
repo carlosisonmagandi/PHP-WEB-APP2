@@ -101,7 +101,7 @@ $hasId = !empty($id);
                 <fieldset>
                     <legend>Apprehended Items:</legend>
                     <div class="form-group">
-                        <label for="apprehended_items">Name</label>
+                        <label for="apprehended_items">Species</label>
                         <input type="text" class="form-control" id="apprehended_items" name="apprehended_items">
                     </div>
                     <div class="form-group">

@@ -45,3 +45,8 @@ VALUES (
 
 SELECT * FROM equipments;
 DELETE FROM equipments where id in(6,7,8);
+
+ALTER TABLE equipments
+ADD COLUMN created_by VARCHAR(255),
+ADD COLUMN updated_by VARCHAR(255);
+

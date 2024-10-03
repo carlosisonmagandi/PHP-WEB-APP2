@@ -104,11 +104,11 @@ include("../templates/nav-bar.php");
             </section>
             
             <section id="vehicleCondition" class="tab-panel">
-                <?php // include("../manage-vehicle-ref-data/VehicleCondition/condition-display.php"); ?>
+                <?php  include("../manage-vehicle-ref-data/VehicleCondition/condition-display.php"); ?>
             </section>
 
             <section id="vehicleStatus" class="tab-panel">
-                <?php // include("../manage-vehicle-ref-data/VehicleStatus/status-display.php"); ?>
+                <?php  include("../manage-vehicle-ref-data/VehicleStatus/status-display.php"); ?>
             </section>
         </div>
     </div>

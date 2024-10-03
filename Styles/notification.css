@@ -79,6 +79,7 @@
         width: 100%;
         border-bottom:3px solid #ccc;
         cursor:pointer;
+        
     }
     .notification:hover {
         background-color: white;

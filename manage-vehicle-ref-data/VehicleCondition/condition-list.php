@@ -1,7 +1,7 @@
 <?php
 require_once("../../includes/db_connection.php");
 
-$sql = "SELECT * FROM equipment_condition_ref_data ORDER BY created_on DESC";
+$sql = "SELECT * FROM vehicle_condition_ref_data ORDER BY created_on DESC";
 $result = $connection->query($sql);
 
 $data = array();

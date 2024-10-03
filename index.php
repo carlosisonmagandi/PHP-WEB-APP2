@@ -14,6 +14,7 @@ require("login.php");
         <link href="/Styles/sb-admin/sb-admin-styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 
+
         <style>
              body {
             background-image: url('/Images/login-nature-icon.png');

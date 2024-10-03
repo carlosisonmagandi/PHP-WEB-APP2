@@ -15,7 +15,7 @@ SELECT * FROM map_coordinates where inventory_id=145;
 INSERT INTO map_coordinates (inventory_id,longitude,latitude,created_by) VALUES(145,'121.17842603410668','14.19135422831107','Carlo');
 
 
-DELETE FROM map_coordinates where id in(6,7);
+DELETE FROM map_coordinates where id in(13,14);
 
 ALTER TABLE map_coordinates
 MODIFY COLUMN created_by VARCHAR(255),

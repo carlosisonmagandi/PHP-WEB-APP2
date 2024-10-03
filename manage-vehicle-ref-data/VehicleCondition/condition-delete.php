@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Connection failed: " . $connection->connect_error);
     }
 
-    $sql = "DELETE FROM equipment_condition_ref_data WHERE id = ?";
+    $sql = "DELETE FROM vehicle_condition_ref_data WHERE id = ?";
     
     $stmt = $connection->prepare($sql);
     $stmt->bind_param("i", $id);

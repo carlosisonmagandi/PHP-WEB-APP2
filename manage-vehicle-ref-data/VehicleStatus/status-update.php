@@ -1,5 +1,6 @@
 <?php
 require_once("../../includes/db_connection.php");
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     // Read JSON input from PUT request
@@ -9,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $statusId = isset($data['id']) ? intval($data['id']) : 0;
     $statusTitle = isset($data['statusTitle']) ? trim($data['statusTitle']) : '';
     $statusDescription = isset($data['statusDescription']) ? trim($data['statusDescription']) : '';
+    $updatedBy = isset($_SESSION['session_username']) ? $_SESSION['session_username'] : '';
 
     if (empty($statusTitle) || empty($statusDescription) || $statusId === 0) {
         http_response_code(400);
@@ -21,10 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     }
 
     // Update query
-    $sql = "UPDATE equipment_status_ref_data SET status_title = ?, status_description = ? WHERE id = ?";
+    $sql = "UPDATE vehicle_status_ref_data SET status_title = ?, status_description = ? ,updated_by = ? WHERE id = ?";
     
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("ssi", $statusTitle, $statusDescription, $statusId);
+    $stmt->bind_param("sssi", $statusTitle, $statusDescription,$updatedBy, $statusId);
 
     if (!$stmt->execute()) {
         http_response_code(500);

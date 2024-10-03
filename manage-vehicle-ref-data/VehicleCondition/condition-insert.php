@@ -1,5 +1,6 @@
 <?php
 require_once("../../includes/db_connection.php");
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -9,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $conditionTitle = isset($data['conditionTitle']) ? trim($data['conditionTitle']) : '';
     $conditionDescription = isset($data['conditionDescription']) ? trim($data['conditionDescription']) : '';
+    $createdBy = isset($_SESSION['session_username']) ? $_SESSION['session_username'] : '';
 
     // Check if inputs are empty
     if (empty($conditionTitle) || empty($conditionDescription)) {
@@ -23,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Insert into the database
-    $sql = "INSERT INTO equipment_condition_ref_data (condition_title, condition_description) VALUES (?, ?)";
+    $sql = "INSERT INTO vehicle_condition_ref_data (condition_title, condition_description, created_by) VALUES (?, ?, ?)";
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("ss", $conditionTitle, $conditionDescription);
+    $stmt->bind_param("sss", $conditionTitle, $conditionDescription, $createdBy);
 
     if ($stmt->execute()) {
         http_response_code(201); 

@@ -45,11 +45,7 @@ if(isset($_POST['Logout'])){
             }else{
                 echo '<link rel="stylesheet" type="text/css" href="../../Styles/notification.css">';
             }
-        ?>
-
-        
-
-        
+        ?>        
     </head>
         
         <!-- <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark"> -->
@@ -298,7 +294,7 @@ if(isset($_POST['Logout'])){
                                         </a>
                                         <div class="collapse" id="pagesCollapseDonations" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
-                                                <a class="nav-link" href="/monitor-item-trees.php">Forest Products</a>
+                                                <a class="nav-link" href="/Admin/Monitoring/monitoring-display.php">Forest Products</a>
                                                 <!-- <a class="nav-link" href="register.html">Equipment</a> -->
                                                 <!-- <a class="nav-link" href="password.html">Vehicle</a> -->
                                             </nav>
@@ -348,7 +344,7 @@ if(isset($_POST['Logout'])){
                             </div>
                             <?php if ($_SESSION['session_role']=="Admin"){
                             echo '
-                            <a class="nav-link" href="">
+                            <a class="nav-link" href="/Admin/monitor-item-trees.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Requests
                             </a>

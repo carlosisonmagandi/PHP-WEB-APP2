@@ -162,9 +162,20 @@ ADD COLUMN cancellation_reason VARCHAR(255);
 ALTER TABLE request_form
 ADD COLUMN name_of_requested_item VARCHAR(255);
 
+ALTER TABLE request_form
+DROP COLUMN reason_of_request,
+DROP COLUMN previous_donations,
+DROP COLUMN additional_comments;
+
+ALTER TABLE request_form
+ADD COLUMN letter_of_intent VARCHAR(255),
+ADD COLUMN project_eng_certification VARCHAR(255),
+ADD COLUMN budget_officer_certification VARCHAR(255);
+    
+
 select * FROM request_form;
 
-DELETE FROM request_form where id in (38);
+DELETE FROM request_form where id in (47,48);
 
 SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name='request_form' AND table_schema = DATABASE();
 DESC request_form;

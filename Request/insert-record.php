@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $deliveryTime = isset($data['delivery_time']) ? trim($data['delivery_time']) : '';
     $deliveryAddress = isset($data['delivery_address']) ? trim($data['delivery_address']) : '';
     $specialInstructions = isset($data['special_instructions']) ? trim($data['special_instructions']) : '';
-    $reason = isset($data['reason']) ? trim($data['reason']) : '';
-    $previousDonations = isset($data['previous_donations']) ? trim($data['previous_donations']) : '';
-    $additionalComments = isset($data['additional_comments']) ? trim($data['additional_comments']) : '';
+    $letter_of_intent = isset($data['letter_of_intent']) ? trim($data['letter_of_intent']) : '';
+    $project_eng_certification = isset($data['project_eng_certification']) ? trim($data['project_eng_certification']) : '';
+    $budget_officer_certification = isset($data['budget_officer_certification']) ? trim($data['budget_officer_certification']) : '';
 
     $createdBy=$_SESSION['session_username'];
     $approvalStatus='Pending';

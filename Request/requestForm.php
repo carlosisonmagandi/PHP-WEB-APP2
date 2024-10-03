@@ -259,12 +259,7 @@ $hasId = !empty($id);
                         <div id="file-list"></div>
                     </div>
 
-                    <?php if ($hasId): ?>
-                        <button type="submit" name="updateRequestButton" id="updateRequestButton" >Update</button>
-                        <a class="cancelButton" href="/Request/my-request.php">Cancel</a>
-                    <?php else: ?>
-                        <button type="submit" name="submit">Submit Request</button>
-                    <?php endif; ?>
+                    
                 </fieldset>
             </div>
         </div>
@@ -298,16 +293,30 @@ $hasId = !empty($id);
                 <fieldset>
                     <legend>Document Submitted</legend>
                     <div class="form-group">
-                        <label for="reason"><i class="star" >*</i> Letter of Intent <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Letter of intent.</span></span></label>
-                        <textarea id="reason" name="reason" ></textarea>
+                        <label for="Li-yes-no"><i class="star" >*</i> Letter of Intent
+                        
+                        <select id="Li-yes-no" name="Li-yes-no">
+                            <option value="">Select Answer</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="previous_donations">Certification by the project engineer<span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Information about any previous donations received and how they were used.</span></span></label>
-                        <textarea id="previous_donations" name="previous_donations"></textarea>
+                        <label for="Cpe-yes-no">Certification by the project engineer<span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Information about any previous donations received and how they were used.</span></span></label>
+                        <select id="Cpe-yes-no" name="Cpe-yes-no">
+                            <option value="">Select Answer</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+
                     </div>
                     <div class="form-group">
-                        <label for="additional_comments">Certification by the budget officer <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Any additional information or comments from the requestor.</span></span></label>
-                        <textarea id="additional_comments" name="additional_comments"></textarea>
+                        <label for="Cbo-yes-no">Certification by the budget officer <span class="tooltip"><i class="fas fa-question-circle"></i><span class="tooltiptext">Any additional information or comments from the requestor.</span></span></label>
+                        <select id="Cbo-yes-no" name="Cbo-yes-no">
+                            <option value="">Select Answer</option>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
                     </div>
                 </fieldset>
             </div>
@@ -328,9 +337,13 @@ $hasId = !empty($id);
 
         <!-- Verification -->
         <fieldset>
-            <legend>Verification</legend>
-            
-            <input type="text" id="status" />
+            <?php if ($hasId): ?>
+                <button type="submit" name="updateRequestButton" id="updateRequestButton" >Update</button>
+                <a class="cancelButton" href="/Request/my-request.php">Cancel</a>
+            <?php else: ?>
+                <button type="submit" name="submit">Submit Request</button>
+            <?php endif; ?>
+        <input type="text" id="status" disabled />
         </fieldset>
         
     </form>
@@ -356,9 +369,9 @@ $hasId = !empty($id);
                 formData.append('delivery_time', $('#delivery_time').val());
                 formData.append('delivery_address', $('#delivery_address').val());
                 formData.append('special_instructions', $('#special_instructions').val());
-                formData.append('reason', $('#reason').val());
-                formData.append('previous_donations', $('#previous_donations').val());
-                formData.append('additional_comments', $('#additional_comments').val());
+                formData.append('letter_of_intent', $('#Li-yes-no').val());
+                formData.append('project_eng_certification', $('#Cpe-yes-no').val());
+                formData.append('budget_officer_certification', $('#Cbo-yes-no').val());
 
                 let fileDocument = $('#supporting_documents')[0].files;
                 for (let i = 0; i < fileDocument.length; i++) {
@@ -620,10 +633,11 @@ $hasId = !empty($id);
             formData.append('delivery_time', $('#delivery_time').val());
             formData.append('delivery_address', $('#delivery_address').val());
             formData.append('special_instructions', $('#special_instructions').val());
-            formData.append('reason', $('#reason').val());
-            formData.append('previous_donations', $('#previous_donations').val());
-            formData.append('additional_comments', $('#additional_comments').val());
+            formData.append('letter_of_intent', $('#Li-yes-no').val());
+            formData.append('project_eng_certification', $('#Cpe-yes-no').val());
+            formData.append('budget_officer_certification', $('#Cbo-yes-no').val());
             formData.append('item_type', $('#item_type').val());
+
             if(selectedEquipmentName!=''){
                 formData.append('item_name', $('#equipment_name').val());
             }else{

@@ -17,7 +17,8 @@ if (isset($_POST['Logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Request</title>
     <link rel="stylesheet" type="text/css" href="/Styles/breadCrumbs.css">
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
         * {
@@ -47,11 +48,23 @@ if (isset($_POST['Logout'])) {
           
         }
         .flex-item-status-right{
-            background-color: #bfbfbf;
+            /* background-color: #bfbfbf; */
             border: none !important;
-            flex: 50%;
-           
+            flex: 20%;
+            margin-right:5%;
         }
+        .btnCancelRequest{
+            font-size:12px;
+            padding: 4px;
+        }
+        .btnCancelRequest:hover{
+            background-color: #bfbfbf;
+        }
+       .flex-item-cancel-button{
+        background-color: #bfbfbf;
+        border: none !important;
+        flex: 7%;
+       }
         .flex-item-left {
         /* background-color: #f1f1f1; */
         padding: 2px;
@@ -203,13 +216,18 @@ include("../templates/nav-bar.php");
         </div>
     </div>
     <div class="flex-item-right">
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="" method="post" enctype="multipart/form-data" id="myRequestForm">
             <div class="flex-item-status">
                 <div class="flex-item-status-left">
                     <strong>Status:</strong>
                 </div>
                 <div class="flex-item-status-right">
-                    <input type="text" id="status" name="status" disabled  style="font-style:italic" >
+                    <input type="text" id="status" name="status" disabled  style="font-style:italic" >  
+                </div>
+                <div class="flex-item-cancel-button" id="cancelRequestButtonDiv" style="display:none;">
+                <button id="cancelRequestButton" class="btnCancelRequest"  >
+                    <i class="fas fa-ban"></i> Cancel Request
+                </button>
                 </div>
             </div>
 
@@ -341,32 +359,46 @@ include("../templates/nav-bar.php");
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#createNew').on('click', function() {
-            
-            window.location.href="/Request/requestForm.php";
-        }); 
-
-        // Add click event for dynamically created .request-box elements
-        $('.flex-item-left').on('click', '.request-box', function() {
-            var id = $(this).data('id'); 
-            // console.log('clicked', id);
-            fetchDataById(id);
-            fetchFiles(id);
-
-        });
-
-        $('.flex-item-left').on('click', '.requestEditIcon', function() {
-            var id = $(this).data('id'); 
-
-            // Construct query string with data
-            let queryString = id;
-
-            // Redirect with query parameters
-            window.location.href = '/Request/requestForm.php?' + queryString;
-            
-        });
+$(document).ready(function() {
+    $('#createNew').on('click', function() {
+        window.location.href = "/Request/requestForm.php";
     });
+
+    // Add click event for dynamically created .request-box elements
+    $('.flex-item-left').on('click', '.request-box', function() {
+        var id = $(this).data('id');
+        fetchDataById(id);
+        fetchFiles(id);
+    });
+
+    $('.flex-item-left').on('click', '.requestEditIcon', function() {
+        var id = $(this).data('id');
+        // Construct query string with data
+        let queryString = id;
+        // Redirect with query parameters
+        window.location.href = '/Request/requestForm.php?' + queryString;
+    });
+
+    // Logic for showing the cancel button
+    const statusField = $('#status');
+    const cancelButtonDiv = $('#cancelRequestButtonDiv');
+
+    function toggleCancelButton() {
+        if (statusField.val().trim() !== "") {
+            cancelButtonDiv.show();
+        } else {
+            cancelButtonDiv.hide();
+        }
+    }
+
+    // Initial check to see if the status has a value
+    toggleCancelButton();
+
+    // Listen for changes in the status input
+    statusField.on('input', toggleCancelButton);
+    
+    // Fetch data from the database
+    fetchDataFromDB();
 
     function fetchDataFromDB() {
         $.ajax({
@@ -374,19 +406,14 @@ include("../templates/nav-bar.php");
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                // console.log(response);
-
-                // Clear the existing div content
                 $('.flex-item-left').html('<div>FILTER DIV</div>');
 
-                // Loop through the response data and create request boxes
                 response.forEach(function(record) {
                     var requestBox = `
                         <div class="request-box" data-id="${record.id}">
                             <div class="request-header">
                                 ${record.request_number}
-                                
-                                <button class="requestEditIcon" id="requestEditIcon" data-id=${record.id} >
+                                <button class="requestEditIcon" id="requestEditIcon" data-id=${record.id}>
                                     <i class="fas fa-edit"></i>
                                 </button>
                             </div>
@@ -398,34 +425,25 @@ include("../templates/nav-bar.php");
                                 <i>${record.created_on}</i>
                             </div>
                         </div>
-                        <!-- ------------------------------------------------------------------------ -->
                     `;
-
-                    // Append the request box to the flex-item-left div
                     $('.flex-item-left').append(requestBox);
                 });
-                //remoded the click event for dynamically created .request-box elements
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
                 alert("Error fetching data. See console for details.");
             }
         });
-
     }
 
-    fetchDataFromDB();
-
     function fetchDataById(id) {
-        // console.log("here");
         $.ajax({
             url: '/Request/get-record-by-id.php',
             type: 'GET',
-            data:{requestId:id},
+            data: { requestId: id },
             dataType: 'json',
             success: function(response) {
-                // console.log("status",response.approval_status);
-                // console.log(response);
+                // Populate fields with response data
                 $('#requestor_name').val(response.requestor_name);
                 $('#organization').val(response.organization_name);
                 $('#phone_number').val(response.phone_number);
@@ -444,26 +462,68 @@ include("../templates/nav-bar.php");
                 $('#additional_comments').val(response.additional_comments);
                 $('#status').val(response.approval_status);
                 $('#item_name').val(response.name_of_requested_item);
-                
 
+                // Show/hide item name div based on type of requested item
                 if (response.type_of_requested_item === 'trees' || 
                     response.type_of_requested_item === 'Trees' || 
                     response.type_of_requested_item === 'equipment' || 
                     response.type_of_requested_item === 'Equipment') {
-                    $('#itemNameDiv').show(); // Show the div for Trees     
-                } else{
+                    $('#itemNameDiv').show();
+                } else {
                     $('#itemNameDiv').hide();
                 }
+
+                // Show cancel button based on status value
+                toggleCancelButton();
+
+                // Cancel request logic
+                $('#cancelRequestButton').on('click', function(e) {
+                    e.preventDefault();
+                    let requestId = response.id;
+                    Swal.fire({
+                        title: "Are you sure you want to cancel this request?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "No, keep it",
+                        didRender: () => {
+                            $('.swal2-checkbox').remove();
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/Request/delete-request.php',
+                                type: 'POST',
+                                data: JSON.stringify({ id: requestId }),
+                                success: function(response) {
+                                    $('#myRequestForm')[0].reset();
+                                    toggleCancelButton(); 
+                                    fetchDataFromDB();
+                                    Swal.fire({
+                                        title: "Request deleted successfully!",
+                                        icon: "success",
+                                        didRender: () => {
+                                            $('.swal2-checkbox').remove();
+                                        }
+                                    });
+                                },
+                                error: function(xhr, status, error) {
+                                    Swal.fire('Error!', 'There was an error deleting the request.', 'error');
+                                }
+                            });
+                        }
+                    });
+                });
             },
             error: function(xhr, status, error) {
-                // console.log(xhr.messageText);
                 console.error('Error:', error);
                 alert("Error fetching data. See console for details.");
             }
         });
     }
 
-    // fetch files
+    // Fetch files
     function fetchFiles(id) {
         $.ajax({
             url: '/Request/fetch-files.php',
@@ -474,7 +534,7 @@ include("../templates/nav-bar.php");
                 if (response.status === 'success') {
                     var files = response.files;
                     var fileList = $('#file-list');
-                    fileList.empty(); 
+                    fileList.empty();
                     if (files.length > 0) {
                         files.forEach(function(file) {
                             var fileItem = `
@@ -487,11 +547,9 @@ include("../templates/nav-bar.php");
                             var $fileItem = $(fileItem);
                             $fileItem.find('a').on('click', function(e) {
                                 if (e.ctrlKey) {
-                                    // Open in new tab when Ctrl key is pressed
                                     $(this).attr('target', '_blank');
-                                    $(this).removeAttr('download'); // Remove download if Ctrl is pressed
+                                    $(this).removeAttr('download');
                                 } else {
-                                    // Set download if Ctrl is not pressed
                                     $(this).attr('download', file.file_name);
                                 }
                             });
@@ -510,10 +568,9 @@ include("../templates/nav-bar.php");
             }
         });
     }
-
-    
-
+});
 </script>
+
 <?php 
 include("../templates/nav-bar2.php");
 ?>

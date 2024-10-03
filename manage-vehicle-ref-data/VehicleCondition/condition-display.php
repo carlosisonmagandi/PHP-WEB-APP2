@@ -22,8 +22,8 @@
     </style>
 </head>
 <body>
-<input type="button" id="addConditionButton" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
-<table id="equipmentConditionTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
+<input type="button" id="addVehicleConditionButton" value="Add new record" class="btn btn-primary" style="background-color:#002f6c;color:#f8f9fa;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
+<table id="vehicleConditionTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
             <th>Id</th>
@@ -51,18 +51,18 @@
 <script src="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
-    $('#equipmentConditionTable').DataTable({
+    $('#vehicleConditionTable').DataTable({
         "order": [[ 3, "desc" ]],//order based on the latest created record
         "responsive": true
     });
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/manage-equipments-ref-data/EquipmentCondition/condition-list.php',
+            url: '/manage-vehicle-ref-data/VehicleCondition/condition-list.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var table = $('#equipmentConditionTable').DataTable();
+                var table = $('#vehicleConditionTable').DataTable();
                 table.clear();
                 
                 var rows = [];
@@ -89,13 +89,13 @@ $(document).ready(function() {
     }
     fetchDataFromDB();
 
-    $('#equipmentConditionTable').on('click', '.delete-btn', function() {
+    $('#vehicleConditionTable').on('click', '.delete-btn', function() {
         var id = $(this).data('id');
         deleteRecord(id);
         //console.log("delete was clicked");
     });
 
-    $('#equipmentConditionTable').on('click', '.edit-btn', function() {
+    $('#vehicleConditionTable').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
         var conditionTitle = $(this).closest('tr').find('td:eq(1)').text(); 
         var conditionDescription = $(this).closest('tr').find('td:eq(2)').text();
@@ -103,7 +103,7 @@ $(document).ready(function() {
         updateConditionRecord(id,conditionTitle,conditionDescription);
     });
 
-    $('#addConditionButton').on('click', function() {
+    $('#addVehicleConditionButton').on('click', function() {
         addNewRecord();
     });
 
@@ -127,7 +127,7 @@ $(document).ready(function() {
                     Swal.fire("Error", "Inputs required", "error");
                     return;
                 }
-                checkEquipmentConditionNameExists(conditionTitle).then(exists => {// Check if speciesName already exists
+                checkVehicleConditionNameExists(conditionTitle).then(exists => {// Check if speciesName already exists
                     if (exists) {
                         Swal.fire("Error", "Condition already exists", "error");
                     } else {
@@ -136,7 +136,7 @@ $(document).ready(function() {
                             conditionDescription: conditionDescription
                         };
                         $.ajax({//Insert record
-                            url: '/manage-equipments-ref-data/EquipmentCondition/condition-insert.php',
+                            url: '/manage-vehicle-ref-data/VehicleCondition/condition-insert.php',
                             type: 'POST',
                             contentType: 'application/json',
                             dataType: 'json',
@@ -163,10 +163,10 @@ $(document).ready(function() {
             }
         });
     };
-    function checkEquipmentConditionNameExists(conditionTitle) {
+    function checkVehicleConditionNameExists(conditionTitle) {
         return new Promise((resolve, reject) => {
             $.ajax({
-                url: '/manage-equipments-ref-data/EquipmentCondition/condition-type-check-record.php',
+                url: '/manage-vehicle-ref-data/VehicleCondition/condition-type-check-record.php',
                 type: 'GET',
                 data: {
                     conditionTitle: conditionTitle
@@ -198,7 +198,7 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentCondition/condition-delete.php',
+                    url: '/manage-vehicle-ref-data/VehicleCondition/condition-delete.php',
                     type: 'POST',
                     contentType: 'application/json',
                     dataType: 'json',
@@ -241,7 +241,7 @@ $(document).ready(function() {
                 };
 
                 $.ajax({
-                    url: '/manage-equipments-ref-data/EquipmentCondition/condition-update.php',
+                    url: '/manage-vehicle-ref-data/VehicleCondition/condition-update.php',
                     type: 'PUT',
                     contentType: 'application/json',
                     dataType: 'json',

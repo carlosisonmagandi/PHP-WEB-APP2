@@ -33,9 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $deliveryTime = $_POST['delivery_time'] ?? '';
         $deliveryAddress = $_POST['delivery_address'] ?? '';
         $specialInstructions = $_POST['special_instructions'] ?? '';
-        $reason = $_POST['reason'] ?? '';
-        $previousDonations = $_POST['previous_donations'] ?? '';
-        $additionalComments = $_POST['additional_comments'] ?? '';
+        $letter_of_intent = $_POST['letter_of_intent'] ?? '';
+        $project_eng_certification = $_POST['project_eng_certification'] ?? '';
+        $budget_officer_certification = $_POST['budget_officer_certification'] ?? '';
 
         $item_type=$_POST['item_type'] ?? '';
         $item_name=$_POST['item_name'] ?? '';
@@ -53,9 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             preferred_delivery_time=?, 
             delivery_address=?, 
             special_instructions=?, 
-            reason_of_request=?, 
-            previous_donations=?, 
-            additional_comments=?,
+            letter_of_intent=?, 
+            project_eng_certification=?, 
+            budget_officer_certification=?,
             type_of_requested_item=?,
             name_of_requested_item=?
             WHERE id=?");
@@ -78,9 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $deliveryTime, 
             $deliveryAddress, 
             $specialInstructions, 
-            $reason, 
-            $previousDonations, 
-            $additionalComments,
+            $letter_of_intent, 
+            $project_eng_certification, 
+            $budget_officer_certification,
             $item_type, 
             $item_name,
             $request_id

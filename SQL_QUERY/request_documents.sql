@@ -11,4 +11,4 @@ CREATE TABLE request_documents (
 );
 
 SELECT * FROM request_documents;
-delete from request_documents where request_id IN (3);
+delete from request_documents where id IN (10,11,35,36);
