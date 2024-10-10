@@ -42,16 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         http_response_code(200);
        
         // Pusher configuration
-        $options = array(
-            'cluster' => 'ap1',
-            'useTLS' => false
-        );
-        $pusher = new Pusher\Pusher(
-            '6bde96fb5927bfee7cdc',
-            'e35473811246267f99fc',
-            '1805714',
-            $options
-        );
+        require_once("../../../includes/pusher.php");
 
         // Struct the data for Pusher
         $dataToSend = array(
@@ -64,11 +55,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
             'requestStatus' => $requestStatus,
             'ownerOfRequest' => $ownerOfRequest,
             'dateCreated' => $dateCreated
-            
-
         );
         $pusher->trigger('my-channel', 'my-event', $dataToSend);
-        $pusher->trigger('display-channel', 'display-event', $dataToSend);
+        // $pusher->trigger('waitingForApproval-channel', 'waitingForApproval-event', $dataToSend);
         //----------------------------------------------------
         echo json_encode([]); 
     }

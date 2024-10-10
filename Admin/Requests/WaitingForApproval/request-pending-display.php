@@ -6,24 +6,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pending List</title>
     <link href="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+
     <!-- loader -->
     <link rel="stylesheet" href="/Styles/loader.css">
     <!-- sweetalert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- bootstrap scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.min.js"></script>
     <style>
-        .approve-btn,.reject-btn{
+        .approve-btn,.reject-btn,.remarks-btn{
             background-color:#f8f9fa;
             color:#002f6c;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-size:11px;
         }
-        .approve-btn:hover,.reject-btn:hover{
+        .approve-btn:hover,.reject-btn:hover,.remarks-btn:hover{
             background-color:#002f6c;
             color:#f8f9fa;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         #checkIcon,#rejectIcon{
             margin-left:4px;
+        }
+        .approve-btn:focus, .reject-btn:focus, .remarks-btn:focus {
+            outline: none; 
+            box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1); 
+            background-color:#f8f9fa;
+            color:#002f6c;
+            font-size:11px;
+        }
+        .approve-btn:focus:hover,.reject-btn:focus:hover,.remarks-btn:focus{
+            background-color:#002f6c;
+            color:#f8f9fa;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -70,8 +89,10 @@
 <script>
 $(document).ready(function() {
     $('#waitingForApprovalTable').DataTable({
-        "order": [[ 3, "desc" ]],//order based on the latest created record
-        "responsive": true
+        "order": [[ 8, "desc" ]],//order based on the latest created record
+        "responsive": true,
+        "pageLength": 10,
+        "lengthMenu": [5, 10, 25, 50]
     });
 
     function fetchDataFromDB() {
@@ -85,11 +106,27 @@ $(document).ready(function() {
                 
                 var rows = [];
                 $.each(response, function(index, row) {
-                    var actionButtons = '<button class="btn btn-sm approve-btn" data-id="' + row.id + '">Approve<i class="fas fa-check-circle" id="checkIcon"></i></button>' +
-                        ' ' + 
-                        '<button class="btn btn-sm reject-btn" data-id="' + row.id + '">Reject<i class="fas fa-times-circle" id="rejectIcon"></i></button>';
+                    var actionButtons = `
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item approve-btn" data-id="${row.id}">Approve <i class="fas fa-check-circle" style="float:right"></i></a></li>
+                                <li><a class="dropdown-item reject-btn" data-id="${row.id}">Reject <i class="fas fa-times-circle" style="float:right"></i></a></li>
+                                <li><a class="dropdown-item remarks-btn" data-id="${row.id}">Remarks <i class="fas fa-pen" style="float:right"></i></a></li>
+                            </ul>
+                        </div>
+                    `;
+
+                    // var actionButtons = '<button class="btn btn-sm approve-btn" data-id="' + row.id + '">Approve<i class="fas fa-check-circle" id="checkIcon"></i></button>' +
+                    //     ' ' + 
+                    //     '<button class="btn btn-sm reject-btn" data-id="' + row.id + '">Reject<i class="fas fa-times-circle" id="rejectIcon"></i></button>';
+                    
+                        var clickableId = '<a href="/Admin/Requests/RequestDetails/request.php?id=' + row.id + '" class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
+
                     rows.push([
-                        row.id,
+                        clickableId,
                         row.request_number,
                         row.requestor_name,
                         row.organization_name,
@@ -112,20 +149,89 @@ $(document).ready(function() {
     }
     fetchDataFromDB();
 
-    $('#equipmentConditionTable').on('click', '.delete-btn', function() {
+    //Reject button actions
+    $('#waitingForApprovalTable').on('click', '.reject-btn', function() {
         var id = $(this).data('id');
-        deleteRecord(id);
-        //console.log("delete was clicked");
+        
+        Swal.fire({
+            title: "Please enter the reason for rejection.",
+            html: '<textarea id="rejectionReason" rows="4" style="width: 100%;"></textarea>',
+            showCancelButton: true,
+            showCloseButton: true,
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const rejectionReason = $('#rejectionReason').val();
+                $.ajax({
+                    url: '/Admin/Requests/WaitingForApproval/request-rejected.php',
+                    type: 'POST',
+                    data: {
+                        reason: rejectionReason,
+                        requestId:id
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        const data = JSON.parse(response);
+                        Swal.fire({
+                            title: "Record rejected successfuly.",
+                            text: data.message, 
+                            icon: "success"
+                        });
+                        // -------------------------------------------
+                        //Call request-rejected-update.php to update the status value to "rejected"
+                        $.ajax({
+                            url: '/Admin/Requests/WaitingForApproval/request-rejected-update.php',
+                            type: 'POST',
+                            data: JSON.stringify({
+                                requestId: id 
+                            }),
+                            success: function(response) {
+                                console.log(response);
+                                console.log("updated successfully");
+                                
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: "An error occurred while processing your request.",
+                                    icon: "error"
+                                });
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response
+                        Swal.fire({
+                            title: "Error",
+                            text: "An error occurred while processing your request.",
+                            icon: "error"
+                        });
+                    }
+                });
+            } else if (result.isDenied) {
+                Swal.fire({
+                    title: "Changes not saved.",
+                    icon: "info"
+                });
+            }
+        });
     });
+
     // -----------------------------------------------------------------
     
     const pusher = new Pusher('6bde96fb5927bfee7cdc', {
         cluster: 'ap1'
     });
 
-    const channel = pusher.subscribe('display-channel');
-    channel.bind('display-event', function(data) {
-        fetchDataFromDB(); // Reload data
+    const channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+        fetchDataFromDB(); 
+    });
+    // reload based on trigger event from request-rejected-update.php
+    const channelRejectedUpdate = pusher.subscribe('rejected-channel');
+    channelRejectedUpdate.bind('rejected-event', function(data) {
+        fetchDataFromDB(); 
     });
 
     $('#waitingForApprovalTable').on('click', '.approve-btn', function() {

@@ -41,9 +41,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $ACP_status_or_case_no = $_POST['ACP_status_or_case_no'] ?? '';
         $date_of_confiscation_order = $_POST['date_of_confiscation_order'] ?? '';
         $remarks = $_POST['remarks'] ?? '';
-        $apprehended_persons = $_POST['apprehended_persons'] ?? '';
+        // $apprehended_persons = $_POST['apprehended_persons'] ?? '';
+
+        $depository_sitio = $_POST['depository_sitio'] ?? '';
+        $depository_barangay = $_POST['depository_barangay'] ?? '';
+        $depository_city = $_POST['depository_city'] ?? '';
+        $depository_province = $_POST['depository_province'] ?? '';
 
         $user_name = $_SESSION['session_username'];
+        $linear_mtrs =  $_POST['linear_mtrs'] ?? '';
 
         $stmt = $connection->prepare("UPDATE inventory SET
             sitio=?, 
@@ -65,15 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ACP_status_or_case_no=?, 
             date_of_confiscation_order=?, 
             remarks=?, 
-            apprehended_persons=?,
-            update_by=?
+            -- apprehended_persons=?,
+            update_by=?,
+            depository_sitio=?,
+            depository_barangay=?,
+            depository_city=?,
+            depository_province=?,
+            linear_mtrs=?
             WHERE id=?");
 
         if ($stmt === false) {
             file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
         }
 
-        $stmt->bind_param('sssssssssssssssssssssi',
+        $stmt->bind_param('sssssssssssssssssssssssssi',
             $sitio, 
             $barangay, 
             $city_municipality, 
@@ -93,8 +104,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ACP_status_or_case_no, 
             $date_of_confiscation_order,
             $remarks, 
-            $apprehended_persons,
+            // $apprehended_persons,
             $user_name, 
+            $depository_sitio,
+            $depository_barangay,
+            $depository_city,
+            $depository_province,
+            $linear_mtrs,
             $inventory_id
             
         );

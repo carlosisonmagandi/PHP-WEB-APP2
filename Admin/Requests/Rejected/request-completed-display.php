@@ -5,18 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Approved List</title>
     <link href="https://cdn.datatables.net/v/dt/dt-2.0.8/datatables.min.css" rel="stylesheet">
-    <!-- loader -->
-    <link rel="stylesheet" href="/Styles/loader.css">
+  
     <!-- sweetalert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        .complete-btn,.reject-btn{
+        .details-btn,.reject-btn{
             background-color:#f8f9fa;
             color:#002f6c;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             font-size:11px;
         }
-        .complete-btn:hover,.reject-btn:hover{
+        .details-btn:hover,.reject-btn:hover{
             background-color:#002f6c;
             color:#f8f9fa;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -24,25 +23,13 @@
         #checkIcon,#rejectIcon{
             margin-left:4px;
         }
-        .complete-btn:focus, .reject-btn:focus {
-            outline: none; 
-            box-shadow:  0 4px 8px rgba(0, 0, 0, 0.1); 
-            background-color:#f8f9fa;
-            color:#002f6c;
-            font-size:11px;
-        }
-        .complete-btn:focus:hover,.reject-btn:focus:hover{
-            background-color:#002f6c;
-            color:#f8f9fa;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
     </style>
     <!-- Pusher -->
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 </head>
 <body>
 
-<table id="approvedTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
+<table id="completedTable" class="table table-striped table-bordered" style="width:100%; font-size:11px;">
     <thead>
         <tr>
             <th>Id</th>
@@ -82,29 +69,27 @@
 
 $(document).ready(function() {
     // Initialize DataTable
-    $('#approvedTable').DataTable({
-        "order": [[ 8, "desc" ]],//order based on the latest created record
-        "responsive": true,
-        "pageLength": 10,
-        "lengthMenu": [5, 10, 25, 50]
+    $('#completedTable').DataTable({
+        "order": [[ 8, "desc" ]], // order by latest created record
+        "responsive": true
     });
 
     // Fetch approved data from the DB and populate the table
-    function fetchApprovedDataFromDB() {
+    function fetchCompletedDataFromDB() {
         $.ajax({
-            url: '/Admin/Requests/Approved/request-approved-list.php',
+            url: '/Admin/Requests/Completed/request-completed-list.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                var table = $('#approvedTable').DataTable();
+                var table = $('#completedTable').DataTable();
                 table.clear();
                 
                 var rows = [];
                 $.each(response, function(index, row) {
-                    var actionButtons = '<button class="btn btn-sm complete-btn" data-id="' + row.id + '">Complete</button>';
-                    var clickableId = '<a href="/Admin/Requests/RequestDetails/request.php?id=' + row.id + '" class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
+                    var actionButtons = '<button class="btn btn-sm details-btn" data-id="' + row.id + '">Details</button>';
+                        
                     rows.push([
-                        clickableId,
+                        row.id,
                         row.request_number,
                         row.requestor_name,
                         row.organization_name,
@@ -125,18 +110,22 @@ $(document).ready(function() {
             }
         });
     }
-    fetchApprovedDataFromDB(); // Call the function to populate the table
+    fetchCompletedDataFromDB(); // Call the function to populate the table
+
+    const pusher = new Pusher('6bde96fb5927bfee7cdc', {
+        cluster: 'ap1'
+    });
+
+    const channel = pusher.subscribe('completed-channel');
+    channel.bind('completed-event', function(data) {
+        fetchCompletedDataFromDB(); // Reload data
+    });
 
     // Handle the complete button click
-    $('#approvedTable').on('click', '.complete-btn', function() {
+    $('#completedTable').on('click', '.details-btn', function() {
         var id = $(this).data('id');
         var requestNumber = $(this).closest('tr').find('td:eq(1)').text(); 
         var requestee = $(this).closest('tr').find('td:eq(2)').text(); 
-        var office = $(this).closest('tr').find('td:eq(3)').text(); 
-        var forestProductType = $(this).closest('tr').find('td:eq(4)').text(); 
-        var species = $(this).closest('tr').find('td:eq(5)').text(); 
-        var ownerOfRequest = $(this).closest('tr').find('td:eq(7)').text(); 
-        var dateCreated = $(this).closest('tr').find('td:eq(8)').text(); 
         
         Swal.fire({
             title: "Are you sure you want to complete this request?",
@@ -144,63 +133,10 @@ $(document).ready(function() {
             'Request #: <input disabled id="inputRequestNumber" class="swal2-input" placeholder="Request Number" value="'+ (requestNumber ? requestNumber : '') + '">' +
             'Requestee: <input disabled id="inputRequestee" class="swal2-input" placeholder="Requestee" value="' + (requestee ? requestee : '') + '">',
             icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, Set to complete!",
-            denyButtonText: `Cancel`
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const updatedRequestNumber= $('#inputRequestNumber').val(); 
-                const updatedRequestee = $('#inputRequestee').val();
-
-                const updateRequestData = {
-                    id: id,
-                    requestNumber: updatedRequestNumber,
-                    requestee: updatedRequestee,
-                    office:office,
-                    forestProductType,
-                    species,
-                    ownerOfRequest,
-                    dateCreated
-                    
-                };
-
-                Swal.fire({
-                    title: "Loading please wait",
-                    html: '<br><center><div class="spinner"></div></center>',
-                    icon: "info",
-                    timer: 20000,  
-                    showConfirmButton: false 
-                });
-
-                $.ajax({
-                    url: '/Admin/Requests/Approved/request-approved.php',
-                    type: 'PUT',
-                    contentType: 'application/json',
-                    dataType: 'json',
-                    data: JSON.stringify(updateRequestData),
-                    success: function(response) {
-                        Swal.fire("Request has been set to complete!", response.message, "success");
-                        fetchApprovedDataFromDB(); // Refresh the table
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                        Swal.fire("Error", "Failed to update record", "error");
-                    }
-                });
-            } else if (result.isDenied) {
-                Swal.fire("Changes are not saved", "", "info");
-            }
+            showCancelButton: false
         });
     });
 
-    const pusher = new Pusher('6bde96fb5927bfee7cdc', {
-        cluster: 'ap1'
-    });
-
-    const channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-        fetchApprovedDataFromDB(); // Reload data
-    });
 
     // Initialize Pusher for real-time updates
     // Pusher.logToConsole = false;

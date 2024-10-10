@@ -28,6 +28,9 @@ $hasId = !empty($id);
 <link rel="stylesheet" type="text/css" href="/Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="/Styles/darkmode.css">
 
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+
 <?php 
  if ($_SESSION['mode'] == 'light') {
         echo '<link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data-home.css">';
@@ -162,13 +165,13 @@ include ("templates/nav-bar.php");
                 <th>CITY/MUNICIPALITY</th>
                 <th>PROVINCE</th>
                 <th>APPREHENDING OFFICER</th>
-                <th>APPREHENDED ITEMS(Species,Pieces,Volume,Conveyance,Implements, etc.)</th>
+                <th>Species</th>
                 <th>ESTIMATED MARKET VALUE OF FOREST PRODUCTS</th>
                 <th>ESTIMATED VALUE OF CONVEYANCE & IMPLEMENTS</th>
                 <th>INVOLVE PERSONALITIES</th>
                 <th>CUSTODIAN</th>
                 <th>acp STATUS/ CASES NO.</th>
-                <th>DATE OF CONFISCATION ORDER</th>
+                <th>DATE OF APPREHENSION</th>
                 <th>REMARKS(Status of apprehended Item)</th>
                 <th>APPREHENDED PERSON</th>
                 <th>DATE CREATED</th>
@@ -188,13 +191,13 @@ include ("templates/nav-bar.php");
                     <th>CITY/MUNICIPALITY</th>
                     <th>PROVINCE</th>
                     <th>APPREHENDING OFFICER</th>
-                    <th>APPREHENDED ITEMS(Species,Pieces,Volume,Conveyance,Implements, etc.)</th>
+                    <th>Species</th>
                     <th>ESTIMATED MARKET VALUE OF FOREST PRODUCTS</th>
                     <th>ESTIMATED VALUE OF CONVEYANCE & IMPLEMENTS</th>
                     <th>INVOLVE PERSONALITIES</th>
                     <th>CUSTODIAN</th>
                     <th>acp STATUS/ CASES NO.</th>
-                    <th>DATE OF CONFISCATION ORDER</th>
+                    <th>DATE OF APPREHENSION</th>
                     <th>REMARKS(Status of apprehended Item)</th>
                     <th>APPREHENDED PERSON</th>
                     <th>DATE CREATED</th>
@@ -215,23 +218,22 @@ include ("templates/nav-bar.php");
         initComplete: function () {
             const api = this.api();
 
-            // Hide columns in a single operation
+            // Hide specific columns
             api.columns([2, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16])
                 .visible(false);
 
-            api.columns().every(function (index) { 
+            api.columns().every(function (index) {
                 const column = this;
                 const footer = column.footer();
 
-                if (index !== 17) { 
+                if (index !== 17) { // Make sure to exclude the "Action" column
                     const input = document.createElement('input'); 
                     input.placeholder = column.footer().textContent;
 
-                    if (footer) { // Clear the footer and append the input
+                    if (footer) {
                         footer.innerHTML = ''; 
                         footer.appendChild(input);
 
-                        // Event listener for user input
                         input.addEventListener('keyup', debounce(() => {
                             if (column.search() !== input.value) {
                                 column.search(input.value).draw();
@@ -240,8 +242,30 @@ include ("templates/nav-bar.php");
                     }
                 }
             });
-        }
+        },
+        columnDefs: [
+            {
+                targets: 17, 
+                orderable: false, 
+                searchable: false, 
+                render: function(data, type, row) {
+                    
+                    return `
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item edit-action">Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
+                                <li><a class="dropdown-item delete-action">Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
+                            </ul>
+                        </div>
+                    `;
+                }
+            }
+        ]
     });
+
 
     // Debounce function to limit the rate at which the search is performed
     function debounce(func, wait) {
@@ -252,48 +276,7 @@ include ("templates/nav-bar.php");
         };
     }
 
-    // function fetchTitleFromDB() {//Get title details
-    //     $.ajax({
-    //         url: '/inventory-get-title.php',
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         success: function(response) {
-    //             var percent = response[0].percentage;
-    //             var title = response[0].title;
-    //             var startYear = response[0].cy_start_year; 
-    //             var endYear = response[0].cy_end_year;
-
-    //             var dynamicContent = percent + "% INVENTORY OF " + title.toUpperCase() 
-    //             // + " AS OF CY "
-    //             //  + startYear + "-"
-    //             +  
-    //             `<select name="endYear" id="endYear" >
-    //                 <option selected>${endYear}</option>
-    //                 <option >2025</option>
-    //                 <option >2026</option>
-    //                 <option >2027</option>
-    //                 <option >2028</option>
-    //                 <option >2029</option>
-    //                 <option >2030</option>
-    //                 <option >2031</option>
-    //                 <option >2032</option>
-    //                 <option >2033</option>
-    //                 <option >2034</option>
-    //                 <option >2035</option>
-    //                 <option >2036</option>
-    //                 <option >2037</option>
-    //                 <option >2038</option>
-    //                 <option >2039</option>
-    //                 <option >2040</option>
-    //             </select>` ;
-    //             document.getElementById("titleContainer").innerHTML = '<h3 style="font-family: \'Poppins\', sans-serif; font-size:12px; font-weight:bold"><center>' + dynamicContent + '</center></h3>';
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.error('Error:', error);
-    //             alert("Error fetching data from the server. See console for details.");
-    //         }
-    //     });
-    // }
+   
 
     function fetchDataFromDB() {
         $.ajax({
@@ -301,6 +284,7 @@ include ("templates/nav-bar.php");
             type: 'GET',
             dataType: 'json',
             success: function(response) {
+                // console.log(response);
                 updateTable(response);//call updateTable
             },
             error: function(xhr, status, error) {
@@ -312,8 +296,8 @@ include ("templates/nav-bar.php");
 
     function updateTable(data) {
         const table = $('#dataTable').DataTable();
-        table.clear();// Clear the existing data from the DataTable
-        data.forEach(rowData => {// Add new data
+        table.clear();
+        data.forEach(rowData => {
         const rowDataArray = [];
             
             Object.values(rowData).forEach(value => {
@@ -333,7 +317,7 @@ include ("templates/nav-bar.php");
                 </ul>
             </div>
             `);
-            table.row.add(rowDataArray);// Add the row to the DataTable
+            table.row.add(rowDataArray);
         });
         table.order([16, 'desc']).draw();// Redraw the DataTable
     }
@@ -405,37 +389,49 @@ include ("templates/nav-bar.php");
         });
     }
 
-
     function deleteAction(id) {
-        $.ajax({
-            url: '/inventory-tree/delete-record.php',
-            type: 'POST',
-            data: { inventory_id: id },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    fetchDataFromDB();//reload the table
-                    Swal.fire({
-                        title: 'Success',
-                        text: response.message,
-                        icon: 'success'
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: response.message,
-                        icon: 'error'
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'An error occurred while deleting the image.',
-                    icon: 'error'
-                });
+        Swal.fire({
+            title: 'Are you sure you want to delete this record?',
+            text: "Do you want to proceed with this action?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, proceed',
+            cancelButtonText: 'No, cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/inventory-tree/delete-record.php',
+                    type: 'POST',
+                    data: { inventory_id: id },
+                    dataType: 'json',
+                    success: function(response) {
+                        
+                        if (response.success) {
+                            fetchDataFromDB(); // reload the table
+                            Swal.fire({
+                                title: 'Success',
+                                text: response.message,
+                                icon: 'success'
+                            });
+                        }
+                        else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response.message,
+                                icon: 'error'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'An error occurred while deleting the image.',
+                            icon: 'error'
+                        });
+                    }
+                });  
             }
-        });
+        });   
     }
 
     function clickableId(){
@@ -456,18 +452,19 @@ include ("templates/nav-bar.php");
             success: function(response) { 
                 // Expected data
                 if (response) {
-                    const barangay=response.barangay
+                    const barangay=response.barangay;
                     const title=response.apprehended_items;
                     const sitio=response.sitio;
                     const city_municipality=response.city_municipality;
                     const province=response.province;
+
                     const apprehending_officer=response.apprehending_officer;
                     const EMV_forest_product=response.EMV_forest_product;
                     const EMV_conveyance_implements=response.EMV_conveyance_implements;
                     const involve_personalities=response.involve_personalities;
                     const custodian=response.custodian;
                     const ACP_status_or_case_no=response.ACP_status_or_case_no;
-                    const date_of_confiscation_order=response.date_of_confiscation_order;
+                    const date_of_apprehension=response.date_of_apprehension;
                     const remarks=response.remarks;
                     const apprehended_persons=response.apprehended_persons;
 
@@ -476,6 +473,14 @@ include ("templates/nav-bar.php");
                     const apprehended_vehicle=response.apprehended_vehicle;
                     const apprehended_vehicle_type=response.apprehended_vehicle_type;
                     const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
+
+                    const depository_sitio=response.depository_sitio;
+                    const depository_barangay=response.depository_barangay;
+                    const depository_city=response.depository_city;
+                    const depository_province=response.depository_province;
+                    const linear_mtrs=response.linear_mtrs;
+
+                    const species_type=response.species_type;
 
                     let htmlContent = ``;
 
@@ -523,7 +528,7 @@ include ("templates/nav-bar.php");
                                 <div class="flex-container">
                                     <div class="flex-item-left-img">
                                         <p style="display:none">${image.id}</p>
-                                        <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
+                                        <img src="${image.file_path}" alt="${image.file_name}" id="${image.id}" class="image-clickable" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); cursor:pointer;">
                                     </div> 
                                     <button data-id="${image.id}" class="button-trash delete-button" id="buttonId">
                                         <i class="fas fa-trash-alt"></i>
@@ -587,7 +592,7 @@ include ("templates/nav-bar.php");
                                 margin: 10px;
                                 text-align: center;
                                 border-right:1px solid gray;
-                                height:600px;
+                                height:700px;
                             }
                             .flex-container-right {
                                 color: black;
@@ -633,10 +638,16 @@ include ("templates/nav-bar.php");
                                 padding: 20px;
                             }
                             .item3 {
-                                grid-column: 1 / span 2; 
+                               grid-column: 1 / span 2; 
                                 grid-row: 2; 
                             }
+
+                        
                             .item4 {
+                                grid-column: 1 / span 2; 
+                                grid-row: 3; /* Change this to place item4 below item3 */
+                            }
+                            .item5 {
                                 grid-column: 1 / span 2; 
                                 grid-row: 3; /* Change this to place item4 below item3 */
                             }
@@ -652,19 +663,29 @@ include ("templates/nav-bar.php");
                                 width: 100%;
                                 border-collapse: collapse;
                                 margin-bottom: 20px;
+                                table-layout: fixed;
                             }
-                            th, td {
+                             td {
                                 border: 1px solid #ccc;
                                 padding: 8px;
                                 text-align: center;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;
                             }
+                            th{
+                                 border: 1px solid #ccc;
+                                padding: 8px;
+                                text-align: center;
+                                overflow-x: auto;
+                                -webkit-overflow-scrolling: touch;
+                            }
                             .category-header {
-                                background-color: #002f6c;
+                                background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
                                 font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
+
                             .sub-category-header {
                                 background-color: #002f6c;
                                 color: white;
@@ -691,7 +712,7 @@ include ("templates/nav-bar.php");
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Site</th>
+                                                <th colspan="4" class="category-header">Apprehension Site</th>
                                             </tr>
                                             <tr>
                                                 <td><b>SITIO</b></td>
@@ -701,7 +722,7 @@ include ("templates/nav-bar.php");
                                             </tr>
                                             <tr>
                                                 <td>${sitio}</td>
-                                                <td >${barangay}</td>
+                                                <td>${barangay}</td>
                                                 <td>${city_municipality}</td>
                                                 <td>${province}</td>
                                             </tr>
@@ -710,19 +731,19 @@ include ("templates/nav-bar.php");
                                     <div class="grid-item item2">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Details</th>
+                                                <th colspan="4" class="category-header">Depository Site</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Apprehending Officer</b></td>
-                                                <td><b>Apprehended Items</b></td>
-                                                <td><b>EMV Forest Product</b></td>
-                                                <td><b>EMV Conveyance Implements</b></td>
+                                                <td><b>SITIO</b></td>
+                                                <td><b>BARANGAY</b></td>
+                                                <td><b>CITY</b></td>
+                                                <td><b>PROVINCE</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${apprehending_officer}</td>
-                                                <td>${title}</td>
-                                                <td>${EMV_forest_product}</td>
-                                                <td>Php. ${EMV_conveyance_implements}</td>
+                                                <td>${depository_sitio}</td>
+                                                <td>${depository_barangay}</td>
+                                                <td>${depository_city}</td>
+                                                <td>${depository_province}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -732,44 +753,69 @@ include ("templates/nav-bar.php");
                                                 <th colspan="6" class="category-header">Case Information</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Involve Personalities</b></td>
+                                                <td><b>Name of Respondent/Claimant/Owner</b></td>
                                                 <td><b>Custodian</b></td>
-                                                <td><b>ACP Status or Case No</b></td>
-                                                <td><b>Date of Confiscation Order</b></td>
+                                                <td><b>Administrative Status</b></td>
+                                                <td><b>Date of Apprehension</b></td>
                                                 <td><b>Remarks</b></td>
-                                                <td><b>Apprehended Person/s</b></td>
+                                                <td><b>Apprehending Officer</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${involve_personalities}</td>
+                                                <td>${involve_personalities} </td>
                                                 <td>${custodian}</td>
                                                 <td>${ACP_status_or_case_no}</td>
-                                                <td>${date_of_confiscation_order}</td>
+                                                <td>${date_of_apprehension}</td>
                                                 <td>${remarks}</td>
-                                                <td>${apprehended_persons}</td>
+                                                <td>${apprehending_officer}</td>
                                             </tr>
                                         </table>
                                     </div>
+
+                                
                                     <div class="grid-item item4">
                                         <table>
                                             <tr>
-                                                <th colspan="6" class="category-header">Apprehension Metrics</th>
+                                                <th colspan="5" class="category-header">Forest Products Description </th>
                                             </tr>
                                             <tr>
-                                                <td><b>Quantity</b></td>
-                                                <td><b>Volume</b></td>
-                                                <td><b>Vehicle</b></td>
-                                                <td><b>Type of vehicle</b></td>
-                                                <td><b>Plate #</b></td>
+                                                <td><b>Quantity (pcs)</b></td>
+                                                <td><b>Volume (bd. ft.)</b></td>
+                                                <td><b>Linear mtrs.</b></td>
+                                                <td><b>Estimated value (P)</b></td>
+                                                <td><b>Species</b></td>
+                                                <td><b>Type of species</b></td>
                                             </tr>
                                             <tr>
                                                 <td>${apprehended_quantity}</td>
                                                 <td>${apprehended_volume}</td>
+                                                <td>${linear_mtrs}</td>
+                                                <td>${EMV_forest_product}</td>
+                                                <td>${title}</td>
+                                                <td>${species_type}</td>
+                                            </tr>
+                                        </table>
+
+                                        <table>
+                                            <tr>
+                                                <th colspan="4" class="category-header">Conveyance Details</th>
+                                            </tr>
+                                            <tr>
+                                               
+                                                <td><b>Vehicle</b></td>
+                                                <td><b>Type of vehicle</b></td>
+                                                <td><b>Plate #</b></td>
+                                                <td><b>Conveyance Estimated Value (P)</b></td>
+                                            </tr>
+                                            <tr>
                                                 <td>${apprehended_vehicle}</td>
                                                 <td>${apprehended_vehicle_type}</td>
                                                 <td>${apprehended_vehicle_plate_no}</td>
+                                                 <td>Php. ${EMV_conveyance_implements}</td>
                                             </tr>
                                         </table>
                                     </div>
+            
+                                    
                                 </div>
                             </div>
                         </div>
@@ -784,42 +830,69 @@ include ("templates/nav-bar.php");
 
                             document.querySelectorAll('.delete-button').forEach(button => {//delete icon button
                                 button.addEventListener('click', function() {
-                                    let buttonId = this.getAttribute('data-id');
-                                    $.ajax({
-                                        url: '/inventory-tree/delete-image.php',
-                                        type: 'POST',
-                                        data: { image_id: buttonId },
-                                        dataType: 'json',
-                                        success: function(response) {
-                                            if (response.success) {
-                                                Swal.fire({
-                                                    title: 'Success',
-                                                    text: response.message,
-                                                    icon: 'success'
-                                                }).then(() => {
-                                                    // Call the function to update and reopen the modal
+                                let buttonId = this.getAttribute('data-id');
+                        
+                                Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: 'This action cannot be undone.',
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Yes, delete it!',
+                                    cancelButtonText: 'No, cancel!'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        $.ajax({
+                                            url: '/inventory-tree/delete-image.php',
+                                            type: 'POST',
+                                            data: { image_id: buttonId },
+                                            dataType: 'json',
+                                            success: function(response) {
+                                                if (response.success) {
                                                     Swal.fire({
-                                                        html: itemClickId(id)
-                                                    })
-                                                });
-                                            } else {
+                                                        title: 'Success',
+                                                        text: response.message,
+                                                        icon: 'success'
+                                                    }).then(() => {
+                                                        Swal.fire({
+                                                            html: itemClickId(id)
+                                                        });
+                                                    });
+                                                } else {
+                                                    Swal.fire({
+                                                        title: 'Error',
+                                                        text: response.message,
+                                                        icon: 'error'
+                                                    });
+                                                }
+                                            },
+                                            error: function(xhr, status, error) {
                                                 Swal.fire({
                                                     title: 'Error',
-                                                    text: response.message,
+                                                    text: 'An error occurred while deleting the image.',
                                                     icon: 'error'
                                                 });
                                             }
-                                        },
-                                        error: function(xhr, status, error) {
-                                            Swal.fire({
-                                                title: 'Error',
-                                                text: 'An error occurred while deleting the image.',
-                                                icon: 'error'
-                                            });
-                                        }
-                                    });
+                                        });
+                                    } else {
+                                        // User canceled the action
+                                        Swal.fire({
+                                            html: itemClickId(id)
+                                        });
+                                    }
                                 });
                             });
+
+                            });
+                            // Click image
+                            document.querySelectorAll('.image-clickable').forEach(image => {
+                                image.addEventListener('click', function() {
+                                    let id = this.getAttribute('id');
+                                    window.open('/inventory-tree/image-view.php?id='+id, '_blank');
+
+                                    alert(imagePath);
+                                });
+                            });
+                            
                             // add new image button
                             const buttonAddImage = document.getElementById('addImage');
                             buttonAddImage.addEventListener('click', addImage);
@@ -883,12 +956,13 @@ include ("templates/nav-bar.php");
                                                     title: 'Success',
                                                     text: 'Image uploaded successfully',
                                                     icon: 'success'
-                                                }).then(() => {
-                                                    // Call the function to update and reopen the modal
-                                                    Swal.fire({
-                                                        html: itemClickId(id)
-                                                    })
                                                 });
+                                                // .then(() => {
+                                                //     // Call the function to update and reopen the modal
+                                                //     Swal.fire({
+                                                //         html: itemClickId(id)
+                                                //     })
+                                                // });
                                             } else {
                                                 Swal.fire({
                                                     title: 'Error',
@@ -944,79 +1018,84 @@ include ("templates/nav-bar.php");
     }
 
 
-    // print table view
     function printTable() {
-        // Save the current column visibility states
-        let table = $('#dataTable').DataTable();
-        let columnVisibility = [];
-
-        table.columns().every(function () {
-            columnVisibility.push(this.visible());
-        });
-
-        // Show all columns
-        table.columns().visible(true);
-
-        // Hide everything except the table and its parent div
-        $('body > *').not('.container-div').hide();
-
-        // Get the table and its parent div
-        var tableDiv = document.querySelector('.container-div');
-        var tableElement = tableDiv.querySelector('table');
-
-        // Hide the table footer
-        $(tableElement).find('tfoot').hide();
-
-        // Remove the action column temporarily
-        var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
-
-        // Reduce font size for printing
-        $(tableElement).css('font-size', '8px');
-
-        // Create a copy of the table
-        var tableClone = tableElement.cloneNode(true);
-
-        // Create a title element
-        var titleElement = document.createElement('h1');
-        titleElement.innerText = "APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
-        titleElement.style.textAlign = 'center';
-        titleElement.style.fontSize = '12px';
-
-        var printContainer = document.createElement('div');
-        printContainer.appendChild(titleElement);
-        printContainer.appendChild(tableClone);
-
-        document.body.appendChild(printContainer);
-
-        window.addEventListener('beforeprint', function () {
-            // console.log("Print initiated");
-        });
-
-        window.addEventListener('afterprint', function () {
-            console.log("Print cancelled or completed");
-            // Restore the original column visibility states
-            table.columns().every(function (index) {
-                this.visible(columnVisibility[index]);
-            });
-
-            // Refresh the page
-            window.location.reload();
-        });
-
-        window.print();
-
-        document.body.removeChild(printContainer);
-
-        $(tableElement).css('font-size', '');
-
-        $(tableElement).find('tfoot').show();
-
-        // Restore the action column
-        $(tableElement).find('thead tr').append(actionColumn.clone());
-        $(tableElement).find('tbody tr').each(function () {
-            $(this).append(actionColumn.clone());
-        });
+        window.open("/inventory-tree/print-view.php", "_blank");
     }
+
+
+    // print table view
+    // function printTable() {
+    //     // Save the current column visibility states
+    //     let table = $('#dataTable').DataTable();
+    //     let columnVisibility = [];
+
+    //     table.columns().every(function () {
+    //         columnVisibility.push(this.visible());
+    //     });
+
+    //     // Show all columns
+    //     table.columns().visible(true);
+
+    //     // Hide everything except the table and its parent div
+    //     $('body > *').not('.container-div').hide();
+
+    //     // Get the table and its parent div
+    //     var tableDiv = document.querySelector('.container-div');
+    //     var tableElement = tableDiv.querySelector('table');
+
+    //     // Hide the table footer
+    //     $(tableElement).find('tfoot').hide();
+
+    //     // Remove the action column temporarily
+    //     var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
+
+    //     // Reduce font size for printing
+    //     $(tableElement).css('font-size', '8px');
+
+    //     // Create a copy of the table
+    //     var tableClone = tableElement.cloneNode(true);
+
+    //     // Create a title element
+    //     var titleElement = document.createElement('h1');
+    //     titleElement.innerText = "APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES AND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
+    //     titleElement.style.textAlign = 'center';
+    //     titleElement.style.fontSize = '12px';
+
+    //     var printContainer = document.createElement('div');
+    //     printContainer.appendChild(titleElement);
+    //     printContainer.appendChild(tableClone);
+
+    //     document.body.appendChild(printContainer);
+
+    //     window.addEventListener('beforeprint', function () {
+    //         // console.log("Print initiated");
+    //     });
+
+    //     window.addEventListener('afterprint', function () {
+    //         console.log("Print cancelled or completed");
+    //         // Restore the original column visibility states
+    //         table.columns().every(function (index) {
+    //             this.visible(columnVisibility[index]);
+    //         });
+
+    //         // Refresh the page
+    //         window.location.reload();
+    //     });
+
+    //     window.print();
+
+    //     document.body.removeChild(printContainer);
+
+    //     $(tableElement).css('font-size', '');
+
+    //     $(tableElement).find('tfoot').show();
+
+    //     // Restore the action column
+    //     $(tableElement).find('thead tr').append(actionColumn.clone());
+    //     $(tableElement).find('tbody tr').each(function () {
+    //         $(this).append(actionColumn.clone());
+    //     });
+    // }
 
     //Add new record
     function redirectToUrl() {

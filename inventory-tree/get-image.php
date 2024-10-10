@@ -24,7 +24,12 @@ $sql = "SELECT id,
     date_of_confiscation_order,
     remarks,
     apprehended_persons,
-    date_created  
+    date_created,
+    depository_sitio,
+    depository_barangay,
+    depository_city,
+    depository_province,
+    linear_mtrs
     FROM inventory";
 
 $result = $connection->query($sql);

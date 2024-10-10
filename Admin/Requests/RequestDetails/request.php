@@ -1,9 +1,14 @@
 <?php
 session_start();
-ob_start();
-require("../includes/session.php");
-require("../includes/darkmode.php");
-require("../includes/authentication.php");  
+require("../../../includes/session.php");
+require("../../../includes/darkmode.php");
+require("../../../includes/authentication.php");
+
+if (isset($_POST['Logout'])) {
+    session_destroy();
+    header("Location: ../../index.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -12,19 +17,21 @@ require("../includes/authentication.php");
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Request</title>
     <link rel="stylesheet" type="text/css" href="/Styles/breadCrumbs.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    
-    <!-- Prefixfree -->
-    <script src="http://thecodeplayer.com/uploads/js/prefixfree-1.0.7.js" type="text/javascript"></script>
-
 
     <style>
         * {
         box-sizing: border-box;
         }
-        body{margin:0}
+        body{
+            margin:0;
+            padding:20px;
+            font-size:12px;
+            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
 
         .flex-container {
         display: flex;
@@ -51,37 +58,16 @@ require("../includes/authentication.php");
             /* background-color: #bfbfbf; */
             border: none !important;
             flex: 20%;
-            margin-right:5%;
+            
         }
-        .btnCancelRequest{
-            font-size:12px;
-            padding: 4px;
-        }
-        .btnCancelRequest:hover{
-            background-color: #bfbfbf;
-        }
-       .flex-item-cancel-button{
-        background-color: #bfbfbf;
-        border: none !important;
-        flex: 7%;
-       }
-        .flex-item-left {
-        /* background-color: #f1f1f1; */
-        padding: 2px;
-        height:100vh;
-        flex: 30%;
-        overflow-y: auto;
-        }
+       
+       
 
         .flex-item-right {
         padding: 2px;
         flex: 70%;
         height:100vh;
         overflow-y: auto;
-        }
-        #createNew{
-            font-size:12px;
-            margin-left:10px;
         }
         /* Responsive layout - makes a one column-layout instead of two-column layout */
         @media (max-width: 800px) {
@@ -181,36 +167,31 @@ require("../includes/authentication.php");
         </style>
 </head>
 <body>
-<?php 
-include("../templates/nav-bar.php");
-?>
+
+
+<!-- Prefixfree -->
+<script src="http://thecodeplayer.com/uploads/js/prefixfree-1.0.7.js" type="text/javascript"></script>
+
 
 <br>
 <div class="container">
     <?php if ($_SESSION['mode'] == 'light'): ?>
         <div class="breadcrumb flat">
-            <a href="#">Request</a>
-            <a href="/Request/my-request.php">My request</a>
-            
+            <a href="/Admin/monitor-item-trees.php">Request</a>
+            <a href="#">Request Details</a>
         </div>
+        
     <?php else: ?>
         <div class="breadcrumb">
-            <a href="#">Request</a>
-            <a href="/Request/my-request.php">My request</a>
+            <a href="/Admin/monitor-item-trees.php">Request</a>
+            <a href="#">Request Details</a>
         
         </div>
     <?php endif; ?>
 </div>
-<button class="btn btn-primary" id="createNew"  >Create New Request</button>
+
 <div class="flex-container">
-    <div class="flex-item-left">
-        <div>FILTER DIV</div>
-        <!-- ----------------------------------------------------------------------- -->
-        <div class="flex-item-left">
-            <div>FILTER DIV</div>
-            <!-- Request boxes will be dynamically inserted here by AJAX -->
-        </div>
-    </div>
+   
     <div class="flex-item-right">
         <form action="" method="post" enctype="multipart/form-data" id="myRequestForm">
             <div class="flex-item-status">
@@ -220,11 +201,7 @@ include("../templates/nav-bar.php");
                 <div class="flex-item-status-right">
                     <input type="text" id="status" name="status" disabled  style="font-style:italic" >  
                 </div>
-                <div class="flex-item-cancel-button" id="cancelRequestButtonDiv" style="display:none;">
-                <button id="cancelRequestButton" class="btnCancelRequest"  >
-                    <i class="fas fa-ban"></i> Cancel Request
-                </button>
-                </div>
+                
             </div>
 
             <div class="form-container">    
@@ -356,177 +333,65 @@ include("../templates/nav-bar.php");
 
 <script>
 $(document).ready(function() {
-    $('#createNew').on('click', function() {
-        window.location.href = "/Request/requestForm.php";
-    });
 
-    // Add click event for dynamically created .request-box elements
-    $('.flex-item-left').on('click', '.request-box', function() {
-        var id = $(this).data('id');
-        fetchDataById(id);
-        fetchFiles(id);
-    });
-
-    $('.flex-item-left').on('click', '.requestEditIcon', function() {
-        var id = $(this).data('id');
-        // Construct query string with data
-        let queryString = id;
-        // Redirect with query parameters
-        window.location.href = '/Request/requestForm.php?' + queryString;
-    });
-
-    // Logic for showing the cancel button
-    const statusField = $('#status');
-    const cancelButtonDiv = $('#cancelRequestButtonDiv');
-
-    function toggleCancelButton() {
-        if (statusField.val().trim() !== "") {
-            cancelButtonDiv.show();
-        } else {
-            cancelButtonDiv.hide();
-        }
-    }
-
-    // Initial check to see if the status has a value
-    toggleCancelButton();
-
-    // Listen for changes in the status input
-    statusField.on('input', toggleCancelButton);
     
     // Fetch data from the database
     fetchDataFromDB();
 
     function fetchDataFromDB() {
-        $.ajax({
-            url: '/Request/get-record.php',
-            type: 'GET',
-            dataType: 'json',
-            success: function(response) {
-                $('.flex-item-left').html('<div>FILTER DIV</div>');
-
-                response.forEach(function(record) {
-                    var requestBox = `
-                        <div class="request-box" data-id="${record.id}">
-                            <div class="request-header">
-                                ${record.request_number}
-                                <button class="requestEditIcon" id="requestEditIcon" data-id=${record.id}>
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </div>
-                            <div class="request-details">
-                                <span style="font-size:14px"><strong>${record.requestor_name}</strong></span><br>
-                                <span>${record.type_of_requested_item}</span>
-                            </div>
-                            <div class="request-footer">
-                                <i>${record.created_on}</i>
-                            </div>
-                        </div>
-                    `;
-                    $('.flex-item-left').append(requestBox);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-                alert("Error fetching data. See console for details.");
-            }
-        });
-    }
-
-    function fetchDataById(id) {
-        $.ajax({
-            url: '/Request/get-record-by-id.php',
-            type: 'GET',
-            data: { requestId: id },
-            dataType: 'json',
-            success: function(response) {
-                // Populate fields with response data
-                $('#requestor_name').val(response.requestor_name);
-                $('#organization').val(response.organization_name);
-                $('#phone_number').val(response.phone_number);
-                $('#email_address').val(response.email);
-                $('#address').val(response.address);
-                $('#item_type').val(response.type_of_requested_item);
-                $('#quantity_needed').val(response.quantity);
-                $('#item_description').val(response.request_description);
-                $('#purpose').val(response.purpose_of_donation);
-                $('#delivery_date').val(response.preferred_delivery_date);
-                $('#delivery_time').val(response.preferred_delivery_time);
-                $('#delivery_address').val(response.delivery_address);
-                $('#special_instructions').val(response.special_instructions);
-                $('#letterOfIntent').val(response.letter_of_intent);
-                $('#certificationByTheProjEng').val(response.project_eng_certification);
-                $('#certificationByBudgetOfficer').val(response.budget_officer_certification);
-                $('#status').val(response.approval_status);
-                $('#item_name').val(response.name_of_requested_item);
-
-                // Show/hide item name div based on type of requested item
-                if (response.type_of_requested_item === 'trees' || 
-                    response.type_of_requested_item === 'Trees' || 
-                    response.type_of_requested_item === 'equipment' || 
-                    response.type_of_requested_item === 'Equipment') {
-                    $('#itemNameDiv').show();
-                } else {
-                    $('#itemNameDiv').hide();
+        var urlParams = new URLSearchParams(window.location.search);
+        var requestId = urlParams.get('id'); 
+        if (requestId) {
+            $.ajax({
+                url: '/Admin/Requests/RequestDetails/get-record.php', 
+                type: 'GET',
+                data: { id: requestId },
+                dataType: 'json',
+                success: function(response) {
+                    var data = response[0];
+                    $('#requestor_name').val(data.requestor_name);
+                    $('#organization').val(data.organization_name);
+                    $('#phone_number').val(data.phone_number);
+                    $('#email_address').val(data.email);
+                    $('#address').val(data.address);
+                    $('#item_type').val(data.type_of_requested_item);
+                    $('#quantity_needed').val(data.quantity);
+                    $('#item_description').val(data.request_description);
+                    $('#purpose').val(data.purpose_of_donation);
+                    $('#delivery_date').val(data.preferred_delivery_date);
+                    $('#delivery_time').val(data.preferred_delivery_time);
+                    $('#delivery_address').val(data.delivery_address);
+                    $('#special_instructions').val(data.special_instructions);
+                    $('#letterOfIntent').val(data.letter_of_intent);
+                    $('#certificationByTheProjEng').val(data.project_eng_certification);
+                    $('#certificationByBudgetOfficer').val(data.budget_officer_certification);
+                    $('#status').val(data.approval_status);
+                    $('#item_name').val(data.name_of_requested_item);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert("Error fetching data. See console for details.");
                 }
-
-                // Show cancel button based on status value
-                toggleCancelButton();
-
-                // Cancel request logic
-                $('#cancelRequestButton').on('click', function(e) {
-                    e.preventDefault();
-                    let requestId = response.id;
-                    Swal.fire({
-                        title: "Are you sure you want to cancel this request?",
-                        text: "You won't be able to revert this!",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonText: "Yes, delete it!",
-                        cancelButtonText: "No, keep it",
-                        didRender: () => {
-                            $('.swal2-checkbox').remove();
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: '/Request/delete-request.php',
-                                type: 'POST',
-                                data: JSON.stringify({ id: requestId }),
-                                success: function(response) {
-                                    $('#myRequestForm')[0].reset();
-                                    toggleCancelButton(); 
-                                    fetchDataFromDB();
-                                    Swal.fire({
-                                        title: "Request deleted successfully!",
-                                        icon: "success",
-                                        didRender: () => {
-                                            $('.swal2-checkbox').remove();
-                                        }
-                                    });
-                                },
-                                error: function(xhr, status, error) {
-                                    Swal.fire('Error!', 'There was an error deleting the request.', 'error');
-                                }
-                            });
-                        }
-                    });
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-                alert("Error fetching data. See console for details.");
-            }
-        });
+            });
+        } else {
+            console.error("No valid request ID found in the URL.");
+            alert("Invalid request ID.");
+        }
     }
 
+    fetchFiles();
     // Fetch files
-    function fetchFiles(id) {
+    function fetchFiles() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var requestId = urlParams.get('id'); 
+        
         $.ajax({
-            url: '/Request/fetch-files.php',
+            url: '/Admin/Requests/RequestDetails/fetch-files.php',
             type: 'POST',
-            data: { request_id: id },
+            data: { request_id: requestId },
             dataType: 'json',
             success: function(response) {
+                
                 if (response.status === 'success') {
                     var files = response.files;
                     var fileList = $('#file-list');
@@ -535,7 +400,7 @@ $(document).ready(function() {
                         files.forEach(function(file) {
                             var fileItem = `
                                 <div class="file-item">
-                                    <a href="${file.file_path}" download="${file.file_name}">
+                                    <a href="/Request/${file.file_path}" download="${file.file_name}">
                                         <i class="fas fa-download"></i> ${file.file_name}
                                     </a>
                                 </div>
@@ -567,8 +432,5 @@ $(document).ready(function() {
 });
 </script>
 
-<?php 
-include("../templates/nav-bar2.php");
-?>
 </body>
 </html>

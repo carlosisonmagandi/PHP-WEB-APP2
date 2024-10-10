@@ -17,7 +17,9 @@ $sql = "SELECT id,
     date_of_confiscation_order,
     remarks,
     apprehended_persons,
-    date_created  FROM inventory";
+    date_created,
+    species_status
+   FROM inventory WHERE species_status='Confiscated' ";
 $result = $connection->query($sql);
 
 $data = array();

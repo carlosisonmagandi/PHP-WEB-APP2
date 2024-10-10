@@ -1,5 +1,4 @@
 <?php
-
 //include("../../includes/darkmode.php");
 // Handle form submission for mode change
 if(isset($_POST['mode'])) {
@@ -273,20 +272,20 @@ if(isset($_POST['Logout'])){
                                             <nav class="sb-sidenav-menu-nested nav">
                                                 <a class="nav-link" href="/monitor-item-trees.php">Forest Products</a>
                                                 <a class="nav-link" href="register.html">Equipment</a>
-                                                <a class="nav-link" href="password.html">Vehicle</a>
+                                                <a class="nav-link" href="password.html">Conveyance</a>
                                             </nav>
                                         </div>
 
-                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                        <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
                                             Confiscations
                                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                         </a>
                                         <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
                                                 <a class="nav-link" href="401.html">Forest Products</a>
-                                                <!-- <a class="nav-link" href="404.html">Closed case</a> -->
+                                                <a class="nav-link" href="404.html">Closed case</a>
                                             </nav>
-                                        </div>
+                                        </div> -->
 
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseDonations" aria-expanded="false" aria-controls="pagesCollapseAuth">
                                             Donations
@@ -320,7 +319,7 @@ if(isset($_POST['Logout'])){
                                         </nav>
                                     </div>
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">
-                                        Vehicle
+                                        Conveyance
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseVehicle" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
@@ -330,7 +329,7 @@ if(isset($_POST['Logout'])){
                                         </nav>
                                     </div>
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseEquipment" aria-expanded="false" aria-controls="pagesCollapseVehicle">
-                                        Equipment
+                                        Machineries
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseEquipment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">

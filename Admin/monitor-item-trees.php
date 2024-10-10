@@ -9,10 +9,7 @@ if (isset($_POST['Logout'])) {
     header("Location: ../../index.php");
     exit;
 }
-if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
-    header("Location: ../../templates/page-restriction.php");
-    exit();
-}
+require("../includes/adminOnlyAuth.php");
 
 // Get the active tab from session
 $activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
@@ -69,6 +66,9 @@ include("../templates/nav-bar.php");
         <!-- Tab 2 -->
         <input type="radio" name="tabset" id="tab2" aria-controls="Deliver" <?php echo ($activeTab == 'tab2') ? 'checked' : ''; ?> onclick="setActiveTab('tab2')">
         <label for="tab2">Completed</label>
+
+        <input type="radio" name="tabset" id="Rejected" aria-controls="Rejected" <?php echo ($activeTab == 'Rejected') ? 'checked' : ''; ?> onclick="setActiveTab('Rejected')">
+        <label for="Rejected">Rejected</label>
  
      
 
@@ -81,8 +81,11 @@ include("../templates/nav-bar.php");
                 <?php  include("../Admin/Requests/Approved/request-approved-display.php"); ?>
             </section>
             <section id="Completed" class="tab-panel">
-                <h2>Completed</h2>
-                <p><strong>Approved list:</strong> This should be all the list of items Approved by the admin</p>
+                <?php  include("../Admin/Requests/Completed/request-completed-display.php"); ?>
+            </section>
+            <section id="Rejected" class="tab-panel">
+                <?php  include("../Admin/Requests/Rejected/request-rejected-display.php"); ?>
+                
             </section>
             
         </div>

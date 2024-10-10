@@ -88,30 +88,58 @@ $hasId = !empty($id);
             </fieldset>
 
             <fieldset>
-                <legend>Apprehension Details:</legend>
+                <legend>Depository Site:</legend>
                 <div class="form-group">
-                    <label for="date_of_apprehension">Date of Apprehension</label>
-                    <input type="date" class="form-control" id="date_of_apprehension" name="date_of_apprehension">
+                    <label for="depository_sitio">Sitio</label>
+                    <input type="text" class="form-control" id="depository_sitio" name="depository_sitio">
                 </div>
                 <div class="form-group">
+                    <label for="depository_barangay">Barangay</label>
+                    <input type="text" class="form-control" id="depository_barangay" name="depository_barangay">
+                </div>
+                <div class="form-group">
+                    <label for="depository_city">City/Municipality</label>
+                    <input type="text" class="form-control" id="depository_city" name="depository_city">
+                </div>
+                <div class="form-group">
+                    <label for="depository_province">Province</label>
+                    <input type="text" class="form-control" id="depository_province" name="depository_province">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Apprehension Details:</legend>
+                
+                <!-- <div class="form-group">
                     <label for="apprehending_officer">Apprehending Officer</label>
                     <input type="text" class="form-control" id="apprehending_officer" name="apprehending_officer">
-                </div>
+                </div> -->
 
+                <div class="form-group">
+                    <label for="apprehended_items">Species</label>
+                    <input type="text" class="form-control" id="apprehended_items" name="apprehended_items">
+                </div>
+                <div class="form-group">
+                    <label for="apprehended_quantity">Quantity (pcs)</label>
+                    <input type="text" class="form-control" id="apprehended_quantity" name="apprehended_quantity">
+                </div>
+                <div class="form-group">
+                    <label for="apprehended_volume">Volume</label>
+                    <input type="text" class="form-control" id="apprehended_volume" name="apprehended_volume">
+                </div>
+                <div class="form-group">
+                    <label for="linear_mtrs">Linear mtrs.</label>
+                    <input type="text" class="form-control" id="linear_mtrs" name="linear_mtrs">
+                </div>
+                <div class="form-group">
+                    <label for="EMV_forest_product">EMV Forest Product</label>
+                    <input type="text" class="form-control" id="EMV_forest_product" name="EMV_forest_product">
+                </div>
+                
+                <!--Conveyance  -->
                 <fieldset>
-                    <legend>Apprehended Items:</legend>
-                    <div class="form-group">
-                        <label for="apprehended_items">Species</label>
-                        <input type="text" class="form-control" id="apprehended_items" name="apprehended_items">
-                    </div>
-                    <div class="form-group">
-                        <label for="apprehended_quantity">Quantity (pcs)</label>
-                        <input type="text" class="form-control" id="apprehended_quantity" name="apprehended_quantity">
-                    </div>
-                    <div class="form-group">
-                        <label for="apprehended_volume">Volume</label>
-                        <input type="text" class="form-control" id="apprehended_volume" name="apprehended_volume">
-                    </div>
+                    <legend>Conveyance details:</legend>
+                    
                     <div class="form-group">
                         <label for="apprehended_vehicle">Vehicle</label>
                         <input type="text" class="form-control" id="apprehended_vehicle" name="apprehended_vehicle">
@@ -124,22 +152,18 @@ $hasId = !empty($id);
                         <label for="apprehended_vehicle_plate_no">Vehicle Plate No.</label>
                         <input type="text" class="form-control" id="apprehended_vehicle_plate_no" name="apprehended_vehicle_plate_no">
                     </div>
+                    <div class="form-group">
+                        <label for="EMV_conveyance_implements">Conveyance Estimate Value (P)</label>
+                        <input type="text" class="form-control" id="EMV_conveyance_implements" name="EMV_conveyance_implements">
+                    </div>
                 </fieldset>
 
-                <div class="form-group">
-                    <label for="EMV_forest_product">EMV Forest Product</label>
-                    <input type="text" class="form-control" id="EMV_forest_product" name="EMV_forest_product">
-                </div>
-                <div class="form-group">
-                    <label for="EMV_conveyance_implements">EMV Conveyance Implements</label>
-                    <input type="text" class="form-control" id="EMV_conveyance_implements" name="EMV_conveyance_implements">
-                </div>
             </fieldset>
 
             <fieldset>
                 <legend>Case Information:</legend>
                 <div class="form-group">
-                    <label for="involve_personalities">Involved Personalities</label>
+                    <label for="involve_personalities">Name of respondents/Claimants/Owner</label>
                     <textarea class="form-control" id="involve_personalities" name="involve_personalities"></textarea>
                 </div>
                 <div class="form-group">
@@ -147,20 +171,21 @@ $hasId = !empty($id);
                     <input type="text" class="form-control" id="custodian" name="custodian">
                 </div>
                 <div class="form-group">
-                    <label for="ACP_status_or_case_no">ACP Status or Case No.</label>
+                    <label for="ACP_status_or_case_no">Administrative Status</label>
                     <input type="text" class="form-control" id="ACP_status_or_case_no" name="ACP_status_or_case_no">
                 </div>
                 <div class="form-group">
-                    <label for="date_of_confiscation_order">Date of Confiscation Order</label>
-                    <input type="date" class="form-control" id="date_of_confiscation_order" name="date_of_confiscation_order">
+                    <label for="date_of_apprehension">Date of Apprehension</label>
+                    <input type="date" class="form-control" id="date_of_apprehension" name="date_of_apprehension">
                 </div>
+
                 <div class="form-group">
                     <label for="remarks">Remarks</label>
                     <textarea class="form-control" id="remarks" name="remarks"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="apprehended_persons">Apprehended Persons</label>
-                    <textarea class="form-control" id="apprehended_persons" name="apprehended_persons"></textarea>
+                    <label for="apprehending_officer">Apprehending Officers</label>
+                    <textarea class="form-control" id="apprehending_officer" name="apprehending_officer"></textarea>
                 </div>
             </fieldset>
             
@@ -192,6 +217,7 @@ $hasId = !empty($id);
                         $('#barangay').val(record.barangay);
                         $('#city_municipality').val(record.city_municipality);
                         $('#province').val(record.province);
+
                         $('#date_of_apprehension').val(record.date_of_apprehension);
                         $('#apprehending_officer').val(record.apprehending_officer);
                         $('#apprehended_items').val(record.apprehended_items);
@@ -207,7 +233,12 @@ $hasId = !empty($id);
                         $('#ACP_status_or_case_no').val(record.ACP_status_or_case_no);
                         $('#date_of_confiscation_order').val(record.date_of_confiscation_order);
                         $('#remarks').val(record.remarks);
-                        $('#apprehended_persons').val(record.apprehended_persons);
+
+                        $('#depository_sitio').val(record.depository_sitio);
+                        $('#depository_barangay').val(record.depository_barangay);
+                        $('#depository_city').val(record.depository_city);
+                        $('#depository_province').val(record.depository_province);
+                        $('#linear_mtrs').val(record.linear_mtrs);
                     } else {
                         Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                     }
@@ -230,6 +261,7 @@ $hasId = !empty($id);
             formData.append('barangay', $('#barangay').val());
             formData.append('city_municipality', $('#city_municipality').val());
             formData.append('province', $('#province').val());
+
             formData.append('apprehending_officer', $('#apprehending_officer').val());
             formData.append('apprehended_items', $('#apprehended_items').val());
             formData.append('apprehended_quantity', $('#apprehended_quantity').val());
@@ -244,8 +276,14 @@ $hasId = !empty($id);
             formData.append('ACP_status_or_case_no', $('#ACP_status_or_case_no').val());
             formData.append('date_of_confiscation_order', $('#date_of_confiscation_order').val());
             formData.append('remarks', $('#remarks').val());
-            formData.append('apprehended_persons', $('#apprehended_persons').val());
+            // formData.append('apprehended_persons', $('#apprehended_persons').val());
 
+            formData.append('depository_sitio', $('#depository_sitio').val());
+            formData.append('depository_barangay', $('#depository_barangay').val());
+            formData.append('depository_city', $('#depository_city').val());
+            formData.append('depository_province', $('#depository_province').val());
+
+            formData.append('linear_mtrs', $('#linear_mtrs').val());
             // console.log('Sending request with ID:', id);
             // console.log('Form data:', formData);
 
@@ -306,12 +344,18 @@ $hasId = !empty($id);
             formData.append('ACP_status_or_case_no', $('#ACP_status_or_case_no').val());
             formData.append('date_of_confiscation_order', $('#date_of_confiscation_order').val());
             formData.append('remarks', $('#remarks').val());
-            formData.append('apprehended_persons', $('#apprehended_persons').val());
+            // formData.append('apprehended_persons', $('#apprehended_persons').val());
             formData.append('apprehended_quantity', $('#apprehended_quantity').val());
             formData.append('apprehended_volume', $('#apprehended_volume').val());
             formData.append('apprehended_vehicle', $('#apprehended_vehicle').val());
             formData.append('apprehended_vehicle_type', $('#apprehended_vehicle_type').val());
             formData.append('apprehended_vehicle_plate_no', $('#apprehended_vehicle_plate_no').val());
+
+            formData.append('depository_sitio', $('#depository_sitio').val());
+            formData.append('depository_barangay', $('#depository_barangay').val());
+            formData.append('depository_city', $('#depository_city').val());
+            formData.append('depository_province', $('#depository_province').val());
+            formData.append('linear_mtrs', $('#linear_mtrs').val());
 
             let images = $('#images')[0].files;
             for (let i = 0; i < images.length; i++) {

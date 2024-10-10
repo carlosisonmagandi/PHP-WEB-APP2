@@ -150,7 +150,7 @@ include("../../templates/nav-bar.php");
                 <div class="card mb-4">
                     <div class="card-body chart-container">
                         <div style="display:flex">
-                            <label for="yearForBarChart" style="margin-right:10px">Select Year:</label>
+                            <label for="year" style="margin-right:10px">Select Year:</label>
                             <select id="year"></select>
                         </div>
                         <canvas id="barChart"></canvas>

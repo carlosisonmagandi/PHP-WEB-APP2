@@ -3,11 +3,35 @@ require_once("includes/db_connection.php");
 
 $inventory_id = $_GET['inventory_id'];
 
-$inventory_stmt = $connection->prepare("SELECT apprehended_items, date_of_apprehension, sitio, barangay, city_municipality, province, 
-        apprehending_officer, EMV_forest_product, EMV_conveyance_implements, involve_personalities, custodian, ACP_status_or_case_no, 
-        date_of_confiscation_order, remarks, apprehended_persons, apprehended_quantity, apprehended_volume, apprehended_vehicle, 
-        apprehended_vehicle_type, apprehended_vehicle_plate_no 
-        FROM inventory WHERE id = ?");
+$inventory_stmt = $connection->prepare("SELECT 
+    apprehended_items, 
+    date_of_apprehension, 
+    sitio, 
+    barangay, 
+    city_municipality, 
+    province, 
+    apprehending_officer, 
+    EMV_forest_product, 
+    EMV_conveyance_implements, 
+    involve_personalities, 
+    custodian, 
+    ACP_status_or_case_no, 
+    date_of_confiscation_order, 
+    remarks, 
+    apprehended_persons, 
+    apprehended_quantity, 
+    apprehended_volume, 
+    apprehended_vehicle, 
+    apprehended_vehicle_type, 
+    apprehended_vehicle_plate_no, 
+    depository_sitio,
+    depository_barangay, 
+    depository_city, 
+    depository_province,
+    linear_mtrs,
+    species_status,
+    species_type
+    FROM inventory WHERE id = ?");
 $inventory_stmt->bind_param("i", $inventory_id);
 $inventory_stmt->execute();
 $inventory_result = $inventory_stmt->get_result();
@@ -54,6 +78,13 @@ echo json_encode([
     'apprehended_vehicle' => $inventory['apprehended_vehicle'],
     'apprehended_vehicle_type' => $inventory['apprehended_vehicle_type'],
     'apprehended_vehicle_plate_no' => $inventory['apprehended_vehicle_plate_no'],
+
+    'depository_sitio' => $inventory['depository_sitio'],
+    'depository_barangay' => $inventory['depository_barangay'],
+    'depository_city' => $inventory['depository_city'],
+    'depository_province' => $inventory['depository_province'],
+    'linear_mtrs' => $inventory['linear_mtrs'],
+    
     'images' => $images
 ]);
 ?>

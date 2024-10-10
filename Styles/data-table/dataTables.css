@@ -373,10 +373,11 @@ table.dataTable > tbody > tr.selected a {
   color: rgb(9, 10, 11);
   color: rgb(var(--dt-row-selected-link));
 }
-table.dataTable > tbody > tr > th,
+/* CUSTOM */
+/* table.dataTable > tbody > tr > th,
 table.dataTable > tbody > tr > td {
   padding: 8px 10px;
-}
+} */
 table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > tr > * {
   border-top: 1px solid rgba(0, 0, 0, 0.15);
 }

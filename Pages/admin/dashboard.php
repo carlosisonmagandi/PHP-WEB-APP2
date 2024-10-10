@@ -122,8 +122,15 @@ include  "../../templates/nav-bar2.php";
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
             datasets: [
                 {
-                    label: 'Trees/Logs',
+                    label: 'Flitches',
                     data: [65, 59, 80, 81, 56, 55, 40],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Lumber',
+                    data: [25, 63, 53, 62, 15, 12, 18],
                     backgroundColor: 'rgba(54, 162, 235, 0.2)',
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
@@ -136,7 +143,7 @@ include  "../../templates/nav-bar2.php";
                     borderWidth: 1
                 },
                 {
-                    label: 'Vehicle',
+                    label: 'Conveyance',
                     data: [18, 48, 77, 9, 100, 27, 40],
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',

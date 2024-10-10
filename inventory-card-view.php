@@ -200,12 +200,13 @@ $hasId = !empty($id);
     });
 
     function fetchDataFromDB() {
+       
         $.ajax({
             url: '/inventory-tree/get-image.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-            // console.log('Image response:', response);
+           
             $('.container').empty();  // Clear existing content
 
             $.each(response, function(index, record) {
@@ -251,6 +252,8 @@ $hasId = !empty($id);
             error: function(xhr, status, error) {
                 console.error('Error:', error);
                 // console.log(xhr.messageText);
+                console.log('error here:');
+                console.log('Response:', xhr.responseText);
                 alert("Error fetching data from the server. See console for details.");
             }
         });
@@ -336,53 +339,6 @@ $hasId = !empty($id);
     });
 
     
-    // function fetchTitleFromDB() {
-    //     $.ajax({
-    //         url: '/inventory-get-title.php',
-    //         type: 'GET',
-    //         dataType: 'json',
-    //         success: function(response) {
-    //             // console.log('Title:', response);
-    //             //alert(JSON.stringify(response));
-
-    //             var percent = response[0].percentage;
-    //             var title = response[0].title;
-    //             var startYear = response[0].cy_start_year; 
-    //             var endYear = response[0].cy_end_year;
-
-    //             var dynamicContent = percent + "% INVENTORY OF " + title.toUpperCase() 
-    //             // + " AS OF CY "
-    //             //  + startYear + "-"
-    //             +  
-    //             `<select name="endYear" id="endYear" >
-    //                 <option selected>${endYear}</option>
-    //                 <option >2025</option>
-    //                 <option >2026</option>
-    //                 <option >2027</option>
-    //                 <option >2028</option>
-    //                 <option >2029</option>
-    //                 <option >2030</option>
-    //                 <option >2031</option>
-    //                 <option >2032</option>
-    //                 <option >2033</option>
-    //                 <option >2034</option>
-    //                 <option >2035</option>
-    //                 <option >2036</option>
-    //                 <option >2037</option>
-    //                 <option >2038</option>
-    //                 <option >2039</option>
-    //                 <option >2040</option>
-    //             </select>` ;
-    //             document.getElementById("titleContainer").innerHTML = '<h3 style="font-family: \'Poppins\', sans-serif; font-size:12px; font-weight:bold"><center>' + dynamicContent + '</center></h3>';
-    //         },
-    //         error: function(xhr, status, error) {
-    //             console.error('Error:', error);
-    //             // Handle error gracefully, e.g., show an error message to the user
-    //             alert("Error fetching data from the server. See console for details.");
-    //         }
-    //     });
-    // }
-
     //Edit action
     function editAction(id) {
         $.ajax({
@@ -429,7 +385,7 @@ $hasId = !empty($id);
                     const involve_personalities=response.involve_personalities;
                     const custodian=response.custodian;
                     const ACP_status_or_case_no=response.ACP_status_or_case_no;
-                    const date_of_confiscation_order=response.date_of_confiscation_order;
+                    const date_of_apprehension=response.date_of_apprehension;
                     const remarks=response.remarks;
                     const apprehended_persons=response.apprehended_persons;
 
@@ -438,6 +394,12 @@ $hasId = !empty($id);
                     const apprehended_vehicle=response.apprehended_vehicle;
                     const apprehended_vehicle_type=response.apprehended_vehicle_type;
                     const apprehended_vehicle_plate_no=response.apprehended_vehicle_plate_no;
+
+                    const depository_sitio=response.depository_sitio;
+                    const depository_barangay=response.depository_barangay;
+                    const depository_city=response.depository_city;
+                    const depository_province=response.depository_province;
+                    const linear_mtrs=response.linear_mtrs;
 
                     let htmlContent = ``;
                     let mapsContent=``;
@@ -772,7 +734,7 @@ $hasId = !empty($id);
                                 <div class="flex-container">
                                     <div class="flex-item-left-img">
                                         <p style="display:none">${image.id}</p>
-                                        <img id="image" src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
+                                        <img id="image" src="${image.file_path}" alt="${image.file_name}" data-id="${image.id}" class="image-card-clickable" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8); cursor:pointer;">
                                     </div> 
                                     <button data-id="${image.id}" class="button-trash delete-button" id="buttonId">
                                         <i class="fas fa-trash-alt"></i>
@@ -835,7 +797,7 @@ $hasId = !empty($id);
                                 margin: 10px;
                                 text-align: center;
                                 border-right:1px solid gray;
-                                height:600px;
+                                height:700px;
                             }
                             .flex-container-right {
                                 color: black;
@@ -884,10 +846,16 @@ $hasId = !empty($id);
                                 padding: 20px;
                             }
                             .item3 {
-                                grid-column: 1 / span 2; 
+                               grid-column: 1 / span 2; 
                                 grid-row: 2; 
                             }
+
+                        
                             .item4 {
+                                grid-column: 1 / span 2; 
+                                grid-row: 3; /* Change this to place item4 below item3 */
+                            }
+                            .item5 {
                                 grid-column: 1 / span 2; 
                                 grid-row: 3; /* Change this to place item4 below item3 */
                             }
@@ -903,19 +871,29 @@ $hasId = !empty($id);
                                 width: 100%;
                                 border-collapse: collapse;
                                 margin-bottom: 20px;
+                                table-layout: fixed;
                             }
-                            th, td {
+                             td {
                                 border: 1px solid #ccc;
                                 padding: 8px;
                                 text-align: center;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;
                             }
+                            th{
+                                 border: 1px solid #ccc;
+                                padding: 8px;
+                                text-align: center;
+                                overflow-x: auto;
+                                -webkit-overflow-scrolling: touch;
+                            }
                             .category-header {
-                                background-color: #002f6c;
+                                background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
                                 font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
+
                             .sub-category-header {
                                 background-color: #002f6c;
                                 color: white;
@@ -924,20 +902,17 @@ $hasId = !empty($id);
                             .table-container {
                                 margin-bottom: 20px;
                             }
-
                             /*Mobile responsive style*/
                             @media (max-width: 600px) {
                                     th, td {
                                     white-space: nowrap; /* Prevent text from wrapping */
                                 }
                             }
-
                             /* Hide the checkbox */
                             #slideToggle {
                                 display: none;
                             }
 
-                           
                             .hidden {
                                 height: 90%;
                                 width: 100%;
@@ -972,7 +947,7 @@ $hasId = !empty($id);
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Site</th>
+                                                <th colspan="4" class="category-header">Apprehension Site</th>
                                             </tr>
                                             <tr>
                                                 <td><b>SITIO</b></td>
@@ -982,7 +957,7 @@ $hasId = !empty($id);
                                             </tr>
                                             <tr>
                                                 <td>${sitio}</td>
-                                                <td >${barangay}</td>
+                                                <td>${barangay}</td>
                                                 <td>${city_municipality}</td>
                                                 <td>${province}</td>
                                             </tr>
@@ -991,19 +966,19 @@ $hasId = !empty($id);
                                     <div class="grid-item item2">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Details</th>
+                                                <th colspan="4" class="category-header">Depository Site</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Apprehending Officer</b></td>
-                                                <td><b>Apprehended Items</b></td>
-                                                <td><b>EMV Forest Product</b></td>
-                                                <td><b>EMV Conveyance Implements</b></td>
+                                                <td><b>SITIO</b></td>
+                                                <td><b>BARANGAY</b></td>
+                                                <td><b>CITY</b></td>
+                                                <td><b>PROVINCE</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${apprehending_officer}</td>
-                                                <td>${title}</td>
-                                                <td>${EMV_forest_product}</td>
-                                                <td>${EMV_conveyance_implements}</td>
+                                                <td>${depository_province}</td>
+                                                <td>${depository_barangay}</td>
+                                                <td>${depository_city}</td>
+                                                <td>${depository_province}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -1013,49 +988,68 @@ $hasId = !empty($id);
                                                 <th colspan="6" class="category-header">Case Information</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Involve Personalities</b></td>
+                                                <td><b>Name of Respondent/Claimant/Owner</b></td>
                                                 <td><b>Custodian</b></td>
-                                                <td><b>ACP Status or Case No</b></td>
-                                                <td><b>Date of Confiscation Order</b></td>
+                                                <td><b>Administrative Status</b></td>
+                                                <td><b>Date of Apprehension</b></td>
                                                 <td><b>Remarks</b></td>
-                                                <td><b>Apprehended Person/s</b></td>
+                                                <td><b>Apprehending Officer</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${involve_personalities}</td>
+                                                <td>${involve_personalities} </td>
                                                 <td>${custodian}</td>
                                                 <td>${ACP_status_or_case_no}</td>
-                                                <td>${date_of_confiscation_order}</td>
+                                                <td>${date_of_apprehension}</td>
                                                 <td>${remarks}</td>
-                                                <td>${apprehended_persons}</td>
+                                                <td>${apprehending_officer}</td>
                                             </tr>
                                         </table>
                                     </div>
+
+                                
                                     <div class="grid-item item4">
                                         <table>
                                             <tr>
-                                                <th colspan="6" class="category-header">Apprehension Metrics</th>
+                                                <th colspan="5" class="category-header">Forest Products Description </th>
                                             </tr>
                                             <tr>
-                                                <td><b>Quantity</b></td>
-                                                <td><b>Volume</b></td>
-                                                <td><b>Vehicle</b></td>
-                                                <td><b>Type of vehicle</b></td>
-                                                <td><b>Plate #</b></td>
+                                                <td><b>Quantity (pcs)</b></td>
+                                                <td><b>Volume (bd. ft.)</b></td>
+                                                <td><b>Linear mtrs.</b></td>
+                                                <td><b>Estimated value (P)</b></td>
+                                                <td><b>Species</b></td>
                                             </tr>
                                             <tr>
                                                 <td>${apprehended_quantity}</td>
                                                 <td>${apprehended_volume}</td>
+                                                <td>${linear_mtrs}</td>
+                                                <td>${EMV_forest_product}</td>
+                                                <td>${title}</td>
+                                            </tr>
+                                        </table>
+
+                                        <table>
+                                            <tr>
+                                                <th colspan="4" class="category-header">Conveyance Details</th>
+                                            </tr>
+                                            <tr>
+                                               
+                                                <td><b>Vehicle</b></td>
+                                                <td><b>Type of vehicle</b></td>
+                                                <td><b>Plate #</b></td>
+                                                <td><b>Conveyance Estimated Value (P)</b></td>
+                                            </tr>
+                                            <tr>
                                                 <td>${apprehended_vehicle}</td>
                                                 <td>${apprehended_vehicle_type}</td>
                                                 <td>${apprehended_vehicle_plate_no}</td>
+                                                 <td>Php. ${EMV_conveyance_implements}</td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                            
-                        
                         `;
                     }
 
@@ -1106,6 +1100,14 @@ $hasId = !empty($id);
                                     });
                                 });
                             });
+                            // Click image
+                            document.querySelectorAll('.image-card-clickable').forEach(image => {
+                                image.addEventListener('click', function() {
+                                    let id = this.getAttribute('data-id'); // Get the ID from data-id
+                                    window.open('/inventory-tree/image-view.php?id=' + id, '_blank');
+                                });
+                            });
+
                             // add new image button
                             const buttonAddImage = document.getElementById('addImage');
                             buttonAddImage.addEventListener('click', addImage);
