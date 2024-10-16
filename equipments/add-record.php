@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     
     // Collect POST data
     $equipmentName = $_POST['equipmentName'] ?? '';
-    $type = $_POST['type'] ?? '';
+    $type = $_POST['equipment_type'] ?? '';
     $serialNo = $_POST['serialNo'] ?? '';
     $brand = $_POST['brand'] ?? '';
     $model = $_POST['model'] ?? '';
@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $status = $_POST['status'] ?? '';
     $location = $_POST['location'] ?? '';
     $remarks = $_POST['remarks'] ?? '';
+    $category_type='equipment';
+    $user_name = $_SESSION['session_username'];
 
     // Define allowed file types
     $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
@@ -38,11 +40,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         date_of_compiscation,
         equipment_owner,
         equipment_condition,
-        remarks
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        remarks,
+        category_type,
+        created_by
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     if ($stmt = $connection->prepare($sql)) {
-        $stmt->bind_param('sssssssssss', 
+        $stmt->bind_param('sssssssssssss', 
         $equipmentName, 
         $type, 
         $serialNo, 
@@ -53,7 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $dateOfConfiscation,
         $owner,
         $condition,
-        $remarks
+        $remarks,
+        $category_type,
+        $user_name
         );
 
         if ($stmt->execute()) {

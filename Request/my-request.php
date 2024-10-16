@@ -360,15 +360,18 @@ $(document).ready(function() {
         window.location.href = "/Request/requestForm.php";
     });
 
-    // Add click event for dynamically created .request-box elements
     $('.flex-item-left').on('click', '.request-box', function() {
         var id = $(this).data('id');
+    
         fetchDataById(id);
         fetchFiles(id);
     });
 
     $('.flex-item-left').on('click', '.requestEditIcon', function() {
         var id = $(this).data('id');
+        // construct session values
+        // sessionStorage.setItem('equipment_type', data.data.equipment_type );
+
         // Construct query string with data
         let queryString = id;
         // Redirect with query parameters
@@ -402,9 +405,12 @@ $(document).ready(function() {
             type: 'GET',
             dataType: 'json',
             success: function(response) {
+               
                 $('.flex-item-left').html('<div>FILTER DIV</div>');
 
                 response.forEach(function(record) {
+                    
+                    // sessionStorage.setItem('equipment_type', record.letter_of_intent );
                     var requestBox = `
                         <div class="request-box" data-id="${record.id}">
                             <div class="request-header">
@@ -439,6 +445,14 @@ $(document).ready(function() {
             data: { requestId: id },
             dataType: 'json',
             success: function(response) {
+                // console.log(response.letter_of_intent);
+                // console.log(response.project_eng_certification);
+                // console.log(response.budget_officer_certification);
+                sessionStorage.setItem('type_of_requested_item', response.type_of_requested_item );
+                sessionStorage.setItem('letter_of_intent', response.letter_of_intent );
+                sessionStorage.setItem('project_eng_certification', response.project_eng_certification );
+                sessionStorage.setItem('budget_officer_certification', response.budget_officer_certification );
+
                 // Populate fields with response data
                 $('#requestor_name').val(response.requestor_name);
                 $('#organization').val(response.organization_name);

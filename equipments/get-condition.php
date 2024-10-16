@@ -7,7 +7,7 @@ $result = $connection->query($sql);
 $data = array();
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
-        $data[] = $row['condition_title'];
+        $data[] = array('condition_title' => $row['condition_title']); 
     }
 }
 

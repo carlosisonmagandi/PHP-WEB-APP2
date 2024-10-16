@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once("../../../includes/db_connection.php");
 require ("../../../vendor/autoload.php");
 
@@ -18,6 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     $requestStatus='Approved';
     $ownerOfRequest = isset($data['ownerOfRequest']) ? trim($data['ownerOfRequest']) : '';
     $dateCreated = isset($data['dateCreated']) ? trim($data['dateCreated']) : '';
+    $approve_by=$_SESSION['session_username'];
+    $date_of_approval=date('Y-m-d H:i:s');
     
     if ( $requestId === 0) {
         http_response_code(400);
@@ -30,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
     }
 
     // Update query
-    $sql = "UPDATE request_form SET approval_status = ?  WHERE id = ?";
+    $sql = "UPDATE request_form SET approval_status = ?, approve_by= ?,date_of_approval= ?  WHERE id = ?";
     
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("si", $requestStatus, $requestId);
+    $stmt->bind_param("sssi", $requestStatus,$approve_by,$date_of_approval,$requestId);
 
     if (!$stmt->execute()) {
         http_response_code(500);

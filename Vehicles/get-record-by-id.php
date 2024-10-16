@@ -10,13 +10,13 @@ header('Content-Type: application/json');
 $response = [];
 $data = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['equipment_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['vehicle_id'])) {
     // Validate and sanitize the input
-    $equipment_id = intval($_GET['equipment_id']);
+    $vehicle_id = intval($_GET['vehicle_id']);
 
     // Prepare the SQL statement to prevent SQL injection
-    $stmt = $connection->prepare("SELECT * FROM equipments WHERE id = ?");
-    $stmt->bind_param("i", $equipment_id);
+    $stmt = $connection->prepare("SELECT * FROM vehicles WHERE id = ?");
+    $stmt->bind_param("i", $vehicle_id);
 
     if ($stmt->execute()) {
         $result = $stmt->get_result();

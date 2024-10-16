@@ -145,7 +145,7 @@ include ("../templates/nav-bar.php");
             </button>
 
             <!-- Print icon button -->
-            <button onclick="printTable()" class='btn btn-default' id="printTableButton" style="border:1px solid #e0e0e0; margin-left: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);">
+            <button onclick="printVehicleTable()" class='btn btn-default' id="printTableButton" style="border:1px solid #e0e0e0; margin-left: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);">
                 <i class="bi bi-printer"></i> 
             </button>
         </div>
@@ -154,23 +154,26 @@ include ("../templates/nav-bar.php");
     <div class="container-div" style="display: flex;flex-direction: column; margin-top:12px; font-size:10px;padding:10px">
         <div class="content" style="flex-grow: 1; " ><!--Removed overflow-x:scroll; -->
             <!-- overflow-x:scroll; -->
-            <table id="dataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
+            <table id="vehicleDataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
             <thead style="text-align:center; " >
             <tr>
                 <th style="width:10%;">ID</th>
-                <th>EQUIPMENT NAME</th>
-                <th>TYPE</th>
-                <th>SERIAL NUMBER</th>
+                <th>VEHICLE NAME</th>
+                <th>VEHICLE TYPE</th>
+                <th>PLATE NUMBER</th>
                 <th>BRAND</th>
                 <th>MODEL</th>
-                <th>STATUS</th>
                 <th>LOCATION</th>
                 <th>DATE OF CONFISCATION</th>
-                <th>OWNER</th>
+                <th>VEHICLE OWNER</th>
                 <th>CONDITION</th>
                 <th>REMARKS</th>
+                <th>ACTIVITY DATE</th>
                 <th>DATE CREATED</th>
-    
+                <th>CREATED BY</th>
+                <th>UPDATED BY</th>
+                <th>STATUS</th>
+                <th>APPREHENDING PERSON/OFFICER</th>
                 <th>ACTIONS</th>
             </tr>
             </thead>
@@ -180,19 +183,22 @@ include ("../templates/nav-bar.php");
             <tfoot>
                 <tr>
                 <th style="width:10%;">ID</th>
-                <th>EQUIPMENT NAME</th>
-                <th>TYPE</th>
-                <th>SERIAL NUMBER</th>
+                <th>VEHICLE NAME</th>
+                <th>VEHICLE TYPE</th>
+                <th>PLATE NUMBER</th>
                 <th>BRAND</th>
                 <th>MODEL</th>
-                <th>STATUS</th>
                 <th>LOCATION</th>
                 <th>DATE OF CONFISCATION</th>
-                <th>OWNER</th>
+                <th>VEHICLE OWNER</th>
                 <th>CONDITION</th>
                 <th>REMARKS</th>
+                <th>ACTIVITY DATE</th>
                 <th>DATE CREATED</th>
-    
+                <th>CREATED BY</th>
+                <th>UPDATED BY</th>
+                <th>STATUS</th>
+                <th>APPREHENDING PERSON/OFFICER</th>
                 <th>ACTIONS</th>
                 </tr>
             </tfoot>
@@ -208,17 +214,20 @@ include ("../templates/nav-bar.php");
     let currentPage = 1;
     const pageSize = 5;
 
-    new DataTable('#dataTable', {
+    new DataTable('#vehicleDataTable', {
         initComplete: function () {
             const api = this.api();
              // Hide columns in a single operation
             api.columns([
-                6,//Status
-                7,//Location
-                8,//Date of Confiscation
-                10,//Condition
-                11,//Remarks
-                12//Date Created
+                8,//vehicle_owner
+                9,//condition
+                10,//Remarks
+                11,//Activity date
+                12,//Date creaed
+                13,//Created by
+                14,//Updated By
+                15,//Status
+                16// Apprehnding officer
             ]).visible(false);
 
             api.columns().every(function (index) { 
@@ -256,7 +265,7 @@ include ("../templates/nav-bar.php");
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/equipments/get-record.php',
+            url: '/vehicles/get-record.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -272,7 +281,8 @@ include ("../templates/nav-bar.php");
     }
 
     function updateTable(data) {
-        const table = $('#dataTable').DataTable();
+        //  console.log("data:",data);
+        const table = $('#vehicleDataTable').DataTable();
         table.clear();// Clear the existing data from the DataTable
         data.forEach(rowData => {// Add new data
         const rowDataArray = [];
@@ -299,7 +309,7 @@ include ("../templates/nav-bar.php");
     }
 
     $(document).ready(function() {//call fetchDataFromDb on page load
-        clickableId();
+        clickableVehicleId();
         
         var hasId = <?php echo json_encode($hasId); ?>;
         var id = <?php echo json_encode($id); ?>;
@@ -311,7 +321,7 @@ include ("../templates/nav-bar.php");
         };
 
         // Event listener for edit action
-        $('#dataTable').on('click', '.edit-action', function() {
+        $('#vehicleDataTable').on('click', '.edit-action', function() {
             const id = $(this).closest('tr').find('td:first').text();
             sessionStorage.setItem('viewType', 'table');
             let viewType = sessionStorage.getItem('viewType');
@@ -320,16 +330,16 @@ include ("../templates/nav-bar.php");
         });
 
         // Event listener for delete action
-        $('#dataTable').on('click', '.delete-action', function() {
+        $('#vehicleDataTable').on('click', '.delete-action', function() {
             const id = $(this).closest('tr').find('td:first').text();
             deleteAction(id);
         });
     });
 
-    function clickableId(){
+    function clickableVehicleId(){
         //clickable id
-        $('#dataTable').on('click', '.clickable-id', function() {
-            //alert('You clicked on id: ' + $(this).text());
+        $('#vehicleDataTable').on('click', '.clickable-vehicle-id', function() {
+            // console.log('You clicked on id: ' + $(this).text());
             var id = $(this).text();
             itemClickId(id);
         });
@@ -339,19 +349,23 @@ include ("../templates/nav-bar.php");
     function editAction(id) {
         //console.log(id);
         $.ajax({
-            url: '/equipments/get-record-by-id.php',
+            url: '/vehicles/get-record-by-id.php',
             type: 'GET',
-            data: { equipment_id: id },
+            data: { vehicle_id: id },
             dataType: 'json',
             success: function(data) {
                 if (data.status === 'success') {
                     // Construct query string with data
                     let queryString = id;
+                    // console.log(data.data.equipment_condition);
+                     sessionStorage.setItem('vehicle_type', data.data.vehicle_type );
+                     sessionStorage.setItem('vehicle_condition', data.data.vehicle_condition );
+                     sessionStorage.setItem('vehicle_status', data.data.vehicle_status );
                     // console.log(data);
                     // console.log(queryString);
 
                     // Redirect with query parameters
-                    window.location.href = '/equipments/add-record-view.php?' + queryString;
+                    window.location.href = '/vehicles/add-record-view.php?' + queryString;
                 } else {
                     Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                 }
@@ -398,16 +412,14 @@ include ("../templates/nav-bar.php");
         });
     }
     function itemClickId(id) {
-        console.log(id);
         //Image pane funtions
         $.ajax({
-            url: '/equipments/equipment-get-images.php',
+            url: '/vehicles/vehicle-get-images.php',
             type: 'GET',
-            data: { equipment_id: id },
+            data: { vehicle_id: id },
             dataType: 'json',
             success: function(response) { 
                   //console.log(response); 
-
                 // Expected data
                 if (response) {
                     let htmlContent = ``;
@@ -597,14 +609,16 @@ include ("../templates/nav-bar.php");
             
                             }
                             .category-header {
-                                background-color: #002f6c;
+                                background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
                                 font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
                             .sub-category-header {
-                                background-color: #002f6c;
+                                 background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
-                                font-size: 16px;
+                                font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
                             .table-container {
                                 margin-bottom: 20px;
@@ -619,7 +633,7 @@ include ("../templates/nav-bar.php");
                         </style>
                         <div class="flex-container">
                             <div class="flex-container-left" style="overflow-y:scroll">
-                                <input type="button" value="Add Image" class="addImageButton" id="addImage" />
+                                <input type="button" value="Add Image" class="addImageButton" id="vehicleAddImage" />
                                 ${htmlContent}
                             </div>
                             <div class="flex-container-right">
@@ -628,58 +642,66 @@ include ("../templates/nav-bar.php");
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
-                                                <th colspan="5" class="sub-category-header">Equipment detail</th>
+                                                <th colspan="5" class="sub-category-header">Ownership</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Equipment Name</b></td>
-                                                <td><b>Type</b></td>
-                                                <td><b>Serial Number</b></td>
-                                                <td><b>Brand</b></td>
-                                                <td><b>Model</b></td>
+                                                <td><b>ID &nbsp&nbsp&nbsp</b></td>
+                                                <td><b>Name of Respondent/Claimant/Owner</b></td>
+                                                <td><b>Apprehension Date</b></td>
+                                                <td><b>Apprehending Officer</b></td>
+                                                
                                             </tr>
                                             <tr>
-                                                <td>${response.equipment_name}</td>
-                                                <td>${response.equipment_type}</td>
-                                                <td>${response.serial_no}</td>
-                                                <td>${response.brand}</td>
-                                                <td>${response.model}</td>
+                                                <td>${response.id}</td>
+                                                <td>${response.vehicle_owner}</td>
+                                                <td>${response.date_of_compiscation}</td>
+                                                <td>${response.confiscated_by}</td>
                                             </tr>
                                         </table>
                                     </div>  
                                     <div class="grid-item item2">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Details</th>
+                                                <th colspan="4" class="sub-category-header">Activities</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Location</b></td>
-                                                <td><b>Confiscation Date</b></td>
-                                                <td><b>Owner</b></td>
+                                                <td><b>Created By</b></td>
+                                                <td><b>Last Updated</b></td>
+                                                <td><b>Remarks</b></td>
                                             </tr>
                                             <tr>
-                                                <td>${response.location}</td>
+                                                <td>${response.created_by}</td>
                                                 <td>${response.date_of_compiscation}</td>
-                                                <td>${response.equipment_owner}</td>
+                                                <td>${response.remarks}</td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="grid-item item3">
                                         <table>
                                             <tr>
-                                                <th colspan="6" class="category-header">Other Information</th>
+                                                <th colspan="8" class="category-header">Conveyance Description</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Status</b></td>
+                                                <td><b>Plate #</b></td>
+                                                <td><b>Brand</b></td>
+                                                <td><b>Type</b></td>
+                                                <td><b>Model Name</b></td>
+                                                <td><b>Year Model</b></td>
                                                 <td><b>Condition</b></td>
-                                                <td><b>Remarks</b></td>
-                                                <td><b>Date Created</b></td>
+                                                <td><b>Status</b></td>
+                                                <td><b>Location</b></td>
+                                                
+                                                
                                             </tr>
                                             <tr>
-                                                <td>${response.equipment_status}</td>
-                                                <td>${response.equipment_condition}</td>
-                                                <td>${response.remarks}</td>
-                                                <td>${response.created_on}</td>
-                                                
+                                                <td>${response.plate_no}</td>
+                                                <td>${response.brand}</td>
+                                                <td>${response.vehicle_type}</td>
+                                                <td>${response.vehicle_name}</td>
+                                                <td>${response.model}</td>
+                                                <td>${response.vehicle_condition}</td>
+                                                <td>${response.vehicle_status}</td>
+                                                <td>${response.location}</td>   
                                             </tr>
                                         </table>
                                     </div>
@@ -700,7 +722,7 @@ include ("../templates/nav-bar.php");
                                 button.addEventListener('click', function() {
                                     let buttonId = this.getAttribute('data-id');
                                     $.ajax({
-                                        url: '/equipments/delete-image.php',
+                                        url: '/vehicles/delete-image.php',
                                         type: 'POST',
                                         data: { image_id: buttonId },
                                         dataType: 'json',
@@ -736,10 +758,10 @@ include ("../templates/nav-bar.php");
                             });
 
                             // add new image button
-                            const buttonAddImage = document.getElementById('addImage');
-                            buttonAddImage.addEventListener('click', addImage);
+                            const buttonAddImage = document.getElementById('vehicleAddImage');
+                            buttonAddImage.addEventListener('click', vehicleAddImageFunction);
 
-                            function addImage() {
+                            function vehicleAddImageFunction() {
                                 Swal.fire({
                                     html: `
                                         <div style="text-align: center;">
@@ -786,7 +808,7 @@ include ("../templates/nav-bar.php");
                                     }
 
                                     $.ajax({
-                                        url: '/equipments/upload-image.php',
+                                        url: '/vehicles/upload-image.php',
                                         type: 'POST',
                                         data: formData,
                                         processData: false,
@@ -833,7 +855,7 @@ include ("../templates/nav-bar.php");
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
-                        const newUrl = new URL('/equipments/equipment-table-view.php', window.location.origin);// Construct the new URL to be used
+                        const newUrl = new URL('/vehicles/vehicle-table-view.php', window.location.origin);// Construct the new URL to be used
                         window.history.replaceState({}, '', newUrl.href);
                     });
                     
@@ -843,7 +865,7 @@ include ("../templates/nav-bar.php");
                         text: "Invalid response from server",
                         icon: "error"
                     }).then(() => {
-                        $('#dataTable').show();
+                        $('#vehicleDataTable').show();
                     });
                 }
             },
@@ -858,83 +880,85 @@ include ("../templates/nav-bar.php");
             }
         });
     }
-
-    // print table view
-    function printTable() {
-        // Save the current column visibility states
-        let table = $('#dataTable').DataTable();
-        let columnVisibility = [];
-
-        table.columns().every(function () {
-            columnVisibility.push(this.visible());
-        });
-
-        // Show all columns
-        table.columns().visible(true);
-
-        // Hide everything except the table and its parent div
-        $('body > *').not('.container-div').hide();
-
-        // Get the table and its parent div
-        var tableDiv = document.querySelector('.container-div');
-        var tableElement = tableDiv.querySelector('table');
-
-        // Hide the table footer
-        $(tableElement).find('tfoot').hide();
-
-        // Remove the action column temporarily
-        var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
-
-        // Reduce font size for printing
-        $(tableElement).css('font-size', '8px');
-
-        // Create a copy of the table
-        var tableClone = tableElement.cloneNode(true);
-
-        // Create a title element
-        var titleElement = document.createElement('h1');
-        titleElement.innerText = "INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
-        titleElement.style.textAlign = 'center';
-        titleElement.style.fontSize = '12px';
-
-        var printContainer = document.createElement('div');
-        printContainer.appendChild(titleElement);
-        printContainer.appendChild(tableClone);
-
-        document.body.appendChild(printContainer);
-
-        window.addEventListener('beforeprint', function () {
-            console.log("Print initiated");
-        });
-
-        window.addEventListener('afterprint', function () {
-            console.log("Print cancelled or completed");
-            // Restore the original column visibility states
-            table.columns().every(function (index) {
-                this.visible(columnVisibility[index]);
-            });
-
-            // Refresh the page
-            window.location.reload();
-        });
-
-        window.print();
-
-        document.body.removeChild(printContainer);
-
-        $(tableElement).css('font-size', '');
-
-        $(tableElement).find('tfoot').show();
-
-        // Restore the action column
-        $(tableElement).find('thead tr').append(actionColumn.clone());
-        $(tableElement).find('tbody tr').each(function () {
-            $(this).append(actionColumn.clone());
-        });
+    function printVehicleTable() {
+        window.open("/vehicles/vehicle-print-view.php", "_blank");
     }
+    // print table view
+    // function printTable() {
+    //     // Save the current column visibility states
+    //     let table = $('#vehicleDataTable').DataTable();
+    //     let columnVisibility = [];
+
+    //     table.columns().every(function () {
+    //         columnVisibility.push(this.visible());
+    //     });
+
+    //     // Show all columns
+    //     table.columns().visible(true);
+
+    //     // Hide everything except the table and its parent div
+    //     $('body > *').not('.container-div').hide();
+
+    //     // Get the table and its parent div
+    //     var tableDiv = document.querySelector('.container-div');
+    //     var tableElement = tableDiv.querySelector('table');
+
+    //     // Hide the table footer
+    //     $(tableElement).find('tfoot').hide();
+
+    //     // Remove the action column temporarily
+    //     var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
+
+    //     // Reduce font size for printing
+    //     $(tableElement).css('font-size', '8px');
+
+    //     // Create a copy of the table
+    //     var tableClone = tableElement.cloneNode(true);
+
+    //     // Create a title element
+    //     var titleElement = document.createElement('h1');
+    //     titleElement.innerText = "INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
+    //     titleElement.style.textAlign = 'center';
+    //     titleElement.style.fontSize = '12px';
+
+    //     var printContainer = document.createElement('div');
+    //     printContainer.appendChild(titleElement);
+    //     printContainer.appendChild(tableClone);
+
+    //     document.body.appendChild(printContainer);
+
+    //     window.addEventListener('beforeprint', function () {
+    //         console.log("Print initiated");
+    //     });
+
+    //     window.addEventListener('afterprint', function () {
+    //         console.log("Print cancelled or completed");
+    //         // Restore the original column visibility states
+    //         table.columns().every(function (index) {
+    //             this.visible(columnVisibility[index]);
+    //         });
+
+    //         // Refresh the page
+    //         window.location.reload();
+    //     });
+
+    //     window.print();
+
+    //     document.body.removeChild(printContainer);
+
+    //     $(tableElement).css('font-size', '');
+
+    //     $(tableElement).find('tfoot').show();
+
+    //     // Restore the action column
+    //     $(tableElement).find('thead tr').append(actionColumn.clone());
+    //     $(tableElement).find('tbody tr').each(function () {
+    //         $(this).append(actionColumn.clone());
+    //     });
+    // }
     //Add new record
     function redirectToUrl() {
-         window.location.href = '/equipments/add-record-view.php'; 
+         window.location.href = '/vehicles/add-record-view.php'; 
     }
 
 </script>

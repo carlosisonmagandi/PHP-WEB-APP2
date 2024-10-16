@@ -39,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $item_type=$_POST['item_type'] ?? '';
         $item_name=$_POST['item_name'] ?? '';
+        $updated_by=$_SESSION['session_username'];
 
         $stmt = $connection->prepare("UPDATE request_form SET 
             requestor_name=?,
@@ -57,7 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             project_eng_certification=?, 
             budget_officer_certification=?,
             type_of_requested_item=?,
-            name_of_requested_item=?
+            name_of_requested_item=?,
+            updated_by=?
             WHERE id=?");
             //type_of_requested_item
 
@@ -65,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
         }
 
-        $stmt->bind_param('sssssssssssssssssi',
+        $stmt->bind_param('ssssssssssssssssssi',
             $requestorName, 
             $organization, 
             $phoneNumber, 
@@ -83,6 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $budget_officer_certification,
             $item_type, 
             $item_name,
+            $updated_by,
             $request_id
         );
 

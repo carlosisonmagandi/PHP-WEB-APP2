@@ -11,19 +11,21 @@ $response = [];
 $data = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Validate and sanitize the input
-   
     // Prepare the SQL statement to prevent SQL injection
     $stmt = $connection->prepare("SELECT * FROM inventory ORDER BY date_created");
- 
+
     if ($stmt->execute()) {
         $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $data = $result->fetch_assoc();
+        // Fetch all rows and store them in an array
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row; // Append each row to the data array
+        }
+
+        if (!empty($data)) {
             $response['status'] = 'success';
             $response['message'] = 'Data fetched successfully';
-            $response['data'] = $data;
+            $response['data'] = $data; // Return the array of all records
         } else {
             $response['status'] = 'error';
             $response['message'] = 'No records found';
@@ -36,7 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $connection->close();
 } else {
     $response['status'] = 'error';
-    $response['message'] = 'Inventory ID not provided';
+    $response['message'] = 'Invalid request method';
 }
+
 echo json_encode($response);
 ?>

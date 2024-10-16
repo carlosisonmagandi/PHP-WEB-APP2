@@ -11,49 +11,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $response = ['status' => 'success'];
     
     // Collect POST data
-    $equipmentName = $_POST['equipmentName'] ?? '';
-    $type = $_POST['type'] ?? '';
-    $serialNo = $_POST['serialNo'] ?? '';
+    $plate_no = $_POST['plate_no'] ?? '';
     $brand = $_POST['brand'] ?? '';
+    $vehicle_type = $_POST['vehicle_type'] ?? '';
+    $vehicle_name = $_POST['vehicle_name'] ?? '';
     $model = $_POST['model'] ?? '';
-    $condition = $_POST['condition'] ?? '';
-    $owner = $_POST['owner'] ?? '';
-    $dateOfConfiscation = $_POST['dateOfConfiscation'] ?? '';
-    $status = $_POST['status'] ?? '';
+    $vehicle_condition = $_POST['vehicle_condition'] ?? '';
+    $vehicle_status = $_POST['vehicle_status'] ?? '';
     $location = $_POST['location'] ?? '';
+    $vehicle_owner = $_POST['vehicle_owner'] ?? '';
+    $date_of_compiscation = $_POST['date_of_compiscation'] ?? '';
+    $confiscated_by = $_POST['confiscated_by'] ?? '';
     $remarks = $_POST['remarks'] ?? '';
+    $category_type='vehicle';
+    $user_name = $_SESSION['session_username'];
 
     // Define allowed file types
     $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
 
     // Adjust SQL query to match your table schema
-    $sql = "INSERT INTO equipments (
-        equipment_name,
-        equipment_type,
-        serial_no,
-        brand,
-        model,
-        equipment_status,
-        location,
-        date_of_compiscation,
-        equipment_owner,
-        equipment_condition,
-        remarks
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO vehicles (
+        plate_no, 
+        brand, 
+        vehicle_type, 
+        vehicle_name, 
+        model, 
+        vehicle_condition, 
+        vehicle_status, 
+        location, 
+        vehicle_owner, 
+        date_of_compiscation, 
+        confiscated_by, 
+        remarks, 
+        category_type,
+        created_by
+    ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    )";
+    
 
     if ($stmt = $connection->prepare($sql)) {
-        $stmt->bind_param('sssssssssss', 
-        $equipmentName, 
-        $type, 
-        $serialNo, 
-        $brand, 
-        $model,
-        $status,
-        $location,
-        $dateOfConfiscation,
-        $owner,
-        $condition,
-        $remarks
+        $stmt->bind_param('ssssssssssssss', 
+            $plate_no, 
+            $brand, 
+            $vehicle_type, 
+            $vehicle_name, 
+            $model, 
+            $vehicle_condition, 
+            $vehicle_status, 
+            $location, 
+            $vehicle_owner, 
+            $date_of_compiscation, 
+            $confiscated_by, 
+            $remarks,
+            $category_type, 
+            $user_name
         );
 
         if ($stmt->execute()) {
@@ -81,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         $upload_path = $upload_directory . $new_file_name;
             
                         if (move_uploaded_file($file_tmp, $upload_path)) {
-                            $stmt_image = $connection->prepare("INSERT INTO equipments_images (equipment_id, file_name, file_path) VALUES (?, ?, ?)");
+                            $stmt_image = $connection->prepare("INSERT INTO vehicle_images (vehicle_id, file_name, file_path) VALUES (?, ?, ?)");
                             if ($stmt_image) {
                                 $stmt_image->bind_param('iss', $record_id, $file_name, $upload_path);
                                 if (!$stmt_image->execute()) {

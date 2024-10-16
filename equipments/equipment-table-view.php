@@ -347,6 +347,10 @@ include ("../templates/nav-bar.php");
                 if (data.status === 'success') {
                     // Construct query string with data
                     let queryString = id;
+                    // console.log(data.data.equipment_condition);
+                     sessionStorage.setItem('equipment_type', data.data.equipment_type );
+                     sessionStorage.setItem('equipment_condition', data.data.equipment_condition );
+                     sessionStorage.setItem('equipment_status', data.data.equipment_status );
                     // console.log(data);
                     // console.log(queryString);
 
@@ -597,14 +601,16 @@ include ("../templates/nav-bar.php");
             
                             }
                             .category-header {
-                                background-color: #002f6c;
+                                background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
                                 font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
                             .sub-category-header {
-                                background-color: #002f6c;
+                                 background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
-                                font-size: 16px;
+                                font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
                             .table-container {
                                 margin-bottom: 20px;

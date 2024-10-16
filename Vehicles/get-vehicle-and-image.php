@@ -3,19 +3,7 @@
 require_once("../includes/db_connection.php");
 
 // Prepare and execute SQL query to fetch data from the inventory table
-$sql = "SELECT id,equipment_name,
-    equipment_type,
-    serial_no,
-    brand,
-    model,
-    equipment_status,
-    location,
-    date_of_compiscation,
-    equipment_owner,
-    equipment_condition,
-    remarks,
-    created_on
-    FROM equipments";
+$sql = "SELECT * FROM vehicles";
 
 $result = $connection->query($sql);
 
@@ -31,7 +19,7 @@ if ($result->num_rows > 0) {
         $equipment_id = $row['id'];
 
         // Prepare and execute SQL query to fetch file_path
-        $sqlGetImage = "SELECT file_path FROM equipments_images WHERE equipment_id = ? LIMIT 1";
+        $sqlGetImage = "SELECT file_path FROM vehicle_images WHERE vehicle_id = ? LIMIT 1";
         $stmt = $connection->prepare($sqlGetImage);
         if (!$stmt) {
             die('Error in prepare statement: ' . $connection->error);

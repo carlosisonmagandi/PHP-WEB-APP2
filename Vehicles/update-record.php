@@ -18,53 +18,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Debug: Check if the POST data is being received
     file_put_contents('php://stderr', print_r($_POST, TRUE));
 
-    $equipment_id = intval($_POST['equipment_id']);
-    if ($equipment_id > 0) {
+    $vehicle_id = intval($_POST['vehicle_id']);
+    if ($vehicle_id > 0) {
         // Fetch and sanitize input
-        $equipmentName = $_POST['equipmentName'] ?? '';
-        $type = $_POST['type'] ?? '';
-        $serialNo = $_POST['serialNo'] ?? '';
+        $plate_no = $_POST['plate_no'] ?? '';
         $brand = $_POST['brand'] ?? '';
+        $vehicle_type = $_POST['vehicle_type'] ?? '';
+        $vehicle_name = $_POST['vehicle_name'] ?? '';
         $model = $_POST['model'] ?? '';
-        $condition = $_POST['condition'] ?? '';
-        $owner = $_POST['owner'] ?? '';
-        $dateOfConfiscation = $_POST['dateOfConfiscation'] ?? '';
-        $status = $_POST['status'] ?? '';
+        $vehicle_condition = $_POST['vehicle_condition'] ?? '';
+        $vehicle_status = $_POST['vehicle_status'] ?? '';
         $location = $_POST['location'] ?? '';
+        $vehicle_owner = $_POST['vehicle_owner'] ?? '';
+        $date_of_compiscation = $_POST['date_of_compiscation'] ?? '';
+        $confiscated_by = $_POST['confiscated_by'] ?? '';
         $remarks = $_POST['remarks'] ?? '';
-       
 
-        $stmt = $connection->prepare("UPDATE equipments SET 
-            equipment_name=?,
-            equipment_type=?,
-            serial_no=?, 
+        $user_name = $_SESSION['session_username'];
+
+        $stmt = $connection->prepare("UPDATE vehicles SET 
+            plate_no=?, 
             brand=?, 
-            model=?,
-            equipment_status=?,
-            location=?,
-            date_of_compiscation=?,
-            equipment_owner=?,
-            equipment_condition=?,
-            remarks=?
+            vehicle_type=?, 
+            vehicle_name=?, 
+            model=?, 
+            vehicle_condition=?, 
+            vehicle_status=?, 
+            location=?, 
+            vehicle_owner=?, 
+            date_of_compiscation=?, 
+            confiscated_by=?, 
+            remarks=?, 
+            updated_by=?
             WHERE id=?");
 
         if ($stmt === false) {
             file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
         }
 
-        $stmt->bind_param('sssssssssssi',
-            $equipmentName, 
-            $type, 
-            $serialNo, 
+        $stmt->bind_param('sssssssssssssi', 
+            $plate_no, 
             $brand, 
-            $model,
-            $status,
-            $location,
-            $dateOfConfiscation,
-            $owner,
-            $condition,
-            $remarks,
-            $equipment_id
+            $vehicle_type, 
+            $vehicle_name, 
+            $model, 
+            $vehicle_condition, 
+            $vehicle_status, 
+            $location, 
+            $vehicle_owner, 
+            $date_of_compiscation, 
+            $confiscated_by, 
+            $remarks, 
+            $user_name, 
+            $vehicle_id
         );
 
         if ($stmt->execute()) {

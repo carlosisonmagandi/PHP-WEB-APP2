@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 $upload_path = $upload_directory . $new_file_name;
 
                 if (move_uploaded_file($file_tmp, $upload_path)) {
-                    $stmt_image = $connection->prepare("INSERT INTO equipments_images (equipment_id, file_name, file_path, date_created) VALUES (?, ?, ?, ?)");
+                    $stmt_image = $connection->prepare("INSERT INTO vehicle_images (vehicle_id, file_name, file_path, date_created) VALUES (?, ?, ?, ?)");
                     if ($stmt_image) {
                         $date_created = date('Y-m-d');
                         $stmt_image->bind_param('isss', $record_id, $file_name, $upload_path, $date_created);

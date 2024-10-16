@@ -29,8 +29,10 @@ $sql = "SELECT id,
     depository_barangay,
     depository_city,
     depository_province,
-    linear_mtrs
-    FROM inventory";
+    linear_mtrs,
+    species_type,
+    species_status
+    FROM inventory WHERE species_status='Confiscated' ";
 
 $result = $connection->query($sql);
 

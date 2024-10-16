@@ -1,319 +1,233 @@
-<?php ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Print View</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-<style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forest Product Apprehension Record</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            font-size: 10px;
+            background-color: #f4f4f4;
+            
+            justify-content: center; /* Center horizontally */
+            align-items: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        /* removed td below */
+        th {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        td{
+            border: 1px solid #919191;
+            text-align:center;
+        }
+        th {
+            background-color: #002d72;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .pagination {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .page-btn {
+            margin: 0 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #002d72;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .page-btn:hover {
+            background-color: #001e4d;
+        }
 
-body{
-    padding:20px;
-    font-family: 'Poppins', sans-serif;
-}
-.parent {
-    display: grid;
-    grid-template-columns: repeat(18, 1fr); /* Change to 18 columns */
-    grid-template-rows: repeat(8, 1fr);
-    gap: 2px;
-    font-size:10px;
-    background-color: black;
-    padding:2px;
-}
-    
-.div1 {
-    grid-row: span 2 / span 2;
-    background-color: #002f6c;
-    color:white;
-}
+        .print-button{
+            margin: 0 5px;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #002d72;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size:12px;
+            height:30px;
+        }
+        
+        .parent {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .div3{text-align:right;}
+            
 
-.div2 {
-    grid-row: span 2 / span 2;
-    grid-column:span 2 / span 2;
-    background-color: #002f6c;
-    color:white;
-}
+                
+      
 
-/* .div3 {
-    grid-row: span 2 / span 2;
-    background-color: #a1a1a1;
-} */
-
-.div4 {
-    grid-row: span 2 / span 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div5 {
-    grid-row: span 2 / span 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div6 {
-    grid-column: span 7 / span 7; /* spans 7 columns */
-    background-color: #002f6c;
-    color:white;
-}
-
-/* New divs placed after div6 */
-.div14 {
-    grid-column-start: 13;
-    grid-row: span 1 / span 1;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div15 {
-    grid-column-start: 14;
-    grid-row: span 1 / span 1;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div16 {
-    grid-column-start: 15;
-    grid-row: span 1 / span 1;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div17 {
-    grid-column-start: 16;
-    grid-row: span 1 / span 1;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div18 {
-    grid-column-start: 17;
-    grid-row: span 2 / span 2;
-    grid-row-start: 1;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div19 {
-    grid-column-start: 18;
-    grid-row-start: 1;
-    grid-row: span 2 / span 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div20 {
-    grid-column: span 4 / span 4; /* spans 7 columns */
-    background-color: #002f6c;
-    color:white;
-    grid-row-start: 1;
-    grid-column-start: 13;
-}
-
-.div7 {
-    grid-column-start: 6;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div8 {
-    grid-column-start: 7;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div9 {
-    grid-column-start: 8;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div10 {
-    grid-column-start: 9;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div11 {
-    grid-column-start: 10;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div12 {
-    grid-column-start: 11;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-
-.div13 {
-    grid-column-start: 12;
-    grid-row-start: 2;
-    background-color: #002f6c;
-    color:white;
-}
-/* Row data */
-.div21{
-    grid-column-start: 1;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div22{
-    grid-column-start: 2;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-    grid-column: span 2 / span 2;
-}
-.div23{
-    grid-column-start: 4;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div24{
-    grid-column-start: 5;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div25{
-    grid-column-start: 6;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div26{
-    grid-column-start: 7;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div27{
-    grid-column-start: 8;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div28{
-    grid-column-start: 9;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div29{
-    grid-column-start: 10;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div30{
-    grid-column-start: 11;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div31{
-    grid-column-start: 12;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div32{
-    grid-column-start: 13;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div33{
-    grid-column-start: 14;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div34{
-    grid-column-start: 15;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div35{
-    grid-column-start: 16;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div36{
-    grid-column-start: 17;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-.div37{
-    grid-column-start: 18;
-    grid-row-start: 3;
-    background-color: #f1f1f1;
-}
-
-
-</style>
+    </style>
+    <!-- scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 </head>
 <body>
-<!-- <b><p></p></b> -->
-<div class="parent">
-    <div class="div1"><b><p>ID</p></b></div>
-    <div class="div2"><b><p>Name of Respondent/Claimant/Owner</p></b></div>
-    <!-- <div class="div3"><b><p>3.</p></b></div> -->
-    <div class="div4"><b><p>Date of Apprehension</p></b></div>
-    <div class="div5"><b><p>Apprehending Officer</p></b></div>
-    <div class="div6"><b><p>Forest Product Description</p></b></div>
+
+    <table id="recordTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name of Respondent/Claimant/Owner</th>
+                <th>Date of Apprehension</th>
+                <th>Apprehending Officer</th>
+                <th colspan="7">Forest Product Description</th>
+                <th colspan="4">Conveyance</th>
+                
+                <th>Administrative Status</th>
+                <th>Remarks</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Quantity (pcs)</th>
+                <th>Volume bd. ft.</th>
+                <th>Linear mtrs</th>
+                <th>Estimated Value (₱)</th>
+                <th>Type/Kind (Species)</th>
+                <th>Place of Depository</th>
+                <th>Place of Apprehension</th>
+                <th>Vehicle/Brand</th>
+                <th>Type of Vehicle</th>
+                <th>Plate #</th>
+                <th>Conveyance Estimated Val. (₱)</th>
+                <th></th>
+                <th></th>
+                
+            </tr>
+        </thead>
+        <tbody id="recordBody">
+            <!-- Sample records will be populated by JavaScript -->
+        </tbody>
+    </table>
+    <br>
     
-    <!-- New divs placed after div6 -->
-    <div class="div14"><b><p>Vehicle/Brand</p></b></div>
-    <div class="div15"><b><p>Type of vehicle</p></b></div>
-    <div class="div16"><b><p>Plate #</p></b></div>
-    <div class="div17"><b><p>Conveyance Estimated Val. (P)</p></b></div>
-
-    <div class="div18"><b><p>Administrative status</p></b></div>
-    <div class="div19"><b><p>Remarks</p></b></div>
-
-    <div class="div20"><b><p>Conveyance</p></b></div>
+            
     
-    <div class="div7"><b><p>Quantity (pcs)</p></b></div>
-    <div class="div8"><b><p>Volume bd. ft.</p></b></div>
-    <div class="div9"><b><p>Linear mtrs</p></b></div>
-    <div class="div10"><b><p>Estimated Value (P)</p></b></div>
-    <div class="div11"><b><p>Type/Kind (Species)</p></b></div>
-    <div class="div12"><b><p>Place of Depository</p></b></div>
-    <div class="div13"><b><p>Place of Apprehension</p></b></div>
+    <div class="parent">
+        <div class="div1">
+            
+        </div>
+        <div class="div2">
+            <div class="pagination" id="pagination"></div>
+        </div>
+        <div class="div3">
+            <button class="print-button" onclick="window.print()">
+                <i class="fas fa-print"></i>
+                Print
+            </button>
+        </div>
+    </div>
+             
+    <script>
+        $(document).ready(function() { 
+            $.ajax({
+                url: '/inventory-tree/get-all-record.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        let records = data.data; 
+                        
+                        const recordsPerPage = 15; 
+                        let currentPage = 1; 
 
-    <!-- row data -->
-    <div class="div21"><b><p>125</p></b></div>
-    <div class="div22"><b><p>Joseph Abraham, Jessica Gojo</p></b></div>
-    <div class="div23"><b><p>2024-10-26</p></b></div>
-    <div class="div24"><b><p>CENRO</p></b></div>
-    <div class="div25"><b><p>2412</p></b></div>
-    <div class="div26"><b><p>160 bd</p></b></div>
-    <div class="div27"><b><p>130</p></b></div>
-    <div class="div28"><b><p>103,820.00</p></b></div>
-    <div class="div29"><b><p>Acacia</p></b></div>
-    <div class="div30"><b><p>Lalakay, Los Banos Laguna</p></b></div>
-    <div class="div31"><b><p>Sitio Makulot Halang, Calamba Laguna</p></b></div>
-    <div class="div32"><b><p>Toyota</p></b></div>
-    <div class="div33"><b><p>Closed Van</p></b></div>
-    <div class="div34"><b><p>WLM-775</p></b></div>
-    <div class="div35"><b><p>Php. 200,000.00</p></b></div>
-    <div class="div36"><b><p>Final Report submitted to R.O dated 06/25/2020</p></b></div>
-    <div class="div37"><b><p>Sample record</p></b></div>
-    
-</div>
+                        // Function to display records on the current page
+                        function displayRecords(page) {
+                            const startIndex = (page - 1) * recordsPerPage;
+                            const endIndex = startIndex + recordsPerPage;
+                            const paginatedRecords = records.slice(startIndex, endIndex);
 
-<button class="print-button" onclick="printDiv()">Print</button>
+                            const recordBody = document.getElementById('recordBody');
+                            recordBody.innerHTML = ''; 
 
-<script>
-    function printDiv() {
-        var printContents = document.querySelector('.parent').innerHTML;
-        var originalContents = document.body.innerHTML;
+                            paginatedRecords.forEach(record => {
+                                const row = `
+                                    <tr>
+                                        <td>${record.id}</td>
+                                        <td>${record.involve_personalities}</td>
+                                        <td>${record.date_of_apprehension}</td>
+                                        <td>${record.apprehending_officer}</td>
+                                        <td>${record.apprehended_quantity}</td>
+                                        <td>${record.apprehended_volume}</td>
+                                        <td>${record.linear_mtrs}</td>
+                                        <td>${record.EMV_forest_product}</td>
+                                        <td>${record.apprehended_items}</td>
+                                        <td>${record.depository_sitio} ${record.depository_barangay}, ${record.depository_city} ${record.depository_province}</td>
+                                        <td>${record.sitio} ${record.barangay}, ${record.city_municipality} ${record.province}</td>
+                                        <td>${record.apprehended_vehicle}</td>
+                                        <td>${record.apprehended_vehicle_type}</td>
+                                        <td>${record.apprehended_vehicle_plate_no}</td>
+                                        <td>${record.EMV_conveyance_implements}</td>
+                                        <td>${record.ACP_status_or_case_no}</td>
+                                        <td>${record.remarks}</td>
+                                    </tr>
+                                `;
+                                recordBody.innerHTML += row;
+                            });
+                        }
 
-        document.body.innerHTML = printContents;
-        window.print();
-        document.body.innerHTML = originalContents;
-        location.reload(); // Reload the page to restore the original contents
-    }
-</script>
+                        // Function to setup pagination
+                        function setupPagination() {
+                            const totalPages = Math.ceil(records.length / recordsPerPage);
+                            const paginationDiv = document.getElementById('pagination');
+                            paginationDiv.innerHTML = ''; 
+
+                            for (let i = 1; i <= totalPages; i++) {
+                                const pageButton = document.createElement('button');
+                                pageButton.classList.add('page-btn');
+                                pageButton.innerText = i;
+                                pageButton.onclick = () => {
+                                    currentPage = i;
+                                    displayRecords(currentPage);
+                                };
+                                paginationDiv.appendChild(pageButton);
+                            }
+                        }
+
+                        // Initial display
+                        displayRecords(currentPage);
+                        setupPagination();
+
+                    } else {
+                        Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
+                    }
+                }
+
+            });
+        });
+        
+        
+    </script>
 </body>
 </html>

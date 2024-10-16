@@ -1,13 +1,13 @@
 <?php
 require_once("../includes/db_connection.php");
 
-$sql = "SELECT condition_title FROM equipment_condition_ref_data ORDER BY created_on DESC";
+$sql = "SELECT condition_title FROM vehicle_condition_ref_data ORDER BY created_on DESC";
 $result = $connection->query($sql);
 
 $data = array();
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
-        $data[] = $row['condition_title'];
+        $data[] = array('condition_title' => $row['condition_title']); 
     }
 }
 

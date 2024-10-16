@@ -31,7 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $apprehended_vehicle = $_POST['apprehended_vehicle'] ?? '';
     $apprehended_vehicle_type = $_POST['apprehended_vehicle_type'] ?? '';
     $apprehended_vehicle_plate_no = $_POST['apprehended_vehicle_plate_no'] ?? '';
+    $depository_sitio = $_POST['depository_sitio'] ?? '';
+    $depository_barangay = $_POST['depository_barangay'] ?? '';
+    $depository_city = $_POST['depository_city'] ?? '';
+    $depository_province = $_POST['depository_province'] ?? '';
     $linear_mtrs = $_POST['linear_mtrs'] ?? '';
+    $species_type = $_POST['species_type'] ?? '';
+    $species_status = $_POST['species_status'] ?? '';
     $date_created = date('Y-m-d');
 
     $user_name = $_SESSION['session_username'];
@@ -46,11 +52,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         apprehended_items, EMV_forest_product, EMV_conveyance_implements, involve_personalities, 
         custodian, ACP_status_or_case_no, date_of_confiscation_order, remarks, apprehended_persons,
         apprehended_quantity, apprehended_volume, apprehended_vehicle, apprehended_vehicle_type,
-        apprehended_vehicle_plate_no, date_created, create_by, linear_mtrs
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)";
+        apprehended_vehicle_plate_no, date_created, create_by, linear_mtrs,species_type,species_status,
+        depository_sitio, depository_barangay, depository_city, depository_province
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?)";
 
     if ($stmt = $connection->prepare($sql)) {
-        $stmt->bind_param('sssssssssssssssdsssssss', 
+        $stmt->bind_param('sssssssssssssssdsssssssssssss', 
             $date_of_apprehension, 
             $sitio, 
             $barangay, 
@@ -73,7 +80,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $apprehended_vehicle_plate_no, 
             $date_created,
             $user_name,
-            $linear_mtrs
+            $linear_mtrs,
+            $species_type,
+            $species_status,
+            $depository_sitio,
+            $depository_barangay,
+            $depository_city,
+            $depository_province
         );
 
         if ($stmt->execute()) {

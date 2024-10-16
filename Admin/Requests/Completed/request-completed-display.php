@@ -100,7 +100,7 @@ $(document).ready(function() {
                 
                 var rows = [];
                 $.each(response, function(index, row) {
-                    var actionButtons = '<button class="btn btn-sm details-btn" data-id="' + row.id + '">Details</button>';
+                    var actionButtons = '<button class="btn btn-sm details-btn" data-id="' + row.id + '">Print</button>';
                     var clickableId = '<a href="/Admin/Requests/RequestDetails/request.php?id=' + row.id + '" class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
                     rows.push([
                         clickableId,

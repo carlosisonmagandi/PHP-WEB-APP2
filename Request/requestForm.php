@@ -404,7 +404,6 @@ $hasId = !empty($id);
                 dataType: 'json',
                 success: function(data) {
                     var typeDropdown = $('#item_type');
-                    
                     typeDropdown.empty();
                     
                     typeDropdown.append('<option value="">Select Type</option>');
@@ -458,7 +457,7 @@ $hasId = !empty($id);
                     
                     equipmentDropdown.empty();
                     
-                    equipmentDropdown.append('<option value="">Select available equipment</option>');
+                    equipmentDropdown.append('<option value="">Select available item</option>');
                     
                     $.each(data, function(index, equipmentTitle) {
                         equipmentDropdown.append('<option value="' + equipmentTitle + '">' + equipmentTitle + '</option>');
@@ -474,7 +473,7 @@ $hasId = !empty($id);
         $('#item_type').change(function() {
         var selectedType = $(this).val().toLowerCase();
         
-        if (selectedType === 'Flitches' || selectedType === 'flitches')  {
+        if (selectedType === 'Flitches' || selectedType === 'flitches' || selectedType === 'Lumber' || selectedType === 'lumber') {
             $('#item_name').show();
             $('#star').show();
             $('#labelName').show();
@@ -482,9 +481,8 @@ $hasId = !empty($id);
             $('#equipmentStar').hide();
             $('#equipmentLabelName').hide();
             $('#equipment_name').hide();
-
-            
-        } else if (selectedType === 'Equipment' || selectedType === 'equipment'){
+        }
+        else if (selectedType === 'Equipment' || selectedType === 'equipment'){
             $('#equipmentStar').show();
             $('#equipmentLabelName').show();
             $('#equipment_name').show();
@@ -552,7 +550,9 @@ $hasId = !empty($id);
                     $('#status').val(response.approval_status);
                     $('#delivery_date').val(response.preferred_delivery_date);
                     $('#status').val(response.approval_status);
-                    
+                    $('#Li-yes-no').val(response.letter_of_intent);
+                    $('#Cpe-yes-no').val(response.project_eng_certification);
+                    $('#Cbo-yes-no').val(response.budget_officer_certification);
 
                     // Handle delivery time with conversion to 24-hour format
                     let time = response.preferred_delivery_time;

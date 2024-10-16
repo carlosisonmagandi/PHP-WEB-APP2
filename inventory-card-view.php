@@ -401,6 +401,8 @@ $hasId = !empty($id);
                     const depository_province=response.depository_province;
                     const linear_mtrs=response.linear_mtrs;
 
+                    const species_type=response.species_type;
+
                     let htmlContent = ``;
                     let mapsContent=``;
 
@@ -1010,7 +1012,7 @@ $hasId = !empty($id);
                                     <div class="grid-item item4">
                                         <table>
                                             <tr>
-                                                <th colspan="5" class="category-header">Forest Products Description </th>
+                                                <th colspan="6" class="category-header">Forest Products Description </th>
                                             </tr>
                                             <tr>
                                                 <td><b>Quantity (pcs)</b></td>
@@ -1018,6 +1020,7 @@ $hasId = !empty($id);
                                                 <td><b>Linear mtrs.</b></td>
                                                 <td><b>Estimated value (P)</b></td>
                                                 <td><b>Species</b></td>
+                                                 <td><b>Type of species</b></td>
                                             </tr>
                                             <tr>
                                                 <td>${apprehended_quantity}</td>
@@ -1025,6 +1028,7 @@ $hasId = !empty($id);
                                                 <td>${linear_mtrs}</td>
                                                 <td>${EMV_forest_product}</td>
                                                 <td>${title}</td>
+                                                <td>${species_type}</td>
                                             </tr>
                                         </table>
 

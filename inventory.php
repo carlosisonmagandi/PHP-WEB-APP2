@@ -28,6 +28,10 @@ $hasId = !empty($id);
 <link rel="stylesheet" type="text/css" href="/Styles/styles.css">
 <link rel="stylesheet" type="text/css" href="/Styles/darkmode.css">
 
+<script src='https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css' rel='stylesheet' />
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
 
@@ -375,10 +379,15 @@ include ("templates/nav-bar.php");
             success: function(data) {
                 if (data.status === 'success') {
                     // Construct query string with data
+                    // console.log(data.data.species_type);
+                    // console.log(data.data.species_status);
+                    sessionStorage.setItem('species_type', data.data.species_type );
+                    sessionStorage.setItem('species_status', data.data.species_status);
+                    // let viewType = sessionStorage.getItem('viewType');
                     let queryString = id;
                     
                     // Redirect with query parameters
-                    window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
+                     window.location.href = '/inventory-tree/add-record-view.php?' + queryString;
                 } else {
                     Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                 }
@@ -483,9 +492,289 @@ include ("templates/nav-bar.php");
                     const species_type=response.species_type;
 
                     let htmlContent = ``;
+                    let mapsContent=``;
 
                     if (response.images.length > 0) {
                         response.images.forEach(function(image) {
+
+                            // --------------------------------------------------------
+                            //Maps COntent
+                            mapsContent +=`
+                                <style>
+                                    
+                                .geocoder {
+                                    position: absolute;
+                                    z-index: 1;
+                                    width: 50%;
+                                    left: 50%;
+                                    margin-left: -25%;
+                                    top: 10px;
+                                }
+                                .mapboxgl-ctrl-geocoder {
+                                    min-width: 100%;
+                                }
+                                // #map {
+                                //     margin-top: 75px;
+                                // }
+                                .coordinates{
+                                    background-color:#000;
+                                    color:#FFF;
+                                    position:absolute;
+                                    bottom:40px;
+                                    left:10px;
+                                    padding: 5px 10px;
+                                    margin:0;
+                                    font-size:12px;
+                                    line-height:18px;
+                                    display:none;
+                                }
+                                </style>   
+                                
+                                <div id="map" style="height:100%"></div>
+                                <div id="coordinates" class="coordinates"></div>
+                            `;
+
+                            //const map = document.getElementById('map');
+                            mapboxgl.accessToken = 'pk.eyJ1IjoiY200NzcyNSIsImEiOiJjbHc4MWd4cGgxbXEzMmt0OWhqbTlvcHY4In0.bJ3Gb8OgbBs6KEw3xCSF_g';
+
+                            //var barangay = barangay;
+                            var city = city_municipality;
+                            //var province = province;
+                            var fullAddress = `${response.barangay} , ${city}` +' City, ' + `${response.province},`+' Philippines';
+                            // console.log(fullAddress);
+                            // Function to call Geocoding API
+                            function geocodeAddress(address) {
+                                const query = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${mapboxgl.accessToken}`;
+                                return fetch(query)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.features && data.features.length > 0) {
+                                            return data.features[0].center;  // Return the first result's coordinates
+                                        } else {
+                                            throw new Error('No results found for the address.');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Geocoding error:', error);
+                                    });
+                            }
+
+                            // Geocode the address and initialize the map
+                            let initialMarker;
+
+                            geocodeAddress(fullAddress).then(coordinates => {
+                                if (coordinates) {
+                                    // Click event for viewing location
+                                    function clickLocation(id) {
+                                        $(document).off('click', '#viewLocation').on('click', '#viewLocation', function() {
+                                            //console.log("button was clicked", coordinates[0], coordinates[1]);
+                                            getMapRecordFromDB(id, coordinates);
+  
+                                        });
+                                    }
+
+                                    // Set location button event
+                                    function setLocationButton() {
+                                        $(document).off('click', '#setLocation').on('click', '#setLocation', function() {
+                                            var coordinatesDiv = document.querySelector('#coordinates');
+                                            var textContent = coordinatesDiv.innerHTML;
+                                            var regex = /Longitude:\s([\d.]+)\s*<br>\s*Latitude:\s([\d.]+)/;
+                                            var match = textContent.match(regex);
+                                            
+                                            if (match) {
+                                                var longitude = match[1];
+                                                var latitude = match[2];
+                                                // console.log('Longitude:', longitude);
+                                                // console.log('Latitude:', latitude);
+
+                                                // AJAX for UPDATE logic
+                                                $.ajax({
+                                                    url: '/Maps/update-record.php',
+                                                    type: 'POST',
+                                                    contentType: 'application/json',  
+                                                    data: JSON.stringify({
+                                                        inventory_id: id,
+                                                        longitude: longitude,
+                                                        latitude: latitude
+                                                    }), 
+                                                    success: function(response) {
+                                                        //console.log("ln", response);
+                                                        const responseData = typeof response === "string" ? JSON.parse(response) : response;
+                                                        const lng = parseFloat(responseData.longitude);
+                                                        const lat = parseFloat(responseData.latitude);
+                                                        //console.log("Parsed Longitude:", lng, "Parsed Latitude:", lat);
+                                                        const coordinates = [lng, lat];
+                                                        
+                                                        
+                                                        Swal.fire({
+                                                            title: 'Success!',
+                                                            text: 'Location updated successfully',
+                                                            icon: 'success', 
+                                                            confirmButtonText: 'Ok'
+                                                        }).then(() => {
+                                                            // Call the function to update and reopen the modal
+                                                            Swal.fire({
+                                                                html: itemClickId(id)
+                                                            })
+                                                        });
+                                                        // Update or create the initial marker
+                                                        if (initialMarker) {
+                                                            initialMarker.setLngLat(coordinates);
+                                                        } else {
+                                                            initialMarker = new mapboxgl.Marker({ draggable: false })
+                                                                .setLngLat(coordinates)
+                                                                .addTo(map);
+                                                        }
+                                                    },
+                                                    error: function(xhr, status, error) {
+                                                        console.error(error);
+                                                    }
+                                                });
+                                            } else {
+                                                console.log('Coordinates not found');
+                                            }
+                                        });
+                                    }
+
+                                    // Function to get map record from the database
+                                    function getMapRecordFromDB(id, lng = null, lat = null) {
+                                        $.ajax({
+                                            url: '/Maps/get-record.php',
+                                            type: 'GET',
+                                            data: { inventory_id: id, lng: lng, lat: lat },
+                                            dataType: 'json',
+                                            success: function(response) {
+                                                var coordinatesDiv = document.querySelector('#coordinates');
+                                                
+                                                if (response.length === 0) {
+                                                    // console.log("No records found.", coordinatesDiv, lng);
+                                                    // Extracting longitude and latitude using REGEX
+                                                    var textContent = coordinatesDiv.innerHTML;
+                                                    var regex = /Longitude:\s([\d.]+)\s*<br>\s*Latitude:\s([\d.]+)/;
+                                                    var match = textContent.match(regex);
+                                                    
+                                                    if (match) {
+                                                        var longitude = match[1];
+                                                        var latitude = match[2];
+
+                                                        
+                                                        //AJAX for INSERT logic
+                                                        $.ajax({
+                                                            url: '/Maps/insert-record.php',
+                                                            type: 'POST',
+                                                            contentType: 'application/json',  
+                                                            data: JSON.stringify({
+                                                                inventory_id: id,
+                                                                longitude: longitude,
+                                                                latitude: latitude
+                                                            }), 
+                                                            success: function(response) {
+                                                                //console.log(response);
+                                                            },
+                                                            error: function(xhr, status, error) {
+                                                                console.error(error);
+                                                            }
+                                                        });
+                                                    
+                                                    } else {
+                                                        console.log('Coordinates not found');
+                                                    }
+                                                } else {
+                                                    // console.log("Data found Response: ", response);
+                                                    if (coordinatesDiv) {
+                                                        coordinatesDiv.innerHTML = `Longitude: ${response[0].longitude} <br/> Latitude: ${response[0].latitude}`;
+                                                        // Update marker position
+                                                        const lng = parseFloat(response[0].longitude);
+                                                        const lat = parseFloat(response[0].latitude);
+                                                        if (initialMarker) {
+                                                            initialMarker.setLngLat([lng, lat]);
+                                                            map.setCenter([lng, lat]);
+                                                            map.setZoom(14);
+                                                        } else {
+                                                            initialMarker = new mapboxgl.Marker({ draggable: false })
+                                                            .setLngLat([lng, lat])
+                                                            .addTo(map);
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            error: function(xhr, status, error) {
+                                                console.error('Error:', error);
+                                                alert("Error fetching data. See console for details.");
+                                            }
+                                        });
+                                    }
+    
+                                    // Initialize the map
+                                    const map = new mapboxgl.Map({
+                                        container: 'map',
+                                        style: 'mapbox://styles/mapbox/streets-v12',
+                                        center: coordinates,
+                                        zoom: 14
+                                    });
+
+                                    // Create initial marker
+                                    initialMarker = new mapboxgl.Marker({ draggable: false })
+                                        .setLngLat(coordinates)
+                                        .addTo(map);
+
+                                    // Show coordinates of the initial marker
+                                    var coordinatesDiv = document.querySelector('#coordinates');
+                                    if (coordinatesDiv) {
+                                        coordinatesDiv.style.display = 'block';
+                                        coordinatesDiv.innerHTML = `Longitude: ${coordinates[0]} <br/> Latitude: ${coordinates[1]}`;
+                                        clickLocation(id);
+                                        setLocationButton();
+                                    }
+
+                                    // Update coordinates when dragging the marker
+                                    initialMarker.on('dragend', function() {
+                                        var lngLat = initialMarker.getLngLat();
+                                        var lng = lngLat.lng;
+                                        var lat = lngLat.lat;
+
+                                        if (coordinatesDiv) {
+                                            coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+                                        }
+                                        getMapRecordFromDB(id, lng, lat);
+                                    });
+
+                                    // Map click event
+                                    map.on('click', function(e) {
+                                        var coordinatesDiv = document.querySelector('#coordinates');
+                                        if (coordinatesDiv) {
+                                            var markers = document.querySelectorAll('.mapboxgl-marker');
+                                            markers.forEach(function(el) {
+                                                el.style.display = 'none';
+                                            });
+
+                                            var lng = e.lngLat.lng;
+                                            var lat = e.lngLat.lat;
+
+                                            coordinatesDiv.style.display = 'block';
+                                            coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+
+                                            // Create a new marker at the clicked position
+                                            var newMarker = new mapboxgl.Marker({ draggable: false })
+                                                .setLngLat([lng, lat])
+                                                .addTo(map);
+
+                                            newMarker.on('dragend', function() {
+                                                var lngLat = newMarker.getLngLat();
+                                                lng = lngLat.lng;
+                                                lat = lngLat.lat;
+
+                                                coordinatesDiv.innerHTML = `Longitude: ${lng} <br/> Latitude: ${lat}`;
+                                                getMapRecordFromDB(id, lng, lat);
+                                            });
+                                        } else {
+                                            console.error('#coordinates div not found in the DOM.');
+                                        }
+                                    });
+
+                                    
+                                }
+                            });
                             htmlContent += `
                             <style>
                             .flex-container {
@@ -631,6 +920,8 @@ include ("templates/nav-bar.php");
                                 font-size:12px;
                                 overflow-x: auto;
                                 -webkit-overflow-scrolling: touch;  
+                                position: relative;
+                                overflow:hidden;
                             }
                             .grid-item {
                                 background-color: rgba(255, 255, 255, 0.8);
@@ -700,6 +991,26 @@ include ("templates/nav-bar.php");
                                     white-space: nowrap; /* Prevent text from wrapping */
                                 }
                             }
+                                /* Hide the checkbox */
+                            #slideToggle {
+                                display: none;
+                            }
+
+                            .hidden {
+                                height: 90%;
+                                width: 100%;
+                                position: absolute;
+                                /*background: #f90;*/
+                                color: #000;
+                                top:0;
+                                right: -200%; /* Initially placed outside to the right, relative to the modal */
+                                transition: right 0.6s ease-in-out; /* Slide-in effect */
+                            }
+
+                            /* Slide in the panel when checkbox is checked */
+                            #slideToggle:checked + .hidden {
+                                right: 0;
+                            }
                         </style>
                         <div class="flex-container">
                             <div class="flex-container-left" style="overflow-y:scroll">
@@ -709,6 +1020,13 @@ include ("templates/nav-bar.php");
                             <div class="flex-container-right">
                                 <br>
                                 <div class="grid-container">
+                                    <label for="slideToggle" class="btn btn-success" id="viewLocation" style="z-index:999;">View Location</label>
+                                    <button  id="setLocation" class="btn btn-success" style="z-index:999;">Set Location</button>
+                                    
+                                    <input type="checkbox" id="slideToggle">
+                                    <div class="hidden">
+                                        ${mapsContent}
+                                    </div>
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
@@ -775,7 +1093,7 @@ include ("templates/nav-bar.php");
                                     <div class="grid-item item4">
                                         <table>
                                             <tr>
-                                                <th colspan="5" class="category-header">Forest Products Description </th>
+                                                <th colspan="6" class="category-header">Forest Products Description </th>
                                             </tr>
                                             <tr>
                                                 <td><b>Quantity (pcs)</b></td>
@@ -889,7 +1207,7 @@ include ("templates/nav-bar.php");
                                     let id = this.getAttribute('id');
                                     window.open('/inventory-tree/image-view.php?id='+id, '_blank');
 
-                                    alert(imagePath);
+                                    // alert(imagePath);
                                 });
                             });
                             

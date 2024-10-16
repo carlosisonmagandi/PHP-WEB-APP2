@@ -51,6 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user_name = $_SESSION['session_username'];
         $linear_mtrs =  $_POST['linear_mtrs'] ?? '';
 
+        $species_type =  $_POST['species_type'] ?? '';
+        $species_status =  $_POST['species_status'] ?? '';
+
         $stmt = $connection->prepare("UPDATE inventory SET
             sitio=?, 
             barangay=?, 
@@ -77,14 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             depository_barangay=?,
             depository_city=?,
             depository_province=?,
-            linear_mtrs=?
+            linear_mtrs=?,
+            species_type=?,
+            species_status=?
             WHERE id=?");
 
         if ($stmt === false) {
             file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
         }
 
-        $stmt->bind_param('sssssssssssssssssssssssssi',
+        $stmt->bind_param('sssssssssssssssssssssssssssi',
             $sitio, 
             $barangay, 
             $city_municipality, 
@@ -111,6 +116,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $depository_city,
             $depository_province,
             $linear_mtrs,
+            $species_type,
+            $species_status,
             $inventory_id
             
         );

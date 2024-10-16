@@ -68,71 +68,72 @@ $hasId = !empty($id);
             <?php endif; ?>
 
             <fieldset>
-                <legend>Equipment Details:</legend>
+                <legend>Conveyance Description:</legend>
                 <div class="form-group">
-                    <label for="equipmentName">Equipment Name</label>
-                    <input type="text" class="form-control" id="equipmentName" name="equipmentName">
-                </div>
-                <div class="form-group">
-                    <label for="type">Type</label>
-                    <select class="form-control" id="type" name="type">
-                        <option value="">Select Type</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="serialNo">Serial Number</label>
-                    <input type="text" class="form-control" id="serialNo" name="serialNo">
+                    <label for="plate_no">Plate Number</label>
+                    <input type="text" class="form-control" id="plate_no" name="plate_no">
                 </div>
                 <div class="form-group">
                     <label for="brand">Brand</label>
                     <input type="text" class="form-control" id="brand" name="brand">
                 </div>
                 <div class="form-group">
-                    <label for="model">Model</label>
+                    <label for="vehicle_type">Type</label>
+                    <select class="form-control" id="vehicle_type" name="vehicle_type">
+                        <option value="">Select Type</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehicle_name">Model Name</label>
+                    <input type="text" class="form-control" id="vehicle_name" name="vehicle_name">
+                </div>
+                <div class="form-group">
+                    <label for="model">Year Model</label>
                     <input type="text" class="form-control" id="model" name="model">
                 </div>
                 <div class="form-group">
-                    <label for="condition">Condition</label>
-                    <select class="form-control" id="condition" name="condition">
+                    <label for="vehicle_condition">Condition</label>
+                    <select class="form-control" id="vehicle_condition" name="vehicle_condition">
                         <option value="">Select Condition</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehicle_status">Status</label>
+                    <select class="form-control" id="vehicle_status" name="vehicle_status">
+                        <option value="">Select Condition</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" class="form-control" id="location" name="location">
                 </div>
             </fieldset>
 
             <fieldset>
-                <legend>Ownership and Legal Information:</legend>
+                <legend>Ownership</legend>
                 <div class="form-group">
-                    <label for="owner">Owner</label>
-                    <input type="text" class="form-control" id="owner" name="owner">
+                    <label for="vehicle_owner">Name of Respondent/Claimant/Owner</label>
+                    <input type="text" class="form-control" id="vehicle_owner" name="vehicle_owner">
                 </div>
                 <div class="form-group">
-                    <label for="dateOfConfiscation">Date of Confiscation</label>
-                    <input type="date" class="form-control" id="dateOfConfiscation" name="dateOfConfiscation">
+                    <label for="date_of_compiscation">Date of Apprehension</label>
+                    <input type="date" class="form-control" id="date_of_compiscation" name="date_of_compiscation">
                 </div>
-
-                <fieldset>
-                    <legend>Additional Information:</legend>
-                    <div class="form-group">
-                        <label for="status">Equipment Status</label>
-                        <select class="form-control" id="status" name="status">
-                            <option value="">Select Status</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="location">Location</label>
-                        <input type="text" class="form-control" id="location" name="location">
-                    </div>
-                    <div class="form-group">
-                        <label for="remarks">Remarks</label>
-                        <input type="text" class="form-control" id="remarks" name="remarks">
-                    </div>
-                </fieldset>
-
+                <div class="form-group">
+                    <label for="confiscated_by">Apprehending Officer</label>
+                    <input type="text" class="form-control" id="confiscated_by" name="confiscated_by">
+                </div>
+                <div class="form-group">
+                    <label for="remarks">Remarks</label>
+                    <input type="text" class="form-control" id="remarks" name="remarks">
+                </div>
             </fieldset>
 
             
+
+            
             <?php if ($hasId): ?>
-                <button type="button" id="update" class="btn btn-primary">Update</button>
+                <button type="button" id="vehicleUpdate" class="btn btn-primary">Update</button>
             <?php else: ?>
                 <button type="button" id="send" class="btn btn-primary">Submit</button>
             <?php endif; ?>
@@ -147,26 +148,27 @@ $hasId = !empty($id);
         var id = "<?php echo $id; ?>";
         if (id) {
             $.ajax({
-                url: '/equipments/get-record-by-id.php',
+                url: '/vehicles/get-record-by-id.php',
                 type: 'GET',
-                data: { equipment_id:id},
+                data: { vehicle_id:id},
                 dataType: 'json',
                 success: function(data) {
                     if (data.status === 'success') {
                         let record = data.data;
                         // Populate form fields with the fetched data
-                        $('#equipmentName').val(record.equipment_name);
-                        $('#type').val(record.equipment_type);
-                        $('#serialNo').val(record.serial_no);
+                        $('#plate_no').val(record.plate_no);
                         $('#brand').val(record.brand);
+                        $('#vehicle_type').val(record.vehicle_type);
+                        $('#vehicle_name').val(record.vehicle_name);
                         $('#model').val(record.model);
-                        $('#condition').val(record.equipment_condition);
-                        $('#owner').val(record.equipment_owner);
-                        $('#dateOfConfiscation').val(record.date_of_compiscation);
-                        $('#status').val(record.equipment_status);
+                        $('#vehicle_condition').val(record.vehicle_condition);
+                        $('#vehicle_status').val(record.vehicle_status);
                         $('#location').val(record.location);
+                        $('#vehicle_owner').val(record.vehicle_owner);
+                        $('#date_of_compiscation').val(record.date_of_compiscation);
+                        $('#confiscated_by').val(record.confiscated_by);
                         $('#remarks').val(record.remarks);
-
+                        
                     } else {
                         Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                     }
@@ -177,29 +179,30 @@ $hasId = !empty($id);
             });
         }
         //Button Update
-        $('#update').on('click', function() {
+        $('#vehicleUpdate').on('click', function() {
             updateRecord(id);
         });
         function updateRecord(id) {
             const formData = new FormData();
             formData.append('action', 'update_record');
-            formData.append('equipment_id', id); // Function to get 'id' from the URL
-            formData.append('equipmentName', $('#equipmentName').val());
-            formData.append('type', $('#type').val());
-            formData.append('serialNo', $('#serialNo').val());
+            formData.append('vehicle_id', id); // Function to get 'id' from the URL
+            formData.append('plate_no', $('#plate_no').val());
             formData.append('brand', $('#brand').val());
+            formData.append('vehicle_type', $('#vehicle_type').val());
+            formData.append('vehicle_name', $('#vehicle_name').val());
             formData.append('model', $('#model').val());
-            formData.append('condition', $('#condition').val());
-            formData.append('owner', $('#owner').val());
-            formData.append('dateOfConfiscation', $('#dateOfConfiscation').val());
-            formData.append('status', $('#status').val());
+            formData.append('vehicle_condition', $('#vehicle_condition').val());
+            formData.append('vehicle_status', $('#vehicle_status').val());
             formData.append('location', $('#location').val());
+            formData.append('vehicle_owner', $('#vehicle_owner').val());
+            formData.append('date_of_compiscation', $('#date_of_compiscation').val());
+            formData.append('confiscated_by', $('#confiscated_by').val());
             formData.append('remarks', $('#remarks').val());
             //  console.log('Sending request with ID:', id);
             //  console.log('Form data:', formData.serialNo);
 
             $.ajax({
-                url: '/equipments/update-record.php',
+                url: '/vehicles/update-record.php',
                 type: 'POST',
                 data: formData,
                 processData: false,
@@ -209,17 +212,17 @@ $hasId = !empty($id);
                     //console.log('Response received:', response);
                     
                     if (response.status === 'success') {
-                        //console.log('Success:', response);
+                        // console.log('Success:', response);
 
                         Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
                         let queryString = id;
                         let viewType = sessionStorage.getItem('viewType');//get session value
                         
                             if(viewType=='card'){
-                                window.location.href = '/equipments/equipment-card-view.php?' + queryString;//redirect to card view
+                                window.location.href = '/vehicles/vehicle-card-view.php?' + queryString;//redirect to card view
                                 sessionStorage.removeItem('viewType');
                             }else{
-                                window.location.href = '/equipments/equipment-table-view.php?' + queryString;//redirect to table view 
+                                window.location.href = '/vehicles/vehicle-table-view.php?' + queryString;//redirect to table view 
                                 sessionStorage.removeItem('viewType');  
                             }
                         });
@@ -243,17 +246,18 @@ $hasId = !empty($id);
         function addRecord() {
             const formData = new FormData();
             formData.append('action', 'add_record');
-            formData.append('equipment_id', id); // Function to get 'id' from the URL
-            formData.append('equipmentName', $('#equipmentName').val());
-            formData.append('type', $('#type').val());
-            formData.append('serialNo', $('#serialNo').val());
+            formData.append('vehicle_id', id); // Function to get 'id' from the URL
+            formData.append('plate_no', $('#plate_no').val());
             formData.append('brand', $('#brand').val());
+            formData.append('vehicle_type', $('#vehicle_type').val());
+            formData.append('vehicle_name', $('#vehicle_name').val());
             formData.append('model', $('#model').val());
-            formData.append('condition', $('#condition').val());
-            formData.append('owner', $('#owner').val());
-            formData.append('dateOfConfiscation', $('#dateOfConfiscation').val());
-            formData.append('status', $('#status').val());
+            formData.append('vehicle_condition', $('#vehicle_condition').val());
+            formData.append('vehicle_status', $('#vehicle_status').val());
             formData.append('location', $('#location').val());
+            formData.append('vehicle_owner', $('#vehicle_owner').val());
+            formData.append('date_of_compiscation', $('#date_of_compiscation').val());
+            formData.append('confiscated_by', $('#confiscated_by').val());
             formData.append('remarks', $('#remarks').val());
 
             let images = $('#images')[0].files;
@@ -262,7 +266,7 @@ $hasId = !empty($id);
             }
 
             $.ajax({
-                url: '/equipments/add-record.php',
+                url: '/vehicles/add-record.php',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -271,7 +275,7 @@ $hasId = !empty($id);
                 success: function(data) {
                     if (data.status === 'success') {
                         Swal.fire('Success!', 'Your record has been submitted.', 'success').then(() => {
-                            window.location.href = '/equipments/equipment-table-view.php';
+                            window.location.href = '/vehicles/vehicle-table-view.php';
                         });
                     } else {
                         Swal.fire('Error!', data.message || 'An error occurred while submitting the form.', 'error');
@@ -286,18 +290,29 @@ $hasId = !empty($id);
 
         //Get Condition
         $.ajax({
-            url: '/equipments/get-condition.php',
+            url: '/vehicles/get-condition.php',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                var conditionDropdown = $('#condition');
-                
+    
+                var conditionDropdown = $('#vehicle_condition');
                 conditionDropdown.empty();
                 
-                conditionDropdown.append('<option value="">Select Condition</option>');
-                
-                $.each(data, function(index, conditionTitle) {
-                    conditionDropdown.append('<option value="' + conditionTitle + '">' + conditionTitle + '</option>');
+                if (!id) {
+                    conditionDropdown.append('<option value="">Select Condition Type</option>');
+                } else {
+                    // Call session inventory status
+                    let vehicle_condition = sessionStorage.getItem('vehicle_condition');
+                    
+                    if (vehicle_condition) {
+                        conditionDropdown.append('<option selected value="' + vehicle_condition + '">' + vehicle_condition + '</option>');
+                    }
+                }
+                $.each(data, function(index, vehicle) {
+                    var vehicleCondition = vehicle.condition_title;
+                    if (!conditionDropdown.find('option[value="' + vehicleCondition + '"]').length) {
+                        conditionDropdown.append('<option value="' + vehicleCondition + '">' + vehicleCondition + '</option>');
+                    }
                 });
             },
             error: function(xhr, status, error) {
@@ -307,18 +322,29 @@ $hasId = !empty($id);
 
         //Get Type
         $.ajax({
-            url: '/equipments/get-type.php',
+            url: '/vehicles/get-type.php',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                var conditionDropdown = $('#type');
+                var typeDropdown = $('#vehicle_type');
+                typeDropdown.empty();
                 
-                conditionDropdown.empty();
-                
-                conditionDropdown.append('<option value="">Select Type</option>');
-                
-                $.each(data, function(index, typeTitle) {
-                    conditionDropdown.append('<option value="' + typeTitle + '">' + typeTitle + '</option>');
+                if (!id) {
+                    typeDropdown.append('<option value="">Select Type</option>');
+                } else {
+                    // Call session inventory status
+                    let vehicle_type = sessionStorage.getItem('vehicle_type');
+                    
+                    if (vehicle_type) {
+                        typeDropdown.append('<option selected value="' + vehicle_type + '">' + vehicle_type + '</option>');
+                    }
+                }
+
+                $.each(data, function(index, vehicle) {
+                    var vehicleType = vehicle.type_title;
+                    if (!typeDropdown.find('option[value="' + vehicleType + '"]').length) {
+                        typeDropdown.append('<option value="' + vehicleType + '">' + vehicleType + '</option>');
+                    }
                 });
             },
             error: function(xhr, status, error) {
@@ -328,18 +354,29 @@ $hasId = !empty($id);
 
         //Get Status
         $.ajax({
-            url: '/equipments/get-status.php',
+            url: '/vehicles/get-status.php',
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                var conditionDropdown = $('#status');
+                var statusDropdown = $('#vehicle_status');
+                statusDropdown.empty();
                 
-                conditionDropdown.empty();
-                
-                conditionDropdown.append('<option value="">Select Status</option>');
-                
-                $.each(data, function(index, statusTitle) {
-                    conditionDropdown.append('<option value="' + statusTitle + '">' + statusTitle + '</option>');
+                if (!id) {
+                    statusDropdown.append('<option value="">Select Status</option>');
+                } else {
+                    // Call session inventory status
+                    let vehicle_status = sessionStorage.getItem('vehicle_status');
+                    
+                    if (vehicle_status) {
+                        statusDropdown.append('<option selected value="' + vehicle_status + '">' + vehicle_status + '</option>');
+                    }
+                }
+
+                $.each(data, function(index, vehicle) {
+                    var vehicleStatus = vehicle.status_title;
+                    if (!statusDropdown.find('option[value="' + vehicleStatus + '"]').length) {
+                        statusDropdown.append('<option value="' + vehicleStatus + '">' + vehicleStatus + '</option>');
+                    }
                 });
             },
             error: function(xhr, status, error) {

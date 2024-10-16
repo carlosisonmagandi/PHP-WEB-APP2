@@ -6,7 +6,7 @@ require("../includes/authentication.php");
 
 //action after logout button
 if(isset($_POST['Logout'])){
-    session_destroy();
+    session_destroy(); 
     header("Location: ../../index.php");
     exit;
 };
@@ -156,7 +156,7 @@ $hasId = !empty($id);
     <div class="flex-item-left" id="titleContainer">
         <!-- title -->
          <br>
-        <h3 style="font-size:12px; font-weight:bold"><center>INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
+        <h3 style="font-size:12px; font-weight:bold"><center>INVENTORY OF APPREHENDED/CONFISCATED CONVEYANCE AT THE IMPOUNDING AREA OF PENRO LAGUNA </ceter></h3>
     </div>
 </div>
 
@@ -193,11 +193,12 @@ $hasId = !empty($id);
 
     function fetchDataFromDB() {
         $.ajax({
-            url: '/equipments/get-equipment-and-image.php',
+            url: '/vehicles/get-vehicle-and-image.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
             // console.log('Image response:', response);
+            console.log("here",response);
             $('.container').empty();  // Clear existing content
 
             $.each(response, function(index, record) {
@@ -206,7 +207,7 @@ $hasId = !empty($id);
                 var cardHtml = `
                     <div class="column">
                         <div class="card">
-                            <div class="totalItemDiv">Condition: ${record.equipment_condition}</div>
+                            <div class="totalItemDiv">Condition: ${record.vehicle_condition}</div>
                             <div class="innerCardContainer">
                                 <div class="imageDiv">
                                     ${imagePath ? 
@@ -222,7 +223,7 @@ $hasId = !empty($id);
                                     <button class="editButtonIcon" id="editButton" data-id=${record.id} >
                                         <i class="fas fa-edit"></i>
                                     </button>
-                                    <a>${record.equipment_name}</a>
+                                    <a>${record.vehicle_name}</a>
                                     <a>(${record.brand})</a>
                                     <p>${record.location}</p>
                                     <i><a>Confiscation Date:</a></i>
@@ -316,7 +317,7 @@ $hasId = !empty($id);
     //Edit action
     function editAction(id) {
         $.ajax({
-            url: '/equipments/get-edit-record.php',
+            url: '/vehicles/get-edit-record.php',
             type: 'GET',
             data: { equipment_id: id },
             dataType: 'json',
@@ -328,7 +329,7 @@ $hasId = !empty($id);
                     // console.log(queryString);
 
                     // Redirect with query parameters
-                    window.location.href = '/equipments/add-record-view.php?' + queryString;
+                    window.location.href = '/vehicles/add-record-view.php?' + queryString;
                 } else {
                     Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                 }
@@ -343,9 +344,9 @@ $hasId = !empty($id);
     function itemClickId(id) {
         //Image pane funtions
         $.ajax({
-            url: '/equipments/equipment-get-images.php',
+            url: '/vehicles/vehicle-get-images.php',
             type: 'GET',
-            data: { equipment_id: id },
+            data: { vehicle_id: id },
             dataType: 'json',
             success: function(response) { 
                   //console.log(response); 
@@ -420,7 +421,7 @@ $hasId = !empty($id);
                                 <div class="flex-container">
                                     <div class="flex-item-left-img">
                                         <p style="display:none">${image.id}</p>
-                                        <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
+                                        <img src="${image.file_path}" alt="${image.file_name}" id="${image.id}" class="image-clickable" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);cursor:pointer;">
                                     </div> 
                                     <button data-id="${image.id}" class="button-trash delete-button" id="buttonId">
                                         <i class="fas fa-trash-alt"></i>
@@ -560,14 +561,16 @@ $hasId = !empty($id);
             
                             }
                             .category-header {
-                                background-color: #002f6c;
+                                background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
                                 font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
                             .sub-category-header {
-                                background-color: #002f6c;
+                                 background: linear-gradient(90deg, #002f6c, #0073e6 50%, #002f6c);
                                 color: white;
-                                font-size: 16px;
+                                font-size: 18px;
+                                font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
                             }
                             .table-container {
                                 margin-bottom: 20px;
@@ -582,7 +585,7 @@ $hasId = !empty($id);
                         </style>
                         <div class="flex-container">
                             <div class="flex-container-left" style="overflow-y:scroll">
-                                <input type="button" value="Add Image" class="addImageButton" id="addImage" />
+                                <input type="button" value="Add Image" class="addImageButton" id="vehicleAddImage" />
                                 ${htmlContent}
                             </div>
                             <div class="flex-container-right">
@@ -591,82 +594,66 @@ $hasId = !empty($id);
                                     <div class="grid-item item1">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Site</th>
+                                                <th colspan="5" class="sub-category-header">Ownership</th>
                                             </tr>
                                             <tr>
-                                                <td><b>SITIO</b></td>
-                                                <td><b>BARANGAY</b></td>
-                                                <td><b>City</b></td>
-                                                <td><b>Province</b></td>
+                                                <td><b>ID &nbsp&nbsp&nbsp</b></td>
+                                                <td><b>Name of Respondent/Claimant/Owner</b></td>
+                                                <td><b>Apprehension Date</b></td>
+                                                <td><b>Apprehending Officer</b></td>
+                                                
                                             </tr>
                                             <tr>
-                                                <td>Test_Sitio</td>
-                                                <td>Test_barangay</td>
-                                                <td>Test_city</td>
-                                                <td>Test_province</td>
+                                                <td>${response.id}</td>
+                                                <td>${response.vehicle_owner}</td>
+                                                <td>${response.date_of_compiscation}</td>
+                                                <td>${response.confiscated_by}</td>
                                             </tr>
                                         </table>
                                     </div>  
                                     <div class="grid-item item2">
                                         <table>
                                             <tr>
-                                                <th colspan="4" class="sub-category-header">Apprehension Details</th>
+                                                <th colspan="4" class="sub-category-header">Activities</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Apprehending Officer</b></td>
-                                                <td><b>Apprehended Items</b></td>
-                                                <td><b>EMV Forest Product</b></td>
-                                                <td><b>EMV Conveyance Implements</b></td>
+                                                <td><b>Created By</b></td>
+                                                <td><b>Last Updated</b></td>
+                                                <td><b>Remarks</b></td>
                                             </tr>
                                             <tr>
-                                                <td>Test_apprehending_officer</td>
-                                                <td>Test_title</td>
-                                                <td>Test_emv_forest_product</td>
-                                                <td>Php. Test_EMV_conveyance_implements</td>
+                                                <td>${response.created_by}</td>
+                                                <td>${response.date_of_compiscation}</td>
+                                                <td>${response.remarks}</td>
                                             </tr>
                                         </table>
                                     </div>
                                     <div class="grid-item item3">
                                         <table>
                                             <tr>
-                                                <th colspan="6" class="category-header">Case Information</th>
+                                                <th colspan="8" class="category-header">Conveyance Description</th>
                                             </tr>
                                             <tr>
-                                                <td><b>Involve Personalities</b></td>
-                                                <td><b>Custodian</b></td>
-                                                <td><b>ACP Status or Case No</b></td>
-                                                <td><b>Date of Confiscation Order</b></td>
-                                                <td><b>Remarks</b></td>
-                                                <td><b>Apprehended Person</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Test_involve_personalities</td>
-                                                <td>Test_custodian</td>
-                                                <td>Test_ACP_status_or_case_no</td>
-                                                <td>Test_date_of_confiscation_order</td>
-                                                <td>Test_remarks</td>
-                                                <td>Test_apprehended_persons</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="grid-item item4">
-                                        <table>
-                                            <tr>
-                                                <th colspan="6" class="category-header">Apprehension Metrics</th>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Quantity</b></td>
-                                                <td><b>Volume</b></td>
-                                                <td><b>Vehicle</b></td>
-                                                <td><b>Type of vehicle</b></td>
                                                 <td><b>Plate #</b></td>
+                                                <td><b>Brand</b></td>
+                                                <td><b>Type</b></td>
+                                                <td><b>Model Name</b></td>
+                                                <td><b>Year Model</b></td>
+                                                <td><b>Condition</b></td>
+                                                <td><b>Status</b></td>
+                                                <td><b>Location</b></td>
+                                                
+                                                
                                             </tr>
                                             <tr>
-                                                <td>Test_apprehended_quantity</td>
-                                                <td>Test_apprehended_volume</td>
-                                                <td>Tet_apprehended_vehicle</td>
-                                                <td>Test_apprehended_vehicle_type</td>
-                                                <td>Test_apprehended_vehicle_plate_no</td>
+                                                <td>${response.plate_no}</td>
+                                                <td>${response.brand}</td>
+                                                <td>${response.vehicle_type}</td>
+                                                <td>${response.vehicle_name}</td>
+                                                <td>${response.model}</td>
+                                                <td>${response.vehicle_condition}</td>
+                                                <td>${response.vehicle_status}</td>
+                                                <td>${response.location}</td>   
                                             </tr>
                                         </table>
                                     </div>
@@ -687,7 +674,7 @@ $hasId = !empty($id);
                                 button.addEventListener('click', function() {
                                     let buttonId = this.getAttribute('data-id');
                                     $.ajax({
-                                        url: '/equipments/delete-image.php',
+                                        url: '/vehicles/delete-image.php',
                                         type: 'POST',
                                         data: { image_id: buttonId },
                                         dataType: 'json',
@@ -719,6 +706,15 @@ $hasId = !empty($id);
                                             });
                                         }
                                     });
+                                });
+                            });
+                            // Click image
+                            document.querySelectorAll('.image-clickable').forEach(image => {
+                                image.addEventListener('click', function() {
+                                    let id = this.getAttribute('id');
+                                    window.open('/vehicles/image-view.php?id='+id, '_blank');
+
+                                    // alert(imagePath);
                                 });
                             });
 
@@ -773,7 +769,7 @@ $hasId = !empty($id);
                                     }
 
                                     $.ajax({
-                                        url: '/equipments/upload-image.php',
+                                        url: '/vehicles/upload-image.php',
                                         type: 'POST',
                                         data: formData,
                                         processData: false,
@@ -820,7 +816,7 @@ $hasId = !empty($id);
                        fetchDataFromDB();//call function to make sure that the table displays the latest records
 
                         const currentUrl = new URL(window.location.href);// Create a new URL object from the current location
-                        const newUrl = new URL('/equipments/equipment-card-view.php', window.location.origin);// Construct the new URL to be used
+                        const newUrl = new URL('/vehicles/vehicle-card-view.php', window.location.origin);// Construct the new URL to be used
                         window.history.replaceState({}, '', newUrl.href);
                     });
                     

@@ -133,8 +133,23 @@ $hasId = !empty($id);
                 </div>
                 <div class="form-group">
                     <label for="EMV_forest_product">EMV Forest Product</label>
-                    <input type="text" class="form-control" id="EMV_forest_product" name="EMV_forest_product">
+                    <input type="number" min="0" class="form-control" id="EMV_forest_product" name="EMV_forest_product">
                 </div>
+
+                <div class="form-group">
+                    <label for="species_type">Species Type</label>
+                    <select class="form-control" id="species_type" name="species_type">
+                        <option value="">Select Species Type</option>
+                    </select>
+                </div>
+              
+                <div class="form-group">
+                    <label for="species_status">Species Status</label>
+                    <select class="form-control" id="species_status" name="species_status">
+                        <option value="">Select Species Type</option>
+                    </select>
+                </div>
+               
                 
                 <!--Conveyance  -->
                 <fieldset>
@@ -239,6 +254,9 @@ $hasId = !empty($id);
                         $('#depository_city').val(record.depository_city);
                         $('#depository_province').val(record.depository_province);
                         $('#linear_mtrs').val(record.linear_mtrs);
+
+                        $('#species_status').val(record.species_status);
+                        $('#species_type').val(record.species_type);
                     } else {
                         Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                     }
@@ -248,6 +266,78 @@ $hasId = !empty($id);
                 }
             });
         }
+         // display values to species_type dropdown
+        $.ajax({
+            url: '/manage-reference-data/logsType/type-list.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                var speciesTypeDropdown = $('#species_type');
+                speciesTypeDropdown.empty(); 
+
+                if (!id) {
+                    speciesTypeDropdown.append('<option value="">Select Species Type</option>');
+                } else {
+                    // Call session inventory status
+                    let species_type = sessionStorage.getItem('species_type');
+                    
+                    if (species_type) {
+                        speciesTypeDropdown.append('<option selected value="' + species_type + '">' + species_type + '</option>');
+                    }
+                }
+
+                $.each(response, function(index, species) {
+                    var speciesTitle = species.type_title;
+                    
+                    if (!speciesTypeDropdown.find('option[value="' + speciesTitle + '"]').length) {
+                        speciesTypeDropdown.append('<option value="' + speciesTitle + '">' + speciesTitle + '</option>');
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching species types:', error);
+            }
+        });
+
+
+        $.ajax({
+            url: '/manage-reference-data/condition-status-list.php',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                var speciesStatusDropdown = $('#species_status');
+                speciesStatusDropdown.empty(); 
+
+                console.log('ID:', id);  // Debugging: log the ID
+
+                if (!id) {
+                    speciesStatusDropdown.append('<option value="">Select Species Status</option>');
+                
+                } else {
+                    // Call session inventory status
+                    let species_status = sessionStorage.getItem('species_status');
+                    console.log('Species Status from sessionStorage:', species_status);  // Debugging: log the status
+
+                    if (species_status) {
+                        speciesStatusDropdown.append('<option selected value="' + species_status + '">' + species_status + '</option>');
+                    }
+                }
+
+                $.each(response, function(index, species) {
+                    var speciesStatus = species.condition_type;
+                    if (!speciesStatusDropdown.find('option[value="' + speciesStatus + '"]').length) {
+                        speciesStatusDropdown.append('<option value="' + speciesStatus + '">' + speciesStatus + '</option>');
+                    }
+                });
+
+                
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching species status:', error);
+            }
+        });
+
+
         //Button Update
         $('#update').on('click', function() {
             updateRecord(id);
@@ -284,8 +374,11 @@ $hasId = !empty($id);
             formData.append('depository_province', $('#depository_province').val());
 
             formData.append('linear_mtrs', $('#linear_mtrs').val());
+
+            formData.append('species_type', $('#species_type').val());
+            formData.append('species_status', $('#species_status').val());
             // console.log('Sending request with ID:', id);
-            // console.log('Form data:', formData);
+            // console.log('Form data:', formData.species_type);
 
             $.ajax({
                 url: '/inventory-tree/update-record.php',
@@ -356,6 +449,8 @@ $hasId = !empty($id);
             formData.append('depository_city', $('#depository_city').val());
             formData.append('depository_province', $('#depository_province').val());
             formData.append('linear_mtrs', $('#linear_mtrs').val());
+            formData.append('species_type', $('#species_type').val());
+            formData.append('species_status', $('#species_status').val());
 
             let images = $('#images')[0].files;
             for (let i = 0; i < images.length; i++) {
@@ -384,6 +479,8 @@ $hasId = !empty($id);
                 }
             });
         }
+
+        
 
     });
 </script>

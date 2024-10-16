@@ -171,9 +171,19 @@ ALTER TABLE request_form
 ADD COLUMN letter_of_intent VARCHAR(255),
 ADD COLUMN project_eng_certification VARCHAR(255),
 ADD COLUMN budget_officer_certification VARCHAR(255);
-    
+
+ALTER TABLE request_form
+ADD COLUMN species_of_requested_item VARCHAR(255);
 
 select * FROM request_form;
+
+ALTER TABLE request_form 
+-- MODIFY COLUMN species_of_requested_item VARCHAR(255) AFTER type_of_requested_item;
+MODIFY COLUMN request_number VARCHAR(255) AFTER id;
+
+ALTER TABLE request_form 
+DROP COLUMN species_of_requested_item;
+
 
 DELETE FROM request_form where id in (47,48);
 

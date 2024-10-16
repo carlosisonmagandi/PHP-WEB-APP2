@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($equipment_id > 0) {
         // Fetch and sanitize input
         $equipmentName = $_POST['equipmentName'] ?? '';
-        $type = $_POST['type'] ?? '';
+        $type = $_POST['equipment_type'] ?? '';
         $serialNo = $_POST['serialNo'] ?? '';
         $brand = $_POST['brand'] ?? '';
         $model = $_POST['model'] ?? '';
@@ -32,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? '';
         $location = $_POST['location'] ?? '';
         $remarks = $_POST['remarks'] ?? '';
+        $user_name = $_SESSION['session_username'];
        
 
         $stmt = $connection->prepare("UPDATE equipments SET 
@@ -45,14 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             date_of_compiscation=?,
             equipment_owner=?,
             equipment_condition=?,
-            remarks=?
+            remarks=?,
+            updated_by=?
             WHERE id=?");
 
         if ($stmt === false) {
             file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
         }
 
-        $stmt->bind_param('sssssssssssi',
+        $stmt->bind_param('ssssssssssssi',
             $equipmentName, 
             $type, 
             $serialNo, 
@@ -64,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $owner,
             $condition,
             $remarks,
+            $user_name,
             $equipment_id
         );
 

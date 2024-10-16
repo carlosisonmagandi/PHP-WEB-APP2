@@ -9,6 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $requestId = isset($data['requestId']) ? intval($data['requestId']) : 0;
     $updatedBy = isset($_SESSION['session_username']) ? $_SESSION['session_username'] : null;
+    $reject_by=$_SESSION['session_username'];
+    $date_of_rejection=date('Y-m-d H:i:s');
     
     $requestStatus = 'Rejected';
 
@@ -24,10 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $sql = "UPDATE request_form SET approval_status = ?, updated_by = ? WHERE id = ?";
+    $sql = "UPDATE request_form SET approval_status = ?, updated_by = ?, reject_by= ?,date_of_rejection= ?  WHERE id = ?";
 
     if ($stmt = $connection->prepare($sql)) {
-        $stmt->bind_param("ssi", $requestStatus, $updatedBy, $requestId);
+        $stmt->bind_param("ssssi", $requestStatus, $updatedBy,$reject_by,$date_of_rejection, $requestId);
 
         if ($stmt->execute()) {
            //Push the event

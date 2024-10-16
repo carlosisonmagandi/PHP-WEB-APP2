@@ -84,6 +84,7 @@ echo json_encode([
     'depository_city' => $inventory['depository_city'],
     'depository_province' => $inventory['depository_province'],
     'linear_mtrs' => $inventory['linear_mtrs'],
+    'species_type' => $inventory['species_type'],
     
     'images' => $images
 ]);

@@ -74,8 +74,8 @@ $hasId = !empty($id);
                     <input type="text" class="form-control" id="equipmentName" name="equipmentName">
                 </div>
                 <div class="form-group">
-                    <label for="type">Type</label>
-                    <select class="form-control" id="type" name="type">
+                    <label for="equipment_type">Type</label>
+                    <select class="form-control" id="equipment_type" name="equipment_type">
                         <option value="">Select Type</option>
                     </select>
                 </div>
@@ -156,7 +156,7 @@ $hasId = !empty($id);
                         let record = data.data;
                         // Populate form fields with the fetched data
                         $('#equipmentName').val(record.equipment_name);
-                        $('#type').val(record.equipment_type);
+                        $('#equipment_type').val(record.equipment_type);
                         $('#serialNo').val(record.serial_no);
                         $('#brand').val(record.brand);
                         $('#model').val(record.model);
@@ -185,7 +185,7 @@ $hasId = !empty($id);
             formData.append('action', 'update_record');
             formData.append('equipment_id', id); // Function to get 'id' from the URL
             formData.append('equipmentName', $('#equipmentName').val());
-            formData.append('type', $('#type').val());
+            formData.append('equipment_type', $('#equipment_type').val());
             formData.append('serialNo', $('#serialNo').val());
             formData.append('brand', $('#brand').val());
             formData.append('model', $('#model').val());
@@ -209,7 +209,7 @@ $hasId = !empty($id);
                     //console.log('Response received:', response);
                     
                     if (response.status === 'success') {
-                        //console.log('Success:', response);
+                        // console.log('Success:', response);
 
                         Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
                         let queryString = id;
@@ -290,14 +290,26 @@ $hasId = !empty($id);
             method: 'GET',
             dataType: 'json',
             success: function(data) {
+    
                 var conditionDropdown = $('#condition');
-                
                 conditionDropdown.empty();
                 
-                conditionDropdown.append('<option value="">Select Condition</option>');
-                
-                $.each(data, function(index, conditionTitle) {
-                    conditionDropdown.append('<option value="' + conditionTitle + '">' + conditionTitle + '</option>');
+                if (!id) {
+                    conditionDropdown.append('<option value="">Select Condition</option>');
+                } else {
+                    // Call session inventory status
+                    let equipment_condition = sessionStorage.getItem('equipment_condition');
+                    
+                    if (equipment_condition) {
+                        conditionDropdown.append('<option selected value="' + equipment_condition + '">' + equipment_condition + '</option>');
+                    }
+                }
+
+                $.each(data, function(index, equipment) {
+                    var equipmentCondition = equipment.condition_title;
+                    if (!conditionDropdown.find('option[value="' + equipmentCondition + '"]').length) {
+                        conditionDropdown.append('<option value="' + equipmentCondition + '">' + equipmentCondition + '</option>');
+                    }
                 });
             },
             error: function(xhr, status, error) {
@@ -311,14 +323,25 @@ $hasId = !empty($id);
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                var conditionDropdown = $('#type');
+                var typeDropdown = $('#equipment_type');
+                typeDropdown.empty();
                 
-                conditionDropdown.empty();
-                
-                conditionDropdown.append('<option value="">Select Type</option>');
-                
-                $.each(data, function(index, typeTitle) {
-                    conditionDropdown.append('<option value="' + typeTitle + '">' + typeTitle + '</option>');
+                if (!id) {
+                    typeDropdown.append('<option value="">Select Type</option>');
+                } else {
+                    // Call session inventory status
+                    let equipment_type = sessionStorage.getItem('equipment_type');
+                    
+                    if (equipment_type) {
+                        typeDropdown.append('<option selected value="' + equipment_type + '">' + equipment_type + '</option>');
+                    }
+                }
+
+                $.each(data, function(index, equipment) {
+                    var equipmentType = equipment.type_title;
+                    if (!typeDropdown.find('option[value="' + equipmentType + '"]').length) {
+                        typeDropdown.append('<option value="' + equipmentType + '">' + equipmentType + '</option>');
+                    }
                 });
             },
             error: function(xhr, status, error) {
@@ -332,14 +355,25 @@ $hasId = !empty($id);
             method: 'GET',
             dataType: 'json',
             success: function(data) {
-                var conditionDropdown = $('#status');
+                var statusDropdown = $('#status');
+                statusDropdown.empty();
                 
-                conditionDropdown.empty();
-                
-                conditionDropdown.append('<option value="">Select Status</option>');
-                
-                $.each(data, function(index, statusTitle) {
-                    conditionDropdown.append('<option value="' + statusTitle + '">' + statusTitle + '</option>');
+                if (!id) {
+                    statusDropdown.append('<option value="">Select Status</option>');
+                } else {
+                    // Call session inventory status
+                    let equipment_status = sessionStorage.getItem('equipment_status');
+                    
+                    if (equipment_status) {
+                        statusDropdown.append('<option selected value="' + equipment_status + '">' + equipment_status + '</option>');
+                    }
+                }
+
+                $.each(data, function(index, equipment) {
+                    var equipmentStatus = equipment.status_title;
+                    if (!statusDropdown.find('option[value="' + equipmentStatus + '"]').length) {
+                        statusDropdown.append('<option value="' + equipmentStatus + '">' + equipmentStatus + '</option>');
+                    }
                 });
             },
             error: function(xhr, status, error) {
