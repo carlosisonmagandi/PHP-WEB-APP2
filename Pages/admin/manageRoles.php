@@ -81,7 +81,7 @@ if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
             background-color: rgba(255, 255, 255, 0.9); /* Adjust opacity here */
             z-index: -1; /* Ensure the pseudo-element is behind other content */
     }
-    .admin-role-btn, .staff-role-btn {
+    .admin-role-btn, .staff-role-btn, .fieldStaff-role-btn {
         background-color: #f8f9fa;
         color: #002f6c;
         border: 1px solid #002f6c;
@@ -90,7 +90,7 @@ if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
         border-radius: 1px;
     }
 
-    .admin-role-btn:hover, .staff-role-btn:hover {
+    .admin-role-btn:hover, .staff-role-btn:hover,.fieldStaff-role-btn:hover {
         background-color: #002f6c;
         color: #f8f9fa;
     }
@@ -105,13 +105,15 @@ if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
         });
 
         // Handle role change button click
-        $('#accountRole tbody').on('click', '.admin-role-btn, .staff-role-btn', function() {
+        // Handle role change button click
+        $('#accountRole tbody').on('click', '.admin-role-btn, .staff-role-btn, .fieldStaff-role-btn', function() {
             var data = table.row($(this).parents('tr')).data();
             var accountId = data[0];
-            var newRole = $(this).hasClass('admin-role-btn') ? 'Admin' : 'Staff';
+            var newRole = $(this).hasClass('admin-role-btn') ? 'Admin' :
+                        $(this).hasClass('staff-role-btn') ? 'Staff' :
+                        $(this).hasClass('fieldStaff-role-btn') ? 'Field_Staff' : ''; // Corrected here
 
-            
-            $.ajax({//Update Role
+            $.ajax({
                 url: 'manageRoleUpdate.php',
                 method: 'POST',
                 data: {
@@ -121,7 +123,7 @@ if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
                 dataType: 'json',
                 success: function(response) {
                     Swal.fire('Success', response.message, 'success');
-                    fetchDataFromDB();// refresh the view
+                    fetchDataFromDB(); // Refresh the table
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
@@ -129,6 +131,8 @@ if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
                 }
             });
         });
+
+
 
         function fetchDataFromDB() {//Get data 
             $.ajax({
@@ -140,10 +144,13 @@ if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
                     $.each(response, function(index, row) {
                         var roleButton;
                         if (row.role === 'Staff') {
-                            roleButton = '<button class="btn btn-sm admin-role-btn"><i class="fas fa-user-shield"></i> Admin</button>';
+                            roleButton = '<button class="btn btn-sm admin-role-btn"><i class="fas fa-user-shield"></i> Admin</button> &nbsp <button class="btn btn-sm fieldStaff-role-btn"><i class="fas fa-user-tie"></i> Field Staff</button>';
                         } else if (row.role === 'Admin') {
                             roleButton = '<button class="btn btn-sm staff-role-btn"><i class="fas fa-user-tie"></i> Staff</button>';
-                        } else {
+                        }else if (row.role === 'Field_Staff'){
+                            roleButton = '<button class="btn btn-sm staff-role-btn"><i class="fas fa-user-tie"></i> Staff</button> &nbsp&nbsp <button class="btn btn-sm admin-role-btn"><i class="fas fa-user-shield"></i> Admin</button> ';
+                        }
+                         else {
                             roleButton = ''; // Handle any other roles if necessary
                         }
 

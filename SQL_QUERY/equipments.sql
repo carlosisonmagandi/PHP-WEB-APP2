@@ -50,3 +50,7 @@ ALTER TABLE equipments
 ADD COLUMN created_by VARCHAR(255),
 ADD COLUMN updated_by VARCHAR(255);
 
+ALTER TABLE equipments
+ADD COLUMN category_type VARCHAR(255);
+
+UPDATE equipments SET category_type='equipment' where id IN(2,12);

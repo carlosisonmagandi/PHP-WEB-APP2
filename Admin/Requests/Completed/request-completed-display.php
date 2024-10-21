@@ -46,6 +46,7 @@
         <tr>
             <th>Id</th>
             <th>Request Number</th>
+            <th>Completed by</th>
             <th>Requestee</th>
             <th>Office</th>
             <th>Forest product's type</th>
@@ -61,6 +62,7 @@
         <tr>
             <th>Id</th>
             <th>Request Number</th>
+            <th>Completed by</th>
             <th>Requestee</th>
             <th>Office</th>
             <th>Forest product's type</th>
@@ -82,7 +84,7 @@
 $(document).ready(function() {
     // Initialize DataTable
     $('#completedTable').DataTable({
-        "order": [[ 8, "desc" ]],//order based on the latest created record
+        "order": [[ 9, "desc" ]],//order based on the latest created record
         "responsive": true,
         "pageLength": 10,
         "lengthMenu": [5, 10, 25, 50]
@@ -105,6 +107,7 @@ $(document).ready(function() {
                     rows.push([
                         clickableId,
                         row.request_number,
+                        row.complete_by,
                         row.requestor_name,
                         row.organization_name,
                         row.type_of_requested_item,
@@ -141,14 +144,8 @@ $(document).ready(function() {
         var requestNumber = $(this).closest('tr').find('td:eq(1)').text(); 
         var requestee = $(this).closest('tr').find('td:eq(2)').text(); 
         
-        Swal.fire({
-            title: "Are you sure you want to complete this request?",
-            html:
-            'Request #: <input disabled id="inputRequestNumber" class="swal2-input" placeholder="Request Number" value="'+ (requestNumber ? requestNumber : '') + '">' +
-            'Requestee: <input disabled id="inputRequestee" class="swal2-input" placeholder="Requestee" value="' + (requestee ? requestee : '') + '">',
-            icon: "warning",
-            showCancelButton: false
-        });
+        window.open(`/Admin/Requests/Completed/print-view.php?${id}`, "_blank");
+      
     });
 
 

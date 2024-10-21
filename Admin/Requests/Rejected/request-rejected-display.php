@@ -40,6 +40,7 @@
         <tr>
             <th>Id</th>
             <th>Request Number</th>
+            <th>Rejected By</th>
             <th>Requestee</th>
             <th>Office</th>
             <th>Forest product's type</th>
@@ -55,6 +56,7 @@
         <tr>
             <th>Id</th>
             <th>Request Number</th>
+            <th>Rejected By</th>
             <th>Requestee</th>
             <th>Office</th>
             <th>Forest product's type</th>
@@ -76,7 +78,7 @@
 $(document).ready(function() {
     // Initialize DataTable
     $('#rejectedTable').DataTable({
-        "order": [[ 8, "desc" ]],//order based on the latest created record
+        "order": [[ 9, "desc" ]],//order based on the latest created record
         "responsive": true,
         "pageLength": 10,
         "lengthMenu": [5, 10, 25, 50]
@@ -99,6 +101,7 @@ $(document).ready(function() {
                     rows.push([
                         clickableId,
                         row.request_number,
+                        row.reject_by,
                         row.requestor_name,
                         row.organization_name,
                         row.type_of_requested_item,

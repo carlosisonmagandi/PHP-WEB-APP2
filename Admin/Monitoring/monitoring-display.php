@@ -40,7 +40,7 @@ if (isset($_POST['Logout'])) {
         }
         .pencil-box {
             width: 200px;
-            background-color: lightblue; /* Background color for the pencil */
+            background-color: #002f6c; /* Background color for the pencil */
             clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
             border: none;
             margin: 5px; /* Optional: spacing between the pencil shapes */
@@ -48,7 +48,7 @@ if (isset($_POST['Logout'])) {
             display: flex;
             align-items: center;
             justify-content: center;
-            color: 333;
+            color: #f1f1f1;
             /* font-weight: bold; */
             text-align: center;
             margin-left:25px;
@@ -60,6 +60,7 @@ if (isset($_POST['Logout'])) {
         .row-box{
             border: 1px solid #ccc;
             border-bottom:none;
+            font-family:'Poppins',sans-serif;
         }
         .trigger {
             cursor: pointer; 
@@ -103,17 +104,19 @@ if (isset($_POST['Logout'])) {
     <script>
         $(document).ready(function() {
             $(".trigger").click(function() {
-                // If content is hidden
-                if ($(".content").is(":hidden")) {
-                    $(".content").css("display", "flex").hide().slideToggle(100); 
-                    
+                // Toggle the content only for the clicked trigger
+                var content = $(this).closest('.row-box').next(".content");
+                
+                if (content.is(":hidden")) {
+                    content.css("display", "flex").hide().slideToggle(100);
                 } else {
-                    $(".content").slideToggle(300, function() {
+                    content.slideToggle(300, function() {
                         $(this).css("display", "none");
                     });
                 }
             });
         });
+
     </script>
 </head>
 <body>
@@ -144,51 +147,46 @@ include("../../templates/nav-bar.php");
     </div>
 
     <div class="flex-container">
-        <div class="flex-item-left">
-            <!-- bar chart -->
-            <div class="col-xl-12">
-                <div class="card mb-4">
-                    <div class="card-body chart-container">
-                        <div style="display:flex">
-                            <label for="year" style="margin-right:10px">Select Year:</label>
-                            <select id="year"></select>
-                        </div>
-                        <canvas id="barChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <!-- line chart -->
-            <div class="col-xl-12">
-                <div class="card mb-4">
-                    <div class="card-body chart-container">
-                        <div style="display:flex">
-                            <label for="yearForLineChart" style="margin-right:10px">Select Year:</label>
-                            <select id="yearForLineChart"></select>
-                        </div>
-                        <canvas id="lineChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <!-- Division of flex Left and Right -->
 
         <div class="flex-item-right">
             <div class="row-box">
                 <span class="trigger">▼</span> <!-- Arrow down icon -->
-                Click to toggle content
+                <b>RE000000123</b>
             </div>
             <div class="content">
                 <div class="pencil-box">
                     <div style="display:flex;padding:6px">
-                        This is a sample text from process. And no other text from another message
+                        Request logged
                     </div>
                 </div> 
+                <div class="pencil-box">
+                    <div style="display:flex;padding:6px">
+                        Approved by Admin John Doe
+                    </div>
+                </div>
+                <div class="pencil-box">
+                    <div style="display:flex;padding:6px">
+                        Admin requested for additional certification from requestee
+                    </div>
+                </div>
+                <div class="pencil-box">
+                    <div style="display:flex;padding:6px">
+                        Staff attached the additional requirement
+                    </div>
+                </div>
+                <div class="pencil-box">
+                    <div style="display:flex;padding:6px">
+                        Request was set to complete status by Admin John Doe
+                    </div>
+                </div>
             </div>
 
             <div class="row-box">
                 <span class="trigger">▼</span> <!-- Arrow down icon -->
-                Click to toggle content
+                <b>RE000000124</b>
             </div>
             <div class="content">
                 <div class="pencil-box">
@@ -200,129 +198,6 @@ include("../../templates/nav-bar.php");
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        getDate();
-    });
-    function getDate(){
-        var today = new Date();
-
-        var day = today.getDate();  // Get the day of the month (1-31)
-        var month = today.getMonth() + 1;  // Get the month (0-11, so we add 1)
-        var year = today.getFullYear();  // Get the full year (e.g., 2024)
-
-        // Format the date as Month/Day/Year
-        var formattedDate = month + '/' + day + '/' + year;
-
-        console.log(formattedDate);  // Output: "9/16/2024" (example for September 16, 2024)
-
-    }
-    // Get the current year
-    const currentYear = new Date().getFullYear();
-
-    // Get the year select elements for both charts
-    const yearSelectForBarChart = document.getElementById('year');
-    const yearSelectForLineChart = document.getElementById('yearForLineChart');
-
-    // Function to populate the year options
-    function populateYearSelect(selectElement) {
-        for (let year = currentYear; year >= 2024; year--) {
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            selectElement.appendChild(option);
-        }
-    }
-
-    // Populate both select elements
-    populateYearSelect(yearSelectForBarChart);
-    populateYearSelect(yearSelectForLineChart);
-
-    // Optional: Handle year selection for the line chart
-    yearSelectForLineChart.addEventListener('change', (event) => {
-        console.log(`Selected year for Line Chart: ${event.target.value}`);
-    });
-
-    // Optional: Handle year selection for the bar chart
-    yearSelectForBarChart.addEventListener('change', (event) => {
-        console.log(`Selected year for Bar Chart: ${event.target.value}`);
-    });
-
-
-    var ctxBar = document.getElementById('barChart').getContext('2d');
-    var barChart = new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [{
-                label: 'Monthly Donations',
-                data: [65, 59, 80, 81, 56, 55, 40],
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    // line chart 
-    var ctxLine = document.getElementById('lineChart').getContext('2d');
-    var lineChart = new Chart(ctxLine, {
-        type: 'line',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','Aug','Sep','Oct','Nov','Dec'],
-            datasets: [
-                {
-                    label: 'Pending',
-                    data: [65, 59, 80, 81, 56, 55, 40,35,73,23,46,83],
-                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Cancelled',
-                    data: [28, 48, 40, 19, 86, 27, 90,41,27,83,35,57],
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Completed',
-                    data: [18, 48, 77, 9, 100, 27, 40,62,46,18,94,34],
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Cases Over Time',
-                    font: {
-                        size: 14,
-                        weight: 'bold'
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-</script>
 
 <?php 
 include("../../templates/nav-bar2.php");

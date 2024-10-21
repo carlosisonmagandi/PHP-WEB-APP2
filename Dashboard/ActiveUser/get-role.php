@@ -3,7 +3,8 @@ require_once("../../includes/db_connection.php");
     
 $sql = "SELECT 
     (SELECT COUNT(*) FROM account WHERE role = 'Admin' and status='active') AS role_admin,
-    (SELECT COUNT(*) FROM account WHERE role = 'Staff' and status='active') AS role_staff
+    (SELECT COUNT(*) FROM account WHERE role = 'Staff' and status='active') AS role_staff,
+    (SELECT COUNT(*) FROM account WHERE role = 'Field_Staff' and status='active') AS role_field_staff
 ";
 $result = $connection->query($sql);
 

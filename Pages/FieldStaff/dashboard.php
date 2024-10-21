@@ -33,7 +33,7 @@ if(isset($_POST['Logout'])){
     </style>
 </head>
 <body>
-<?php include ("../../templates/nav-bar.php");?>
+<?php include("../../Pages/FieldStaff/nav-bar.php");?>
 
 <div class="container-fluid mt-5">
     <div class="row ">
@@ -104,7 +104,7 @@ if(isset($_POST['Logout'])){
     </div>    
 </div>
 <?php 
-include  "../../templates/nav-bar2.php"; 
+include("../../Pages/FieldStaff/nav-bar2.php");
 ?>
 <script>
     $(document).ready(function() {
@@ -347,20 +347,7 @@ include  "../../templates/nav-bar2.php";
                         padding-top: 6px;
                         padding-bottom:6px;
                     }
-
-                    .div3 {
-                        grid-column-start: 2;
-                        grid-row-start: 1;
-                        border-bottom:1px solid gray;   
-                        padding-top: 6px;
-                        padding-bottom:6px;
-                    }       
-                    .div4{
-                        border-bottom:1px solid gray;   
-                        padding-top: 6px;
-                        padding-bottom:6px;
-                    }
-                        .div5{
+                    .div5{
                         grid-column-start: 1;
                         grid-row-start: 3;
                         border-bottom:1px solid gray;   
@@ -374,6 +361,19 @@ include  "../../templates/nav-bar2.php";
                         padding-top: 6px;
                         padding-bottom:6px;
                     }    
+
+                    .div3 {
+                        grid-column-start: 2;
+                        grid-row-start: 1;
+                        border-bottom:1px solid gray;   
+                        padding-top: 6px;
+                        padding-bottom:6px;
+                    }       
+                    .div4{
+                        border-bottom:1px solid gray;   
+                        padding-top: 6px;
+                        padding-bottom:6px;
+                    }
                 </style>
                     <br>                  
                     <div class="parent">

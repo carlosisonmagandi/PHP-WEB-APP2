@@ -149,7 +149,7 @@
             <div class="pagination" id="pagination"></div>
         </div>
         <div class="div3">
-            <button class="print-button" onclick="window.print()">
+            <button class="print-button" onclick="window.print()"> 
                 <i class="fas fa-print"></i>
                 Print
             </button>

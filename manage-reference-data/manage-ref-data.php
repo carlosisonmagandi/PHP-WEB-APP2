@@ -91,7 +91,7 @@ include("../templates/nav-bar.php");
         <label for="tab1">Species</label>
         <!-- Tab 2 -->
         <input type="radio" name="tabset" id="tab2" aria-controls="Condition" <?php echo ($activeTab == 'tab2') ? 'checked' : ''; ?> onclick="setActiveTab('tab2', 'Condition Status')">
-        <label for="tab2">Condition Status</label>
+        <label for="tab2">Status</label>
         <!-- Tab 3 -->
         <input type="radio" name="tabset" id="tab3" aria-controls="Type" <?php echo ($activeTab == 'tab3') ? 'checked' : ''; ?> onclick="setActiveTab('tab3', 'Type')">
         <label for="tab3">Types</label>

@@ -302,93 +302,38 @@ if(isset($_POST['Logout'])){
                                 </div>
                             <!--  -->
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseInventory" aria-expanded="false" aria-controls="collapsePages">
-                                <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
-                                Inventory 
+                                <div class="sb-nav-link-icon"><i class="fas fa-ticket-alt"></i></div>
+                                My Tickets 
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseInventory" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseTrees" aria-expanded="false" aria-controls="pagesCollapseTrees">
-                                        Forest Products
+                                        Reported Incidents
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseTrees" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="../../inventory.php">Table View</a>
-                                            <a class="nav-link" href="../../inventory-card-view.php">Card View</a>
+                                            <a class="nav-link" href="#">View All</a>
+                                            <a class="nav-link" href="#">Assigned to me</a>
                                         </nav>
                                     </div>
                                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">
-                                        Conveyance
+                                        Donations 
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseVehicle" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="/vehicles/vehicle-table-view.php">Table View</a>
-                                            <a class="nav-link" href="/vehicles/vehicle-card-view.php">Card View</a>
+                                            <a class="nav-link" href="/vehicles/vehicle-table-view.php">View All</a>
+                                            <a class="nav-link" href="/vehicles/vehicle-card-view.php">Assigend to me</a>
                                         </nav>
                                     </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseEquipment" aria-expanded="false" aria-controls="pagesCollapseVehicle">
-                                        Machineries
-                                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                    </a>
-                                    <div class="collapse" id="pagesCollapseEquipment" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                        <nav class="sb-sidenav-menu-nested nav">
-                                        <a class="nav-link" href="/equipments/equipment-table-view.php">Table View</a>
-                                        <a class="nav-link" href="/equipments/equipment-card-view.php">Card View</a>
-                                        </nav>
-                                    </div>
+                                    
                                    
                                 </nav>
                             </div>
-                            <?php if ($_SESSION['session_role']=="Admin"){
-                            echo '
-                            <a class="nav-link" href="/Admin/monitor-item-trees.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Requests
-                            </a>
-                            ';}
-                            else{
-                                echo '
-                                <a class="nav-link" href="/Request/my-request.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Wood Donations
-                                </a>
-                                ';
-                            }
+                           
                             
-                            ?>
-                            
-                            <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="/qr-list.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
-                                Reports
-                            </a>
-
-                            <?php if ($_SESSION['session_role']=="Admin"){
-                            echo '
-                                <!-- Reported Incidents -->
-                                <a class="nav-link" href="/ReportedIncidents/Admin/display.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-flag"></i></div>
-                                    Reported Incidents
-                                </a>
-                            ';}
-                            else{
-                            echo'
-                                <a class="nav-link" href="/ReportedIncidents/Staff/display.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-flag"></i></div>
-                                    Reported Incidents
-                                </a>
-                            ';
-                            }
-
-                            ?>
-
-                            <!-- reference data -->
-                            <a id="manage-ref-data-link" class="nav-link" href="/manage-reference-data/manage-ref-data-home.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-folder"></i></div>
-                                Manage Reference data
-                            </a>
 
                         </div>
                     </div>

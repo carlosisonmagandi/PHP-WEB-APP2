@@ -667,7 +667,12 @@ $hasId = !empty($id);
                 //     console.log(pair[0] + ': ' + pair[1]);
                 // } 
             }else{
-                console.log('Need admin approval');
+               
+                Swal.fire({
+                    title: `Status: ${status}`,
+                    text: "Sorry, this record cannot be updated as it has already been approved.",
+                    icon: "warning"
+                });
             }
                 
         }); 

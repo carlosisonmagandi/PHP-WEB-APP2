@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $budget_officer_certification = $_POST['budget_officer_certification'] ?? '';
 
     $createdBy = $_SESSION['session_username'];
-    $approvalStatus = 'Pending';
+    $approvalStatus = 'Pending for Approval';
 
     $lastInsertId = $connection->query("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name='request_form' AND table_schema = DATABASE();");
     $row = $lastInsertId->fetch_assoc();

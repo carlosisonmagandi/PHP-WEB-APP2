@@ -24,6 +24,10 @@ CREATE TABLE request_form (
 );
 
 SELECT * FROM request_form;
+SELECT  quantity FROM request_form;
+desc request_form;
+
+
 UPDATE  request_form SET request_number='RE000000123' where id=1;
 
 INSERT INTO request_form (
@@ -190,9 +194,34 @@ DELETE FROM request_form where id in (47,48);
 SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name='request_form' AND table_schema = DATABASE();
 DESC request_form;
 
-
-UPDATE request_form SET approval_status='Pending for Approval' WHERE id in(1,2,3);
+select * from admin_donation_rejected_req;
+DELETE FROM admin_donation_rejected_req WHERE id in (19,20,22,23);
+UPDATE request_form SET approval_status='Pending for Approval' WHERE id in(59);
 
 UPDATE request_form SET type_of_requested_item='T' WHERE id in(1);
 UPDATE request_form SET name_of_requested_item='Bolo Knife' WHERE id in(2);
-UPDATE request_form SET created_by='kian' WHERE id in(1,2,3);
+UPDATE request_form SET created_by='kian' WHERE id in(1,2,3
+
+ALTER TABLE request_form
+ADD COLUMN complete_by VARCHAR(255),
+ADD COLUMN date_of_completion VARCHAR(255),
+ADD COLUMN reject_by VARCHAR(255),
+ADD COLUMN date_of_rejection VARCHAR(255);
+
+SELECT * FROM request_form;
+SELECT * FROM request_form WHERE approval_status='Completed' AND id = 3 ORDER BY created_on DESC;
+DESC request_form;
+UPDATE request_form SET date_of_completion='2024-09-12 19:27:15' where id=1;
+SELECT  
+    YEAR(date_of_completion) AS completion_year,
+     MONTH(date_of_completion) AS completion_month,
+    COUNT(*) AS donation_count
+FROM request_form
+WHERE approval_status='Completed' AND YEAR(date_of_completion) = YEAR(CURDATE())
+GROUP BY completion_year,completion_month;
+
+SELECT 
+    COUNT(*) AS total_donation_count
+FROM request_form
+WHERE approval_status='Completed' AND YEAR(date_of_completion) = YEAR(CURDATE());
+

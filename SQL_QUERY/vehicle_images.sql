@@ -10,3 +10,4 @@ CREATE TABLE vehicle_images (
 );
 
 Select * from vehicle_images;
+DELETE from vehicle_images where id=1;

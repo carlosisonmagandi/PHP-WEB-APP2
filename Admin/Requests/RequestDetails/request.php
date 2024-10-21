@@ -208,13 +208,13 @@ if (isset($_POST['Logout'])) {
                 <!-- Requestor Information -->
                 <div class="form-column">
                     <fieldset>
-                        <legend>Requestor Information</legend>
+                        <legend>Requstee Information</legend>
                         <div class="form-group">
-                            <label for="requestor_name"> Requestor Name</label>
+                            <label for="requestor_name">Requestee</label>
                             <input type="text" id="requestor_name" name="requestor_name" disabled >
                         </div>
                         <div class="form-group">
-                            <label for="organization">Organization </label>
+                            <label for="organization">Organization/Office </label>
                             <input type="text" id="organization" name="organization" disabled>
                         </div>
                         <div class="form-group">
@@ -236,15 +236,15 @@ if (isset($_POST['Logout'])) {
                             <tr>
                                 <td>
                                     <div class="form-group">
-                                        <label for="item_type">Type of Item Requested </label>
+                                        <label for="item_type">Type of Species</label>
                                         <input type="text" id="item_type" name="item_type" disabled >
                                     </div>
                                 </td>
 
                                 <td>
-                                    <div class="form-group" id="itemNameDiv" style="display:none">
-                                        <label for="item_name">Name of requested item</label>
-                                        <input type="text" id="item_name" name="item_name" disabled >
+                                    <div class="form-group" id="itemNameDiv" style="display:block">
+                                        <label style="margin-left:50px;" for="item_name">Species</label>
+                                        <input type="text" style="margin-left:50px;" id="item_name" name="item_name" disabled >
                                     </div>
                                 </td>
                             </tr>

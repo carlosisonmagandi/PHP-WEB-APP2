@@ -55,10 +55,15 @@ if(isset($_POST['submit'])){
                 header("Location: Pages/admin/dashboard.php");
                 exit;
             } else {
-                if ($row["status"] == 'active') {
+                if ($row['role'] == 'Staff' && $row["status"] == 'active') {
                     header("Location: Pages/admin/dashboard.php"); 
                     exit;
-                } else {
+                } 
+                else if($row['role'] == 'Field_Staff' && $row["status"] == 'active'){
+                    header("Location: Pages/FieldStaff/dashboard.php"); 
+                    exit;
+                }
+                else {
                     header("Location: templates/status.php");
                     exit;
                 }

@@ -55,3 +55,16 @@ SELECT * FROM vehicles;
 ALTER TABLE vehicles
 ADD COLUMN confiscated_by VARCHAR(255);
 
+DESC vehicles;
+select * FROM vehicles_images;
+
+UPDATE vehicles set date_of_compiscation='2024-09-24' where id=1;
+
+select * FROM vehicle_type_ref_data;
+
+ALTER TABLE vehicles
+ADD COLUMN category_type VARCHAR(255);
+
+UPDATE vehicles SET category_type='vehicle' where id IN(1,2);
+
+
