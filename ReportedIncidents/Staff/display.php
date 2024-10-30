@@ -10,10 +10,8 @@ if (isset($_POST['Logout'])) {
     exit;
 }
 
-// Get the active tab from session
 $activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
 
-// Correct the session tab logic to match HTML element IDs
 if ($activeTab === 'tab2') {
     $activeTab = 'addRecordView'; // Adjust for actual ID
 }
@@ -29,11 +27,24 @@ if ($activeTab === 'tab3') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/Styles/reported-incidents-staff-tab.css">
+    
     <!-- custom style -->
     <style>
         .tableDiv{
             font-family: 'Poppins', sans-serif;        
             font-size:10px;
+        }
+        .actionButton{
+            background-color: #FFF;
+            border:none;
+            width: 100%;
+            text-align:left;
+            color:#002f6c;
+            font-size:12px;
+        }
+        .actionButton:hover{
+            background-color:#002f6c;
+            color:#FFF;
         }
     </style>
     
@@ -58,7 +69,7 @@ if ($activeTab === 'tab3') {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet"> -->
     <div class="container">
         <div class="tabset">
             <!-- Table view tab -->
@@ -85,28 +96,29 @@ if ($activeTab === 'tab3') {
                 <section id="tableView" class="tab-panel">
                     <!-- Display of table view -->
                     <button  id="createNewButton">Create New</button>
-                    <button id ="updateRecordButton" >Update record</button>
+                    <!-- <button id ="updateRecordButton" >Update record</button> -->
 
                     <div class="tableDiv">
                         <table id="incidentReportDataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
                             <thead style="text-align:center; " >
                             <tr>
-                                <th style="width:10%;">ID</th>
+                            <th style="width:10%;">ID</th>
                                 <th>REPORT NUMBER</th>
                                 <th>STATE</th>
-                                <th>ASSIGNED BY</th>
+                                <!-- <th>ASSIGNED BY</th> -->
                                 <th>ASSIGNED TO</th>
                                 <th>IS ACCEPTED?</th>
-                                <th>DATE ASSIGNED</th>
-                                <th>DATE REPORTED</th>
+                                <!-- <th>DATE ASSIGNED</th> -->
+                                <!-- <th>DATE REPORTED</th> -->
                                 <th>REPORTED BY</th>
-                                <th>CREATED BY</th>
+                                <!-- <th>CREATED BY</th>
                                 <th>UPDATED BY</th>
                                 <th>ACTIVITY DATE</th>
                                 <th>DATE CREATED</th>
                                 <th>LOCATION</th>
                                 <th>LATITUDE</th>
-                                <th>LONGITUDE</th>
+                                <th>LONGITUDE</th> -->
+                                <th>DETAILS</th>
                                 <th>ACTIONS</th>
                             </tr>
                             </thead>
@@ -118,19 +130,20 @@ if ($activeTab === 'tab3') {
                                 <th style="width:10%;">ID</th>
                                 <th>REPORT NUMBER</th>
                                 <th>STATE</th>
-                                <th>ASSIGNED BY</th>
+                                <!-- <th>ASSIGNED BY</th> -->
                                 <th>ASSIGNED TO</th>
                                 <th>IS ACCEPTED?</th>
-                                <th>DATE ASSIGNED</th>
-                                <th>DATE REPORTED</th>
+                                <!-- <th>DATE ASSIGNED</th> -->
+                                <!-- <th>DATE REPORTED</th> -->
                                 <th>REPORTED BY</th>
-                                <th>CREATED BY</th>
+                                <!-- <th>CREATED BY</th>
                                 <th>UPDATED BY</th>
                                 <th>ACTIVITY DATE</th>
                                 <th>DATE CREATED</th>
                                 <th>LOCATION</th>
                                 <th>LATITUDE</th>
-                                <th>LONGITUDE</th>
+                                <th>LONGITUDE</th> -->
+                                <th>DETAILS</th>
                                 <th>ACTIONS</th>
                                 </tr>
                             </tfoot>
@@ -146,7 +159,97 @@ if ($activeTab === 'tab3') {
 
                 <section id="updateRecordView" class="tab-panel">
                     <!-- Manage Update record -->
-                    <button id="saveUpdateButton" >Save</button>
+                    <!-- <form> -->
+                        <div class="form-group">
+                            <h2>Edit Details</h2>
+                            <table style="width:100%">
+                                <tr>
+                                    <td>
+                                        <label for="reportedId">ID:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="reportedId" name="reportedId" disabled >
+                                    </td>
+                                </tr>
+                                <!-- Report Number -->
+                                <tr>
+                                    <td>
+                                        <label for="reportedNumber">Report Number:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="reportedNumber" name="reportedNumber" disabled >
+                                    </td>
+                                </tr>
+                                <!-- State -->
+                                <tr>
+                                    <td>
+                                        <label for="state">State:</label>
+                                    </td>
+                                    <td>
+                                        <!-- <input type="text" class="form-control" id="state" name="state" > -->
+                                        <select class="form-control" id="state" name="state">
+                                            <option value="Open">Open</option>
+                                            <option value="Assigned">Assigned</option>   
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- Assigned to -->
+                                <tr>
+                                    <td>
+                                        <label for="assignedTo">Assign to:</label>
+                                    </td>
+                                    <td>
+                                        <!-- <input type="text" class="form-control" id="assignedTo" name="assignedTo" > -->
+                                        <select class="form-control" id="assignedTo" name="assignedTo">
+                                            <!-- Options will be populated by JavaScript -->
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- is accepted -->
+                                <tr>
+                                    <td>
+                                        <label for="isAccepted">Is Accepted?</label>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" id="isAccepted" name="isAccepted">
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </td>
+                                </tr>
+
+                                <!-- Reported by -->
+                                <tr>
+                                    <td>
+                                        <label for="reportedBy">Reported By</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="reportedBy" name="reportedBy" >
+                                    </td>
+                                </tr>
+                                <!-- Location -->
+                                <tr>
+                                    <td>
+                                        <label for="location">Location</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="location" name="location" >
+                                    </td>
+                                </tr>
+                                <!-- Details -->
+                                <tr>
+                                    <td>
+                                        <label for="details">Details</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="details" name="details" >
+                                    </td>
+                                </tr>
+                            </table>                              
+                        </div>
+
+                        <button id="saveUpdateButton" >Save</button>
+                    <!-- </form> -->
                 </section>
 
                 <section id="mapView" class="tab-panel">
@@ -156,13 +259,148 @@ if ($activeTab === 'tab3') {
 
                 <section id="fullDetailsView" class="tab-panel">
                     <!-- Manage Full Details view  -->
-                     <h2>Fulldetails of Incident Rerorts</h2>
+                     <div >
+                        <table class="table table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <td><strong>ID</strong></td>
+                                    <td id="id"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Report Number</strong></td>
+                                    <td id="report_number"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Illegal Activity Detail</strong></td>
+                                    <td id="illegal_activity_detail"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>State</strong></td>
+                                    <td id="data_state"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Reported By</strong></td>
+                                    <td id="reported_by"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date Reported</strong></td>
+                                    <td id="date_reported"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Assigned By</strong></td>
+                                    <td id="assigned_by"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Assigned To</strong></td>
+                                    <td id="assigned_to"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Is Accepted?</strong></td>
+                                    <td id="data_isAccepted"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date Assigned</strong></td>
+                                    <td id="date_assigned"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Location</strong></td>
+                                    <td id="data_location"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Coordinate Lat</strong></td>
+                                    <td id="coordinate_lat"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Coordinate Lng</strong></td>
+                                    <td id="coordinate_lng"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Activity Date</strong></td>
+                                    <td id="activity_date"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Created By</strong></td>
+                                    <td id="created_by"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Created On</strong></td>
+                                    <td id="created_on"></td>
+                                </tr>  
+                            </tbody>
+                        </table>
+                    </div>
+
                     <button id="fullDetailsBackButton" >Back</button>
                 </section>
             </div>
         </div>
     </div>
         <script>
+            //DISPLAY OF DATA TABLE
+            
+            $('#incidentReportDataTable').DataTable({
+                "order": [[ 12, "desc" ]],//order based on the latest created record
+                "responsive": true,
+                "pageLength": 10,
+                "lengthMenu": [5, 10, 25, 50]
+            });
+            
+            function fetchDataFromDB() {
+                $.ajax({
+                    url: '/ReportedIncidents/Staff/GET/get-record.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        var table = $('#incidentReportDataTable').DataTable();
+                        table.clear();
+                        
+                        var rows = [];
+                        $.each(response, function(index, row) {
+                            var actionButtons = `
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li>
+                                            <button class="actionButton" id="updateButton" onclick="switchToThirdTab(${row.id})">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button class="actionButton" id="deleteButton">
+                                                <i class="fas fa-trash-alt"></i> Delete
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            `;
+                            var clickableId = '<a class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
+
+                            rows.push([
+                                clickableId,
+                                row.report_number,
+                                row.state,
+                                row.assigned_to,
+                                row.isAccepted,
+                                row.reported_by,
+                                row.illegal_activity_detail,
+                                actionButtons
+                            ]);
+                        });
+
+                        table.rows.add(rows).draw();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        alert("Error fetching data. See console for details.");
+                    }
+                });
+            }
+            // Call fetchDataFromDB()
+            fetchDataFromDB();
+
             // Set the active tab via AJAX
             function setActiveTab(tabId) {
                 $.ajax({
@@ -190,10 +428,128 @@ if ($activeTab === 'tab3') {
                 setActiveTab('mapView'); 
             }
             
-            function switchToThirdTab() {
-                setActiveTab('updateRecordView'); 
+            function switchToThirdTab(id) {
+                setActiveTab('updateRecordView');
+
+                //set value for action button
+                sessionStorage.setItem('actionButton', 'updateDetails');
+                const actionButton = sessionStorage.getItem('actionButton');
+                console.log("action is:",actionButton);
+                
+                if (id) {
+                    
+                    $.ajax({
+                        url: '/ReportedIncidents/Staff/GET/get-record-by-id.php',
+                        type: 'GET',
+                        data: { reported_id: id },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.status === 'success') {
+                                getAccountByFieldStaff();//call function to display the fullname based on session value
+
+                                let record = data.data;
+                                $('#reportedId').val(record.id);
+                                $('#reportedNumber').val(record.report_number);
+                                $('#state').val(record.state);
+                                $('#assignedTo').val(record.assigned_to);
+                                //  $('#isAccepted').val(record.isAccepted);
+                                $('#reportedBy').val(record.reported_by);
+                                $('#location').val(record.location);
+                                $('#details').val(record.illegal_activity_detail);
+
+                                // console.log("dito",record.isAccepted);
+                                if (record.isAccepted === 'Yes') {
+                                    $('#isAccepted').val('Yes'); 
+                                } else if (record.isAccepted === 'No') {
+                                    $('#isAccepted').val('No'); 
+                                }
+
+                                // Store the value in sessionStorage
+                                sessionStorage.setItem('reportedId', record.id);
+                                sessionStorage.setItem('reportedNumber', record.report_number);
+                                sessionStorage.setItem('state', record.state);
+                                sessionStorage.setItem('assignedTo', record.assigned_to);
+                                sessionStorage.setItem('isAccepted', record.isAccepted);
+                                sessionStorage.setItem('reportedBy', record.reported_by);
+                                sessionStorage.setItem('location', record.location);
+                                sessionStorage.setItem('details', record.illegal_activity_detail);
+                            } else {
+                                Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire('Error!', 'An error occurred while fetching the record.', 'error');
+                        }
+                    });
+                }
             }
-            
+
+            // Retrieve the value from sessionStorage on page load
+            $(document).ready(function() {
+                const actionButton=sessionStorage.getItem('actionButton');
+                if(actionButton==='updateDetails'){
+                    getAccountByFieldStaff();
+                    const savedId = sessionStorage.getItem('reportedId');
+                    const savedNumber = sessionStorage.getItem('reportedNumber');
+                    const state = sessionStorage.getItem('state');
+                    const assignedTo = sessionStorage.getItem('assignedTo');
+                    const isAccepted = sessionStorage.getItem('isAccepted');
+                    const reportedBy = sessionStorage.getItem('reportedBy');
+                    const location = sessionStorage.getItem('location');
+                    const details = sessionStorage.getItem('details');
+
+                    if (savedId && savedNumber && state && assignedTo && isAccepted && reportedBy && location && details) {
+                        $('#reportedId').val(savedId);
+                        $('#reportedNumber').val(savedNumber);
+                        $('#state').val(state);
+                        $('#assignedTo').val(assignedTo);
+                        $('#isAccepted').val(isAccepted);
+                        $('#reportedBy').val(reportedBy);
+                        $('#location').val(location);
+                        $('#details').val(details);
+                    }
+                }else if(actionButton==='fulldetails'){
+                    console.log('call session function for full details view');
+                    getSessionFullDetails();
+                }
+                
+            });
+
+            //Display fullname on dropwdown menu (UPDATE view)
+            function getAccountByFieldStaff(){
+                $.ajax({
+                    url: '/ReportedIncidents/Staff/GET/get-account.php',
+                    type: 'POST',
+                    success: function(response) {
+
+                        var assignedToDropdown = $('#assignedTo');
+                        assignedToDropdown.empty();
+
+                        if (!id) {
+                            assignedToDropdown.append('<option value="">Select Field Staff</option>');
+                        } else {
+                            // Retrieve from session storage if available
+                            let field_staff_session = sessionStorage.getItem('assignedTo');
+                            if (field_staff_session) {
+                                assignedToDropdown.append('<option selected value="' + field_staff_session + '">' + field_staff_session + '</option>');
+                            }
+                        }
+
+                        // Iterate through the response data (array of accounts)
+                        $.each(response, function(index, fieldStaff) {
+                            var fullName = fieldStaff.full_name;
+                            if (!assignedToDropdown.find('option[value="' + fullName + '"]').length) {
+                                assignedToDropdown.append('<option value="' + fullName + '">' + fullName + '</option>');
+                            }
+                        });
+                    },
+                    error: function() {
+                        console.error("An error occurred ");
+                    }
+                });
+
+            }
+
             function switchToSecondTab(tabId) {
                 setActiveTab('addRecordView'); 
             }
@@ -211,9 +567,9 @@ if ($activeTab === 'tab3') {
                 switchToSecondTab();
             });
 
-            $('#updateRecordButton').on('click', function() {
-                switchToThirdTab();
-            });
+            // $('#updateRecordButton').on('click', function() {
+            //     switchToThirdTab();
+            // });
 
             $('#submitButton').on('click', function() {
                 console.log("run the Ajax logic for submiting the record");
@@ -225,8 +581,53 @@ if ($activeTab === 'tab3') {
             });
 
             $('#saveUpdateButton').on('click', function() {
+                clearSessionData();
                 // Run AJAX logic for update
                 console.log("Run AJAX logic for update");
+
+                // const formData = new FormData();
+                // formData.append('action', 'update_record');
+                // formData.append('id', id); // Function to get 'id' from the URL
+                // formData.append('plate_no', $('#plate_no').val());
+                
+                // //  console.log('Sending request with ID:', id);
+                // //  console.log('Form data:', formData.serialNo);
+
+                // $.ajax({
+                //     url: '/vehicles/update-record.php',
+                //     type: 'POST',
+                //     data: formData,
+                //     processData: false,
+                //     contentType: false,
+                //     dataType: 'json',
+                //     success: function(response) {
+                //         //console.log('Response received:', response);
+                        
+                //         if (response.status === 'success') {
+                //             // console.log('Success:', response);
+
+                //             Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
+                //             let queryString = id;
+                //             let viewType = sessionStorage.getItem('viewType');//get session value
+                            
+                //                 if(viewType=='card'){
+                //                     window.location.href = '/vehicles/vehicle-card-view.php?' + queryString;//redirect to card view
+                //                     sessionStorage.removeItem('viewType');
+                //                 }else{
+                //                     window.location.href = '/vehicles/vehicle-table-view.php?' + queryString;//redirect to table view 
+                //                     sessionStorage.removeItem('viewType');  
+                //                 }
+                //             });
+                //         } else {
+                //             Swal.fire('Error!', response.message || 'An error occurred while updating the record.', 'error');
+                //         }
+                //     },
+                //     error: function(xhr, status, error) {
+                //         // console.log('AJAX Error:', status, error);
+                //         // console.log('Response text:', xhr.responseText);
+                //         Swal.fire('Error!', 'An error occurred while updating the record.', 'error');
+                //     }
+                // });
                 //refresh the table 
                 switchToFirstTab();
             });
@@ -239,19 +640,144 @@ if ($activeTab === 'tab3') {
             });
 
             $('#fullDetailsBackButton').on('click', function() {
-                console.log("Run AJAX logic for view details ");
-                //refresh the table 
+                clearFullDetailsSessionData();
+                //refresh the table     
                 switchToFirstTab();
             });
 
             //Dynamic Clickable Id 
             $(document).on('click', '.clickable-id', function() {
-                var id = $(this).text();  
-                console.log("Clicked ID: " + id);
+                //set value for action button
+                sessionStorage.setItem('actionButton', 'fulldetails');
+                const actionButton = sessionStorage.getItem('actionButton');
+                console.log("action is:",actionButton);
+                var id = $(this).text();
+                if (id) {
+                    $.ajax({
+                        url: '/ReportedIncidents/Staff/GET/get-record-by-id.php',
+                        type: 'GET',
+                        data: { reported_id: id },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.status === 'success') {
+                                let record = data.data;
+                                // Populate HTML with AJAX response data
+                                const keyMapping = {
+                                    'isAccepted': 'data_isAccepted',
+                                    'location': 'data_location',
+                                    'state': 'data_state'
+                                };
+                                //set sessions
+                                sessionStorage.setItem('id', record.id);
+                                sessionStorage.setItem('activity_date', record.activity_date);
+                                sessionStorage.setItem('assigned_by', record.assigned_by);
+                                sessionStorage.setItem('assigned_to', record.assigned_to);
+                                sessionStorage.setItem('coordinate_lat', record.coordinate_lat);
+                                sessionStorage.setItem('coordinate_lng', record.coordinate_lng);
+                                sessionStorage.setItem('created_by', record.created_by);
+                                sessionStorage.setItem('created_on', record.created_on);
+                                sessionStorage.setItem('date_assigned', record.date_assigned);
+                                sessionStorage.setItem('date_reported', record.date_reported);
+                                sessionStorage.setItem('illegal_activity_detail', record.illegal_activity_detail);
+                                sessionStorage.setItem('isAccepted', record.isAccepted);
+                                sessionStorage.setItem('location', record.location);
+                                sessionStorage.setItem('report_number', record.report_number);
+                                sessionStorage.setItem('reported_by', record.reported_by);
+                                sessionStorage.setItem('state', record.state);
+                                sessionStorage.setItem('updated_by', record.updated_by);
+                                
+                                // Populate HTML with AJAX response data
+                                Object.keys(record).forEach(key => {
+                                    let mappedKey = keyMapping[key] || key; // Use mapped ID if exists
+                                    let element = document.getElementById(mappedKey);
+                                    if (element) {
+                                        element.textContent = record[key] || ''; // Safely set content
+                                    }
+                                });
+                            } else {
+                                Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire('Error!', 'An error occurred while fetching the record.', 'error');
+                        }
+                    });
+                }
                 switchToFullDetailsTab();
-                
             });
+            //clear details view session
+            function clearFullDetailsSessionData(){
+                sessionStorage.removeItem('id');
+                sessionStorage.removeItem('activity_date');
+                sessionStorage.removeItem('assigned_by');
+                sessionStorage.removeItem('assigned_to');
+                sessionStorage.removeItem('coordinate_lat');
+                sessionStorage.removeItem('coordinate_lng');
+                sessionStorage.removeItem('created_by');
+                sessionStorage.removeItem('created_on');
+                sessionStorage.removeItem('date_assigned');
+                sessionStorage.removeItem('date_reported');
+                sessionStorage.removeItem('illegal_activity_detail');
+                sessionStorage.removeItem('isAccepted');
+                sessionStorage.removeItem('location');
+                sessionStorage.removeItem('report_number');
+                sessionStorage.removeItem('reported_by');
+                sessionStorage.removeItem('state');
+                sessionStorage.removeItem('updated_by');
 
+            }
+            //Full details view get session value
+            function getSessionFullDetails() {
+                const id = sessionStorage.getItem('id');
+                const report_number = sessionStorage.getItem('report_number');
+                const illegal_activity_detail = sessionStorage.getItem('illegal_activity_detail');
+                const data_state = sessionStorage.getItem('state');
+                const reported_by = sessionStorage.getItem('reported_by');
+                const date_reported = sessionStorage.getItem('date_reported');
+                const assigned_by = sessionStorage.getItem('assigned_by');
+                const assigned_to = sessionStorage.getItem('assigned_to');
+                const data_isAccepted = sessionStorage.getItem('isAccepted');
+                const date_assigned = sessionStorage.getItem('date_assigned');
+                const data_location = sessionStorage.getItem('location');
+                const coordinate_lat = sessionStorage.getItem('coordinate_lat');
+                const coordinate_lng = sessionStorage.getItem('coordinate_lng');
+                const activity_date = sessionStorage.getItem('activity_date');
+                const created_by = sessionStorage.getItem('created_by');
+                const created_on = sessionStorage.getItem('created_on');
+
+                if (id) {
+                    $('#id').text(id);
+                    $('#report_number').text(report_number);
+                    $('#illegal_activity_detail').text(illegal_activity_detail);
+                    $('#data_state').text(data_state);
+                    $('#reported_by').text(reported_by);
+                    $('#date_reported').text(date_reported);
+                    $('#assigned_by').text(assigned_by);
+                    $('#assigned_to').text(assigned_to);
+                    $('#data_isAccepted').text(data_isAccepted);
+                    $('#date_assigned').text(date_assigned);
+                    $('#data_location').text(data_location);
+                    $('#coordinate_lat').text(coordinate_lat);
+                    $('#coordinate_lng').text(coordinate_lng);
+                    $('#activity_date').text(activity_date);
+                    $('#created_by').text(created_by);
+                    $('#created_on').text(created_on);
+                }
+            }
+
+            // Clear session data 
+            function clearSessionData() {
+                sessionStorage.removeItem('reportedId');
+                sessionStorage.removeItem('reportedNumber');
+                sessionStorage.removeItem('assignedTo');
+                sessionStorage.removeItem('details');
+                sessionStorage.removeItem('isAccepted');
+                sessionStorage.removeItem('location');
+                sessionStorage.removeItem('reportedBy');
+                sessionStorage.removeItem('state');
+                sessionStorage.removeItem('reportedNumber');
+                // console.log("cleared session");
+            }
 
             // Set the active tab on page load based on the session value
             document.addEventListener('DOMContentLoaded', function() {
@@ -264,121 +790,7 @@ if ($activeTab === 'tab3') {
                     console.error("Element with ID " + activeTabId + " not found");
                 }
             });
-
-            //DISPLAY OF DATA TABLE
-            let tableData = [];
-            let currentPage = 1;
-            const pageSize = 5;
-
-            new DataTable('#incidentReportDataTable', {
-                initComplete: function () {
-                    const api = this.api();
-                    // Hide columns in a single operation
-                    api.columns([
-                        6, //date_assigned
-                        7,//date_reported
-                        8, //reported_by
-                        9, //created_by
-                        10, //updated_by
-                        11, //activity_date
-                        12, //created_on
-                        13, //location
-                        14, //coordinate_lat
-                        15, //coordinate_lng
-                        16 //illegal_activity_detail
-                    ]).visible(false);
-
-                    api.columns().every(function (index) { 
-                        const column = this;
-                        const footer = column.footer();
-                        //disabling the footer search for action
-                        if (index !== 16) { 
-                            const input = document.createElement('input'); 
-                            input.placeholder = column.footer().textContent;
-                            if (footer) { 
-                                footer.innerHTML = ''; 
-                                footer.appendChild(input);
-
-                                // Event listener for user input
-                                input.addEventListener('keyup', debounce(() => {
-                                    if (column.search() !== input.value) {
-                                        column.search(input.value).draw();
-                                    }
-                                }, 300));
-                            }
-                        }
-                    });
-                }
-            });
-
-            // Debounce function to limit the rate at which the search is performed
-            function debounce(func, wait) {
-                let timeout;
-                return function(...args) {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(this, args), wait);
-                };
-            }      
-            
-            function fetchDataFromDB() {
-                $.ajax({
-                    url: '/ReportedIncidents/Staff/GET/get-record.php',
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function(response) {
-                        // console.log('Success:', response);
-                        updateTable(response);//call updateTable
-                    },
-                    error: function(xhr, status, error) {
-                        // console.error('Error:', error);
-                        // console.log(xhr.messageText);
-                        // console.log(xhr);
-                    }
-                });
-            }
-
-            function updateTable(data) {
-    const table = $('#incidentReportDataTable').DataTable();
-    table.clear(); // Clear the existing data from the DataTable
-
-    data.forEach(rowData => {
-        const rowDataArray = [];
-
-        // Iterate over the object values to push each value to rowDataArray
-        Object.values(rowData).forEach(value => {
-            rowDataArray.push(value);
-        });
-
-        // Log the row data before appending action buttons
-        console.log("Row data before adding action buttons:", rowDataArray);
-
-        // Add action buttons as the last column
-        rowDataArray.push(`
-            <div class="dropdown">
-                <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-three-dots"></i>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item edit-action" href="#" data-id="${rowData['id']}"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
-                    <li><a class="dropdown-item delete-action" href="#" data-id="${rowData['id']}"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
-                </ul>
-            </div>
-        `);
-
-        // Log the final row with the action buttons
-        console.log("Final row data with action buttons:", rowDataArray);
-
-        // Add the row to the DataTable
-        table.row.add(rowDataArray);
-    });
-
-    table.order([12, 'desc']).draw(); // Redraw the DataTable
-}
-
-
-
-            // Call fetchDataFromDB()
-            fetchDataFromDB();
+  
         </script>
     <?php
     include "../../templates/nav-bar2.php"; 

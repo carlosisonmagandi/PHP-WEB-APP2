@@ -118,12 +118,7 @@ $(document).ready(function() {
                             </ul>
                         </div>
                     `;
-
-                    // var actionButtons = '<button class="btn btn-sm approve-btn" data-id="' + row.id + '">Approve<i class="fas fa-check-circle" id="checkIcon"></i></button>' +
-                    //     ' ' + 
-                    //     '<button class="btn btn-sm reject-btn" data-id="' + row.id + '">Reject<i class="fas fa-times-circle" id="rejectIcon"></i></button>';
-                    
-                        var clickableId = '<a href="/Admin/Requests/RequestDetails/request.php?id=' + row.id + '" class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
+                    var clickableId = '<a href="/Admin/Requests/RequestDetails/request.php?id=' + row.id + '" class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
 
                     rows.push([
                         clickableId,
@@ -133,7 +128,7 @@ $(document).ready(function() {
                         row.type_of_requested_item,
                         row.name_of_requested_item,
                         row.approval_status,
-                        row.created_by,
+                        row.created_by, 
                         row.created_on,
                         actionButtons
                     ]);

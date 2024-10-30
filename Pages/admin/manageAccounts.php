@@ -111,6 +111,7 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th>Full Name</th>
                             <th>Username</th>
                             <th>Created On</th>
                             <th>Status</th>
@@ -194,6 +195,7 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
                 $.each(data, function(i, user){
                     var row = $('<tr>');
                     row.append($('<td>').text(user.id));
+                    row.append($('<td>').text(user.full_name));
                     row.append($('<td>').text(user.username));
                     row.append($('<td>').text(user.created_on));
                     row.append($('<td>').html('<div class="status-circle ' + user.status + '"></div>' + user.status));

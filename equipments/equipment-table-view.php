@@ -145,7 +145,7 @@ include ("../templates/nav-bar.php");
             </button>
 
             <!-- Print icon button -->
-            <button onclick="printTable()" class='btn btn-default' id="printTableButton" style="border:1px solid #e0e0e0; margin-left: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);">
+            <button onclick="printEquipmentTable()" class='btn btn-default' id="printTableButton" style="border:1px solid #e0e0e0; margin-left: 5px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);">
                 <i class="bi bi-printer"></i> 
             </button>
         </div>
@@ -864,80 +864,82 @@ include ("../templates/nav-bar.php");
             }
         });
     }
-
-    // print table view
-    function printTable() {
-        // Save the current column visibility states
-        let table = $('#dataTable').DataTable();
-        let columnVisibility = [];
-
-        table.columns().every(function () {
-            columnVisibility.push(this.visible());
-        });
-
-        // Show all columns
-        table.columns().visible(true);
-
-        // Hide everything except the table and its parent div
-        $('body > *').not('.container-div').hide();
-
-        // Get the table and its parent div
-        var tableDiv = document.querySelector('.container-div');
-        var tableElement = tableDiv.querySelector('table');
-
-        // Hide the table footer
-        $(tableElement).find('tfoot').hide();
-
-        // Remove the action column temporarily
-        var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
-
-        // Reduce font size for printing
-        $(tableElement).css('font-size', '8px');
-
-        // Create a copy of the table
-        var tableClone = tableElement.cloneNode(true);
-
-        // Create a title element
-        var titleElement = document.createElement('h1');
-        titleElement.innerText = "INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
-        titleElement.style.textAlign = 'center';
-        titleElement.style.fontSize = '12px';
-
-        var printContainer = document.createElement('div');
-        printContainer.appendChild(titleElement);
-        printContainer.appendChild(tableClone);
-
-        document.body.appendChild(printContainer);
-
-        window.addEventListener('beforeprint', function () {
-            console.log("Print initiated");
-        });
-
-        window.addEventListener('afterprint', function () {
-            console.log("Print cancelled or completed");
-            // Restore the original column visibility states
-            table.columns().every(function (index) {
-                this.visible(columnVisibility[index]);
-            });
-
-            // Refresh the page
-            window.location.reload();
-        });
-
-        window.print();
-
-        document.body.removeChild(printContainer);
-
-        $(tableElement).css('font-size', '');
-
-        $(tableElement).find('tfoot').show();
-
-        // Restore the action column
-        $(tableElement).find('thead tr').append(actionColumn.clone());
-        $(tableElement).find('tbody tr').each(function () {
-            $(this).append(actionColumn.clone());
-        });
+    function printEquipmentTable() {
+        window.open("/equipments/equipment-print-view.php", "_blank");
     }
+    // print table view
+    // function printTable() {
+    //     // Save the current column visibility states
+    //     let table = $('#dataTable').DataTable();
+    //     let columnVisibility = [];
+
+    //     table.columns().every(function () {
+    //         columnVisibility.push(this.visible());
+    //     });
+
+    //     // Show all columns
+    //     table.columns().visible(true);
+
+    //     // Hide everything except the table and its parent div
+    //     $('body > *').not('.container-div').hide();
+
+    //     // Get the table and its parent div
+    //     var tableDiv = document.querySelector('.container-div');
+    //     var tableElement = tableDiv.querySelector('table');
+
+    //     // Hide the table footer
+    //     $(tableElement).find('tfoot').hide();
+
+    //     // Remove the action column temporarily
+    //     var actionColumn = $(tableElement).find('th:last-child, td:last-child').detach();
+
+    //     // Reduce font size for printing
+    //     $(tableElement).css('font-size', '8px');
+
+    //     // Create a copy of the table
+    //     var tableClone = tableElement.cloneNode(true);
+
+    //     // Create a title element
+    //     var titleElement = document.createElement('h1');
+    //     titleElement.innerText = "INVENTORY OF APPREHENDED/CONFISCATED DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA \n\n";
+    //     titleElement.style.textAlign = 'center';
+    //     titleElement.style.fontSize = '12px';
+
+    //     var printContainer = document.createElement('div');
+    //     printContainer.appendChild(titleElement);
+    //     printContainer.appendChild(tableClone);
+
+    //     document.body.appendChild(printContainer);
+
+    //     window.addEventListener('beforeprint', function () {
+    //         console.log("Print initiated");
+    //     });
+
+    //     window.addEventListener('afterprint', function () {
+    //         console.log("Print cancelled or completed");
+    //         // Restore the original column visibility states
+    //         table.columns().every(function (index) {
+    //             this.visible(columnVisibility[index]);
+    //         });
+
+    //         // Refresh the page
+    //         window.location.reload();
+    //     });
+
+    //     window.print();
+
+    //     document.body.removeChild(printContainer);
+
+    //     $(tableElement).css('font-size', '');
+
+    //     $(tableElement).find('tfoot').show();
+
+    //     // Restore the action column
+    //     $(tableElement).find('thead tr').append(actionColumn.clone());
+    //     $(tableElement).find('tbody tr').each(function () {
+    //         $(this).append(actionColumn.clone());
+    //     });
+    // }
     //Add new record
     function redirectToUrl() {
          window.location.href = '/equipments/add-record-view.php'; 

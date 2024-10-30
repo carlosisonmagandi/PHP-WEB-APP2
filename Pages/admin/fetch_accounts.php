@@ -2,7 +2,7 @@
 require_once "../../includes/db_connection.php";
 
 function fetchAccounts($connection) {
-    $query = "SELECT id, username, created_on, status FROM account WHERE role IN (?, ?) ORDER BY created_on DESC";
+    $query = "SELECT id, username, created_on, status, full_name FROM account WHERE role IN (?, ?) ORDER BY created_on DESC";
     $statement = $connection->prepare($query);
     
     $role1 = 'Staff';

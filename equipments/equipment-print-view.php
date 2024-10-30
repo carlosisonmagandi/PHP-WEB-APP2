@@ -104,31 +104,19 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name of Respondent/Claimant/Owner</th>
-                <th>Date of Apprehension</th>
-                <th>Apprehending Officer</th>
-                <th colspan="8">Conveyance Description</th>
-                <th colspan="4">Activities</th>
-            </tr>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th>Plate Number</th>
-                <th>Brand</th>
+                <th>Equipment</th>
                 <th>Type</th>
-                <th>Model Name</th>
-                <th>Year Model</th>
-                <th>Condition</th>
+                <th>Serial Number</th>
+                <th >Brand</th>
+                <th >Model</th>
                 <th>Status</th>
-                <th>Place of Apprehension</th>
-                <th>Created by</th>
-                <th>Last updated</th>
-                <th>Updated by</th>
+                <th>Location</th>
+                <th>Confiscation date</th>
+                <th>Owner</th>
+                <th>Condition</th>
                 <th>Remarks</th>
-                
             </tr>
+            
         </thead>
         <tbody id="recordBody">
             <!-- Sample records will be populated by JavaScript -->
@@ -156,7 +144,7 @@
     <script>
         $(document).ready(function() { 
         $.ajax({
-            url: '/vehicles/get-all-vehicle-record.php',
+            url: '/equipments/get-all-equipments.php',
             type: 'GET',
             dataType: 'json',
             success: function(data) {
@@ -175,26 +163,21 @@
                         const recordBody = document.getElementById('recordBody');
                         recordBody.innerHTML = ''; 
 
-                        paginatedRecords.forEach(record => { 
+                        paginatedRecords.forEach(record => {
                             const row = `
                                 <tr>
                                     <td>${record.id}</td>
-                                    <td>${record.vehicle_owner}</td>
-                                    <td>${record.date_of_compiscation}</td>
-                                    <td>${record.confiscated_by}</td>
-                                    <td>${record.plate_no}</td>
+                                    <td>${record.equipment_name}</td>
+                                    <td>${record.equipment_type}</td>
+                                    <td>${record.serial_no}</td>
                                     <td>${record.brand}</td>
-                                    <td>${record.vehicle_type}</td>
-                                    <td>${record.vehicle_name}</td>
                                     <td>${record.model}</td>
-                                    <td>${record.vehicle_condition}</td>
-                                    <td>${record.vehicle_status}</td>
-                                    <td>${record.location}</td>
-                                    <td>${record.created_by}</td>
-                                    <td>${record.activity_date}</td>
-                                    <td>${record.updated_by}</td>
+                                    <td>${record.equipment_status}</td>
+                                    <td>${record.location}</td> 
+                                    <td>${record.date_of_compiscation}</td>
+                                    <td>${record.equipment_owner}</td>
+                                    <td>${record.condition}</td>
                                     <td>${record.remarks}</td>
-
                                 </tr>
                             `;
                             recordBody.innerHTML += row;

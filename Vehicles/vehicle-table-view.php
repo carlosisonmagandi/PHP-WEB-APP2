@@ -166,11 +166,11 @@ include ("../templates/nav-bar.php");
                 <th>LOCATION</th>
                 <th>DATE OF CONFISCATION</th>
                 <th>VEHICLE OWNER</th>
-                <th>CONDITION</th>
+                <!-- <th>CONDITION</th> -->
                 <th>REMARKS</th>
-                <th>ACTIVITY DATE</th>
+                <!-- <th>ACTIVITY DATE</th> -->
                 <th>DATE CREATED</th>
-                <th>CREATED BY</th>
+                <!-- <th>CREATED BY</th> -->
                 <th>UPDATED BY</th>
                 <th>STATUS</th>
                 <th>APPREHENDING PERSON/OFFICER</th>
@@ -191,11 +191,11 @@ include ("../templates/nav-bar.php");
                 <th>LOCATION</th>
                 <th>DATE OF CONFISCATION</th>
                 <th>VEHICLE OWNER</th>
-                <th>CONDITION</th>
+                <!-- <th>CONDITION</th> -->
                 <th>REMARKS</th>
-                <th>ACTIVITY DATE</th>
+                <!-- <th>ACTIVITY DATE</th> -->
                 <th>DATE CREATED</th>
-                <th>CREATED BY</th>
+                <!-- <th>CREATED BY</th> -->
                 <th>UPDATED BY</th>
                 <th>STATUS</th>
                 <th>APPREHENDING PERSON/OFFICER</th>
@@ -210,103 +210,70 @@ include ("../templates/nav-bar.php");
 
 
 <script>
-    let tableData = [];
-    let currentPage = 1;
-    const pageSize = 5;
-
-    new DataTable('#vehicleDataTable', {
-        initComplete: function () {
-            const api = this.api();
-             // Hide columns in a single operation
-            api.columns([
-                8,//vehicle_owner
-                9,//condition
-                10,//Remarks
-                11,//Activity date
-                12,//Date creaed
-                13,//Created by
-                14,//Updated By
-                15,//Status
-                16// Apprehnding officer
-            ]).visible(false);
-
-            api.columns().every(function (index) { 
-                const column = this;
-                const footer = column.footer();
-
-                if (index !== 13) { 
-                    const input = document.createElement('input'); 
-                    input.placeholder = column.footer().textContent;
-
-                    if (footer) { // Clear the footer and append the input
-                        footer.innerHTML = ''; 
-                        footer.appendChild(input);
-
-                        // Event listener for user input
-                        input.addEventListener('keyup', debounce(() => {
-                            if (column.search() !== input.value) {
-                                column.search(input.value).draw();
-                            }
-                        }, 300));
-                    }
-                }
-            });
-        }
+    
+    $('#vehicleDataTable').DataTable({
+        "order": [[ 12, "desc" ]],//order based on the latest created record
+        "responsive": true,
+        "pageLength": 10,
+        "lengthMenu": [5, 10, 25, 50]
     });
 
-    // Debounce function to limit the rate at which the search is performed
-    function debounce(func, wait) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-
     function fetchDataFromDB() {
+        
         $.ajax({
             url: '/vehicles/get-record.php',
             type: 'GET',
             dataType: 'json',
             success: function(response) {
-                // console.log('Success:', response);
-                updateTable(response);//call updateTable
+                var table = $('#vehicleDataTable').DataTable();
+                table.clear();
+                
+                var rows = [];
+                $.each(response, function(index, row) {
+                    var actionButtons = `
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item edit-action"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
+                                <li><a class="dropdown-item delete-action"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
+                            </ul>
+                        </div>
+                    `;
+                    //var clickableId = '<a href="/Admin/Requests/RequestDetails/request.php?id=' + row.id + '" class="clickable-id" data-id="' + row.id + '">' + row.id + '</a>';
+                    var clickableId = '<a class="clickable-vehicle-id">' + row.id + '</a>';
+                    rows.push([
+                        clickableId,
+                        row.vehicle_name,
+                        row.vehicle_type,
+                        row.plate_no,
+                        row.brand,
+                        row.model,
+                        row.location,
+                        row.date_of_compiscation,
+                        row.vehicle_owner,
+                        // row.vehicle_condition,
+                        row.remarks,
+                        // row.activity_date,
+                        row.created_on,
+                        // row.created_by,
+                        row.updated_by,
+                        row.vehicle_status,
+                        row.confiscated_by,
+                        actionButtons
+                    ]);
+                });
+
+                table.rows.add(rows).draw();
             },
             error: function(xhr, status, error) {
-                // console.error('Error:', error);
-                // console.log(xhr.messageText);
-                // console.log(xhr);
+                console.error('Error:', error);
+                alert("Error fetching data. See console for details.");
             }
         });
     }
-
-    function updateTable(data) {
-        //  console.log("data:",data);
-        const table = $('#vehicleDataTable').DataTable();
-        table.clear();// Clear the existing data from the DataTable
-        data.forEach(rowData => {// Add new data
-        const rowDataArray = [];
-            
-            Object.values(rowData).forEach(value => {
-                rowDataArray.push(value);
-            });
-            
-            const id = rowData['id'];
-            rowDataArray.push(`
-            <div class="dropdown">
-                <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-three-dots"></i>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item edit-action"> Edit <i class="bi bi-pencil-fill" style="float:right"></i></a></li>
-                    <li><a class="dropdown-item delete-action"> Delete <i class="bi bi-trash-fill" style="float:right"></i></a></li>
-                </ul>
-            </div>
-            `);
-            table.row.add(rowDataArray);// Add the row to the DataTable
-        });
-        table.order([12, 'desc']).draw();// Redraw the DataTable
-    }
+    fetchDataFromDB();
 
     $(document).ready(function() {//call fetchDataFromDb on page load
         clickableVehicleId();

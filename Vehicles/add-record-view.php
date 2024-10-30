@@ -130,8 +130,6 @@ $hasId = !empty($id);
             </fieldset>
 
             
-
-            
             <?php if ($hasId): ?>
                 <button type="button" id="vehicleUpdate" class="btn btn-primary">Update</button>
             <?php else: ?>

@@ -3,6 +3,7 @@ require_once("includes/db_connection.php");
 require_once("templates/alert-message.php");
 
 if(isset($_POST['submit'])){
+    $full_name=$_POST['full_name'];
     $confirmPassword = $_POST['confirmPassword'];
     $password = $_POST['password'];
     $userName = $_POST['userName'];
@@ -30,7 +31,7 @@ if(isset($_POST['submit'])){
                     showAlertMsg("Please select your security questions.", "warning");
                 } else {
                     // Insert the new user if username is not already taken
-                    $queryUser = "INSERT INTO account (username, password, role) VALUES ('$userName', '$hashedPassword', 'Staff')";
+                    $queryUser = "INSERT INTO account (username, password, role, full_name) VALUES ('$userName', '$hashedPassword', 'Staff' , '$full_name')";
                     $sqlUser = mysqli_query($connection, $queryUser);
     
                     // Insert Security question
@@ -132,7 +133,8 @@ if(isset($_POST['submit'])){
             <div class="flex-container">
                 <div class="flex-item-left">
                     <div class="container" style="padding: 10px;">
-                        <input require type="text" id="userName" name="userName" placeholder="User Name" style="margin-top:10px" 
+                        <input type="text" id="full_name" name="full_name" placeholder="Full Name" style="margin-top:10px" required >
+                        <input required type="text" id="userName" name="userName" placeholder="User Name" style="margin-top:10px" 
                             <?php //Set the value of username to username field event the browser reloads
                                 if(isset($_POST['userName'])){
                                     if (
@@ -146,7 +148,7 @@ if(isset($_POST['submit'])){
                             ?>
                         ><br><br>
                             <div class="password-wrapper">
-                                <input require type="password" id="password" name="password" oninput="strengthChecker()" placeholder="Password" 
+                                <input required type="password" id="password" name="password" oninput="strengthChecker()" placeholder="Password" 
                                     <?php //Set the value of password to username field event the browser reloads
                                         if(isset($_POST['password'])){
                                             if (($password == $confirmPassword)&&($question1==''||$question1==null)||($question2==''||$question2==null)) { 
@@ -164,7 +166,7 @@ if(isset($_POST['submit'])){
                             <p id="msg" name='msg'></p>
                             <br>
                             <div class="confirmPassword-wrapper">
-                                <input require type="password" id="confirmPassword" name="confirmPassword"  placeholder="Confirm Password"
+                                <input required type="password" id="confirmPassword" name="confirmPassword"  placeholder="Confirm Password"
                                     <?php //Set the value of password to username field event the browser reloads
                                         if(isset($_POST['confirmPassword'])){
                                             if (($password == $confirmPassword)&&($question1==''||$question1==null)||($question2==''||$question2==null)) { 
