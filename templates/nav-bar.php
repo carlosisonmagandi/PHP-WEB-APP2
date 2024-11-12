@@ -271,21 +271,10 @@ if(isset($_POST['Logout'])){
                                         <div class="collapse" id="pagesCollapseRequest" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
                                                 <a class="nav-link" href="/monitor-item-trees.php">Forest Products</a>
-                                                <a class="nav-link" href="register.html">Equipment</a>
-                                                <a class="nav-link" href="password.html">Conveyance</a>
+                                                <!-- <a class="nav-link" href="register.html">Equipment</a>
+                                                <a class="nav-link" href="password.html">Conveyance</a> -->
                                             </nav>
                                         </div>
-
-                                        <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
-                                            Confiscations
-                                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                                        </a>
-                                        <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
-                                            <nav class="sb-sidenav-menu-nested nav">
-                                                <a class="nav-link" href="401.html">Forest Products</a>
-                                                <a class="nav-link" href="404.html">Closed case</a>
-                                            </nav>
-                                        </div> -->
 
                                         <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseDonations" aria-expanded="false" aria-controls="pagesCollapseAuth">
                                             Donations

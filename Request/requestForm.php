@@ -381,9 +381,9 @@ $hasId = !empty($id);
                 $.ajax({
                     url: '/Request/insert-record-with-file.php',
                     type: 'POST',
-                    processData: false, // Prevent jQuery from automatically transforming the data into a query string
-                    contentType: false, // Let jQuery set the content type
-                    data: formData, // Send the FormData object directly
+                    processData: false, 
+                    contentType: false, 
+                    data: formData, 
                     success: function(response){
                         Swal.fire('Record Added Successfully!').then((result) => {
                             window.location.href = '/Request/my-request.php';
@@ -395,6 +395,8 @@ $hasId = !empty($id);
                         alert('There was an error submitting the form.');
                     }
                 });
+
+                // Call the insert-record for donation_monitoring table 
             });
 
             //Get Type

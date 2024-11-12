@@ -270,8 +270,8 @@ if (isset($_POST['Logout'])) {
                 data: { id: id },
                 success: function(response) {
                     if (Array.isArray(response) && response.length > 0) {
-                        const latitude = response[0].latitude;
-                        const longitude = response[0].longitude;
+                        const latitude = response[0].coordinate_lat;
+                        const longitude = response[0].coordinate_lng;
                         
                         if (navigator.geolocation) {
                             navigator.geolocation.getCurrentPosition(function(position) {
@@ -286,34 +286,6 @@ if (isset($_POST['Logout'])) {
                         } else {
                             console.log('Geolocation is not supported by this browser.');
                         }
-                    } else {
-                        // call AJAX that will use the barangay+city+municipality as coordinates
-                        $.ajax({
-                            url: '/Pages/FieldStaff/MyTickets/map2.php',
-                            type: 'GET',
-                            data: { id: id },
-                            success: function(response) {
-                                //  console.log(response.data.barangay,response.data.city_municipality,response.data.province);
-                                 if (navigator.geolocation) {
-                                    navigator.geolocation.getCurrentPosition(function(position) {
-                                        const userLatitude = position.coords.latitude;
-                                        const userLongitude = position.coords.longitude;
-
-                                        // Open Google Maps with user's current location
-                                        const url = `https://www.google.com/maps/dir/?api=1&origin=${userLatitude},${userLongitude}&destination=${response.data.barangay}+${response.data.city_municipality}+${response.data.province}`;
-
-                                        window.open(url, "_blank");
-                                    }, function() {
-                                        console.log('Unable to retrieve your location');
-                                    });
-                                } else {
-                                    console.log('Geolocation is not supported by this browser.');
-                                }
-                            },
-                            error: function(xhr, status, error) {
-                                console.error('AJAX error:', status, error);
-                            }
-                        });
                     }
                 },
                 error: function(xhr, status, error) {

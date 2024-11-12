@@ -1,41 +1,35 @@
 <?php
-session_start();
-require("../../../includes/session.php");
-require("../../../includes/authentication.php");
 require_once("../../../includes/db_connection.php");
 
-header('Content-Type: application/json');
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    
+    $inventoryId = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-$response = [];
-$data = [];
+    $stmt = $connection->prepare("SELECT * FROM incident_report WHERE id = ? ORDER BY date_created DESC");
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
-    $inventory_id = intval($_GET['id']);
+    $stmt->bind_param('i', $inventoryId);
 
-    $stmt = $connection->prepare("SELECT * FROM inventory WHERE id = ?");
-    $stmt->bind_param("i", $inventory_id);
+    $stmt->execute();
 
-    if ($stmt->execute()) {
-        $result = $stmt->get_result();
+   
+    $result = $stmt->get_result();
 
-        if ($result->num_rows > 0) {
-            $data = $result->fetch_assoc();
-            $response['status'] = 'success';
-            $response['message'] = 'Data fetched successfully';
-            $response['data'] = $data;
-        } else {
-            $response['status'] = 'error';
-            $response['message'] = 'No records found';
+    $data = array();
+    if ($result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $data[] = $row;
         }
-        $stmt->close();
-    } else {
-        $response['status'] = 'error';
-        $response['message'] = 'Database query failed';
     }
+    
+    $stmt->close();
     $connection->close();
+
+    
+    header('Content-Type: application/json');
+    echo json_encode($data);
 } else {
-    $response['status'] = 'error';
-    $response['message'] = 'Inventory ID not provided';
+    
+    header('Content-Type: application/json');
+    echo json_encode(['error' => 'Invalid request method']);
 }
-echo json_encode($response);
 ?>

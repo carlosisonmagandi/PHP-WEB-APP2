@@ -4,203 +4,218 @@ require("../../includes/session.php");
 require("../../includes/darkmode.php");
 require("../../includes/authentication.php");
 
-// Action after logout button
 if (isset($_POST['Logout'])) {
     session_destroy();
     header("Location: ../../index.php");
     exit;
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage reference data</title>
-    <link rel="stylesheet" type="text/css" href="/Styles/manage-ref-data.css">
-    <link rel="stylesheet" type="text/css" href="/Styles/breadCrumbs.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>View All list</title>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <!-- Chart -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-
-    <style>
-        .content {
-            display: none; 
-            border: 1px solid #ccc; 
-            padding: 5px; 
-            margin-top: 10px; 
-            flex-wrap: wrap; 
-            border-top:none;
-        }
-        .pencil-box {
-            width: 200px;
-            background-color: #002f6c; /* Background color for the pencil */
-            clip-path: polygon(0 0, 80% 0, 100% 50%, 80% 100%, 0 100%);
-            border: none;
-            margin: 5px; /* Optional: spacing between the pencil shapes */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #f1f1f1;
-            /* font-weight: bold; */
-            text-align: center;
-            margin-left:25px;
-            padding-right:20px;
-            font-size:11px;
-            font-style:italic;
-            
-        }
-        .row-box{
-            border: 1px solid #ccc;
-            border-bottom:none;
-            font-family:'Poppins',sans-serif;
-        }
-        .trigger {
-            cursor: pointer; 
-            float: right; 
-        }
-        .search-pane{
-            display:flex;
-        }
-        /* Flex box left and right */
-        .flex-container {
-        display: flex;
-        flex-direction: row;
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="/Styles/sb-admin/sb-admin-styles.css" rel="stylesheet" />
         
-        }
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-        .flex-item-left {
-        background-color: #f1f1f1;
-        padding: 10px;
-        flex: 30%;
-        }
-
-        .flex-item-right {
-        background-color: #f1f1f1;
-        padding: 5px;
-        flex: 70%;
-        }
-
-        @media (max-width: 800px) {
-        .flex-container {
-            flex-direction: column;
-        }
-        }
-
-        /* Chart style */
-        .chart-container {
-            
-            height: 300px; /* Set the height for all charts */
-        }
-    </style>
-
-    <script>
-        $(document).ready(function() {
-            $(".trigger").click(function() {
-                // Toggle the content only for the clicked trigger
-                var content = $(this).closest('.row-box').next(".content");
-                
-                if (content.is(":hidden")) {
-                    content.css("display", "flex").hide().slideToggle(100);
+        <link rel="stylesheet" type="text/css" href="../../../Styles/darkmode.css">
+        <link rel="stylesheet" type="text/css" href="../../../Styles/nav-bar.css">
+        <!--  To switch dark mode on or off for notification -->
+        <?php 
+            if(isset($_SESSION['mode'])){
+                if ($_SESSION['mode'] == 'dark') {
+                    echo '<link rel="stylesheet" type="text/css" href="../../../Styles/notification-dark.css">';
                 } else {
-                    content.slideToggle(300, function() {
-                        $(this).css("display", "none");
-                    });
+                    echo '<link rel="stylesheet" type="text/css" href="../../../Styles/notification.css">';
                 }
-            });
-        });
+            }else{
+                echo '<link rel="stylesheet" type="text/css" href="../../../Styles/notification.css">';
+            }
+        ?>  
+    <style>
+         .tableDiv{
+            font-family: 'Poppins', sans-serif;        
+            font-size:10px;
+            padding:25px;
+        }
+        .actionButton{
+            background-color: #FFF;
+            border:none;
+            width: 100%;
+            text-align:left;
+            color:#002f6c;
+            font-size:12px;
+        }
+        .actionButton:hover{
+            background-color:#002f6c;
+            color:#FFF;
+        }
+        /* modal */
+        .swal2-popup {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+        }
 
-    </script>
+        
+
+        .swal2-content {
+            width: 100%;
+            height: calc(100% - 80px); /* Reserve space for title */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Responsive div inside modal */
+        .responsive-div {
+            width: 100%;
+            height: 100%;
+            background-color: #f3f3f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        /* Style for the content inside the div */
+        .content {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+   
+        ul {
+            text-align: left;
+            padding-left: 20px;
+            list-style-type: none; 
+            
+        }
+
+        li {
+            text-align: left;
+            list-style-position: outside;
+        }
+
+
+    </style>
 </head>
 <body>
-<?php 
-include("../../templates/nav-bar.php");
-?>
+    
+    <?php 
+    include("../../templates/nav-bar.php");
+    ?>
+    <!-- Scripts -->
+    <!-- Note: It will not work inside header because of the php block for templates -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<div class="container">
-    <!-- a simple div with some links -->
-    <?php if ($_SESSION['mode'] == 'light'): ?>
-        <div class="breadcrumb flat">
-            <a href="#">Requests</a>
-            <a href="#" class="active">Request list</a>
-        </div>
-    <?php else: ?>
-        <div class="breadcrumb">
-            <a href="#">Requests</a>
-           
-            <a href="#" class="active">Request list</a>
-        </div>
-    <?php endif; ?>
+    <!-- data table -->
+    <script src="/Styles/data-table/jquery-3.7.1.js"></script>
+    <script src="/Styles/data-table/dataTables.js"></script>
+    <link href="/Styles/data-table/dataTables.css" rel="stylesheet" />
 
-    <!-- display container -->
-    <div class="search-pane">
-        <i class="fas fa-filter" ></i>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <button class="btn btn-primary"  >Refresh</button>
+    <!-- Content ----------------------------------------->
+    <div class="tableDiv">
+        <table id="requestFormDataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;">
+            <thead style="text-align:center;">
+                <tr>
+                    <th>REPORT NUMBER</th>
+                    <th>REQUESTEE</th>
+                    <th>OFFICE</th>
+                    <th>REQUEST (FOREST PRODUCT)</th>
+                    <th>ACTIVITIES</th>
+                </tr>
+            </thead>
+            <tbody id="dataBody" style="text-align:center;">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>REPORT NUMBER</th>
+                    <th>REQUESTEE</th>
+                    <th>OFFICE</th>
+                    <th>REQUEST (FOREST PRODUCT)</th>
+                    <th>ACTIVITIES</th>
+                </tr>
+            </tfoot>
+        </table>
+
     </div>
 
-    <div class="flex-container">
+    <script>
+        $('#requestFormDataTable').DataTable({
+            "order": [[ 12, "desc" ]],//order based on the latest created record
+            "responsive": true,
+            "pageLength": 10,
+            "lengthMenu": [5, 10, 25, 50],
+            "columnDefs": [
+                { "width": "35%", "targets": 4 } 
+            ]
+        });
+        function fetchDataFromDB() {
+    $.ajax({
+        url: '/Admin/Monitoring/Donation/GET/get-record.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            console.log(response);
+
+            var table = $('#requestFormDataTable').DataTable();
+            table.clear();
+
+            var rows = [];
+            $.each(response, function(index, row) {
+                rows.push([ 
+                    row.request_number, 
+                    row.created_by,
+                    row.organization_name,
+                    row.type_of_requested_item,
+                    row.ACTIONS
+                ]);
+            });
+
+            table.rows.add(rows).draw();
+            table.order([0, 'desc']).draw();
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            alert("Error fetching data. See console for details.");
+        }
+    });
+}
+
+fetchDataFromDB();
+
+            
+        //Dynamic Clickable Id 
+        $(document).on('click', '.clickable-id', function() {
+            console.log('id clicked');
+        });
+
         
-
-        <!-- Division of flex Left and Right -->
-
-        <div class="flex-item-right">
-            <div class="row-box">
-                <span class="trigger">▼</span> <!-- Arrow down icon -->
-                <b>RE000000123</b>
-            </div>
-            <div class="content">
-                <div class="pencil-box">
-                    <div style="display:flex;padding:6px">
-                        Request logged
-                    </div>
-                </div> 
-                <div class="pencil-box">
-                    <div style="display:flex;padding:6px">
-                        Approved by Admin John Doe
-                    </div>
-                </div>
-                <div class="pencil-box">
-                    <div style="display:flex;padding:6px">
-                        Admin requested for additional certification from requestee
-                    </div>
-                </div>
-                <div class="pencil-box">
-                    <div style="display:flex;padding:6px">
-                        Staff attached the additional requirement
-                    </div>
-                </div>
-                <div class="pencil-box">
-                    <div style="display:flex;padding:6px">
-                        Request was set to complete status by Admin John Doe
-                    </div>
-                </div>
-            </div>
-
-            <div class="row-box">
-                <span class="trigger">▼</span> <!-- Arrow down icon -->
-                <b>RE000000124</b>
-            </div>
-            <div class="content">
-                <div class="pencil-box">
-                    <div style="display:flex;padding:6px">
-                        This is a sample text from process. And no other text from another message
-                    </div>
-                </div> 
-            </div>
-        </div>
-    </div>
-</div>
-
-<?php 
-include("../../templates/nav-bar2.php");
-?>
+            
+       
+    </script>
+    <!-- ---------------------------------------------- -->
+    
+    <?php 
+    include("../../templates/nav-bar2.php");
+    ?>
 </body>
 </html>

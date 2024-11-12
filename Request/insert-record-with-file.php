@@ -4,7 +4,6 @@ require_once("../includes/db_connection.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Collect form data
     $requestorName = $_POST['requestor_name'] ?? '';
     $organization = $_POST['organization'] ?? '';
     $phoneNumber = $_POST['phone_number'] ?? '';
@@ -25,35 +24,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $createdBy = $_SESSION['session_username'];
     $approvalStatus = 'Pending for Approval';
 
-    $lastInsertId = $connection->query("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name='request_form' AND table_schema = DATABASE();");
-    $row = $lastInsertId->fetch_assoc();
-    $nextId = $row['AUTO_INCREMENT'];
-    
-    // Format: RE000000123
-    $requestNumber = 'RE' . sprintf('%09d', $nextId);
+    // $lastInsertId = $connection->query("SELECT AUTO_INCREMENT FROM information_schema.tables WHERE table_name='request_form' AND table_schema = DATABASE();");
+    // $row = $lastInsertId->fetch_assoc();
+    // $nextId = $row['AUTO_INCREMENT'];
 
-    // Validate required fields (optional)
-    // if (empty($requestorName) || empty($phoneNumber) || empty($emailAddress) || empty($address) || empty($itemType) || empty($quantityNeeded) || empty($itemDescription) || empty($purpose)) {
-    //     http_response_code(400);
-    //     echo json_encode(array("message" => "All required fields must be filled."));
-    //     exit;
-    // }
+    $randomNumber = random_int(100000000, 999999999);
+    $requestNumber = 'RE' . str_pad($randomNumber, 9, '0', STR_PAD_LEFT);
 
-    // Check for connection error
     if ($connection->connect_error) {
         die("Connection failed: " . $connection->connect_error);
     }
 
-    // Insert into the request_form table
-    $sql = "INSERT INTO request_form (request_number,requestor_name, organization_name, phone_number, email, address, type_of_requested_item, quantity, request_description, purpose_of_donation, preferred_delivery_date, preferred_delivery_time, delivery_address, special_instructions, letter_of_intent, project_eng_certification, budget_officer_certification, created_by, approval_status) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    
+    $sql = "INSERT INTO request_form (request_number,requestor_name, organization_name, phone_number, email, address, type_of_requested_item, quantity, request_description, purpose_of_donation, preferred_delivery_date, preferred_delivery_time, delivery_address, special_instructions, letter_of_intent, project_eng_certification, budget_officer_certification, created_by, approval_status) 
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("sssssssssssssssssss", $requestNumber,$requestorName, $organization, $phoneNumber, $emailAddress, $address, $itemType, $quantityNeeded, $itemDescription, $purpose, $deliveryDate, $deliveryTime, $deliveryAddress, $specialInstructions, $letter_of_intent, $project_eng_certification, $budget_officer_certification, $createdBy, $approvalStatus);
+    $stmt->bind_param("sssssssssssssssssss", $requestNumber, $requestorName, $organization, $phoneNumber, $emailAddress, $address, $itemType, $quantityNeeded, $itemDescription, $purpose, $deliveryDate, $deliveryTime, $deliveryAddress, $specialInstructions, $letter_of_intent, $project_eng_certification, $budget_officer_certification, $createdBy, $approvalStatus);
 
     if ($stmt->execute()) {
-        $record_id = $stmt->insert_id;  
+        $record_id = $stmt->insert_id;
+
+        $incident_reports_id = $record_id;
+        $action_description = 'Donation request Created';
+        $updated_by = $createdBy;
+
+        $query = "INSERT INTO donation_monitoring (incident_reports_id, action_description, created_by, updated_by) 
+                  VALUES (?, ?, ?, ?)";
         
-        // Handle file uploads
+        if ($stmt_monitoring = $connection->prepare($query)) {
+            $stmt_monitoring->bind_param("isss", $incident_reports_id, $action_description, $createdBy, $updated_by);
+
+            if ($stmt_monitoring->execute()) {
+                $response = ['status' => 'success', 'message' => 'Donation request and monitoring record inserted successfully.', 'record_id' => $record_id];
+            } else {
+                $response = ['status' => 'error', 'message' => 'Error inserting record into donation_monitoring: ' . $stmt_monitoring->error];
+            }
+            $stmt_monitoring->close();
+        } else {
+            $response = ['status' => 'error', 'message' => 'Error preparing the donation_monitoring query: ' . $connection->error];
+        }
+
         $upload_directory = 'Uploads/request_documents/';
         if (!is_dir($upload_directory)) {
             mkdir($upload_directory, 0755, true);
@@ -65,10 +75,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $file_tmp = $_FILES['supporting_documents']['tmp_name'][$key];
                 $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
         
-                //All allowede file to upload
                 $allowed_types = array_merge(
                     ['jpg', 'jpeg', 'png', 'gif'], 
-                    ['doc', 'docx', 'pdf', 'xls', 'xlsx', 'csv', 'txt'] 
+                    ['doc', 'docx', 'pdf', 'xls', 'xlsx', 'csv', 'txt']
                 );
         
                 $invalid_file_found = false;
@@ -80,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $file_tmp = $_FILES['supporting_documents']['tmp_name'][$key];
                         $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
                 
-                        // Validate file type and size
                         if (in_array($file_ext, $allowed_types) && $file_size <= 2097152) {
                             $new_file_name = uniqid() . '.' . $file_ext;
                             $upload_path = $upload_directory . $new_file_name;
@@ -105,23 +113,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $response = ['status' => 'error', 'message' => 'No files uploaded or file array is empty.'];
                 }
-                
 
-            if (!$invalid_file_found) {
-                $response['status'] = 'success';
-            }
+                if (!$invalid_file_found) {
+                    $response['status'] = 'success';
+                }
             }
         }
-        
-        echo json_encode(['status' => 'success', 'message' => 'Record inserted successfully.', 'record_id' => $record_id]);
+
+        echo json_encode($response);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Error inserting record: ' . $stmt->error]);
+        echo json_encode(['status' => 'error', 'message' => 'Error inserting record into request_form: ' . $stmt->error]);
     }
 
-    // Close statements and connection
     $stmt->close();
     $connection->close();
 } else {
-    http_response_code(405); // Method Not Allowed
+    http_response_code(405); 
     echo json_encode(array("message" => "Method not allowed."));
 }
+?>

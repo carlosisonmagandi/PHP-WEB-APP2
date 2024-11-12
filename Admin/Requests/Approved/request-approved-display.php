@@ -190,6 +190,29 @@ $(document).ready(function() {
                         Swal.fire("Error", "Failed to update record", "error");
                     }
                 });
+
+                // Call insert query for donation_monitoring
+                var actionDescription = 'Completed by ';
+                var donationMonitoringData = {
+                    incident_reports_id: id,
+                    action_description: actionDescription,
+                };
+
+                $.ajax({
+                    url: '/Admin/Monitoring/Donation/POST/insert-record.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(donationMonitoringData),
+                    success: function(response) {
+                        console.log("Record successfully inserted:", response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        Swal.fire("Error", "Failed to insert record", "error");
+                    }
+                });
+
             } else if (result.isDenied) {
                 Swal.fire("Changes are not saved", "", "info");
             }
