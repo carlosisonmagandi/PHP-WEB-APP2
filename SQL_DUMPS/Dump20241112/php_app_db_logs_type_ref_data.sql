@@ -16,32 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `pushednotification`
+-- Table structure for table `logs_type_ref_data`
 --
 
-DROP TABLE IF EXISTS `pushednotification`;
+DROP TABLE IF EXISTS `logs_type_ref_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `pushednotification` (
+CREATE TABLE `logs_type_ref_data` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) NOT NULL,
-  `date_created` date DEFAULT NULL,
-  `time_created` time DEFAULT NULL,
-  `status` varchar(20) NOT NULL,
-  `landing_page` varchar(255) DEFAULT NULL,
-  `user_name` varchar(255) DEFAULT NULL,
+  `type_title` varchar(255) DEFAULT NULL,
+  `type_description` varchar(255) DEFAULT NULL,
+  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `create_by` varchar(255) DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `pushednotification`
+-- Dumping data for table `logs_type_ref_data`
 --
 
-LOCK TABLES `pushednotification` WRITE;
-/*!40000 ALTER TABLE `pushednotification` DISABLE KEYS */;
-INSERT INTO `pushednotification` VALUES (57,'Account Registration','2024-07-11','15:14:05','seen','/Pages/admin/manageAccount.php','kian'),(58,'Account Registration','2024-09-04','00:34:40','unseen','/Pages/admin/manageAccount.php','carlo');
-/*!40000 ALTER TABLE `pushednotification` ENABLE KEYS */;
+LOCK TABLES `logs_type_ref_data` WRITE;
+/*!40000 ALTER TABLE `logs_type_ref_data` DISABLE KEYS */;
+INSERT INTO `logs_type_ref_data` VALUES (7,'Lumber','Woods','2024-09-29 20:08:09','2024-09-29 19:52:05',NULL,NULL),(8,'Flitches','flat slab of wood that is cut lengthwise from a tree trunk.','2024-09-29 19:53:03','2024-09-29 19:53:03',NULL,NULL),(10,'Coals','Confiscated coals','2024-10-10 19:13:04','2024-10-10 19:13:04',NULL,NULL),(11,'sample','test','2024-10-21 14:45:32','2024-10-21 14:45:32',NULL,NULL);
+/*!40000 ALTER TABLE `logs_type_ref_data` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:30
+-- Dump completed on 2024-11-12 18:37:42

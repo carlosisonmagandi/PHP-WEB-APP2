@@ -16,33 +16,30 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `inventory_images`
+-- Table structure for table `condition_status_tree`
 --
 
-DROP TABLE IF EXISTS `inventory_images`;
+DROP TABLE IF EXISTS `condition_status_tree`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inventory_images` (
+CREATE TABLE `condition_status_tree` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `inventory_id` int NOT NULL,
-  `file_name` varchar(255) NOT NULL,
-  `file_path` varchar(255) NOT NULL,
-  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `date_created` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `inventory_id` (`inventory_id`),
-  CONSTRAINT `inventory_images_ibfk_1` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=204 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `condition_type` varchar(255) DEFAULT NULL,
+  `condition_description` varchar(255) DEFAULT NULL,
+  `activity_date` varchar(255) DEFAULT NULL,
+  `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `inventory_images`
+-- Dumping data for table `condition_status_tree`
 --
 
-LOCK TABLES `inventory_images` WRITE;
-/*!40000 ALTER TABLE `inventory_images` DISABLE KEYS */;
-INSERT INTO `inventory_images` VALUES (192,145,'acacia.jpg','inventory-tree/Inventory/images/66daf5d6aed31.jpg',NULL,'2024-09-06'),(193,153,'narra.jpg','inventory-tree/Inventory/images/66daff2e5136a.jpg',NULL,'2024-09-06'),(194,154,'yakal.jpg','inventory-tree/Inventory/images/66db011baa7fc.jpg',NULL,'2024-09-06'),(202,159,'coconut.jpg','inventory-tree/Inventory/images/66e81c6fc3599.jpg','2024-09-16 11:54:23',NULL),(203,160,'yakal.jpg','inventory-tree/Inventory/images/66e8474f89482.jpg','2024-09-16 14:57:19',NULL);
-/*!40000 ALTER TABLE `inventory_images` ENABLE KEYS */;
+LOCK TABLES `condition_status_tree` WRITE;
+/*!40000 ALTER TABLE `condition_status_tree` DISABLE KEYS */;
+INSERT INTO `condition_status_tree` VALUES (8,'Confiscated','Logs that have been seized by authorities due to illegal activities such as unauthorized logging or transportation.',NULL,'2024-06-18 12:43:24'),(37,'Reported','Newly created Incident',NULL,'2024-10-18 10:18:57');
+/*!40000 ALTER TABLE `condition_status_tree` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:41
+-- Dump completed on 2024-11-12 18:37:37

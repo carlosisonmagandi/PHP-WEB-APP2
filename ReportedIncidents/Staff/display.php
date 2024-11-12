@@ -8,7 +8,7 @@ if (isset($_POST['Logout'])) {
     session_destroy();
     header("Location: ../../index.php");
     exit;
-}
+} 
 
 $activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';
 
@@ -27,7 +27,7 @@ if ($activeTab === 'tab3') {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/Styles/reported-incidents-staff-tab.css">
-    
+
     <!-- custom style -->
     <style>
         .tableDiv{
@@ -46,6 +46,16 @@ if ($activeTab === 'tab3') {
             background-color:#002f6c;
             color:#FFF;
         }
+        .back-to-list{
+            background-color: transparent;
+            color: #002f6c;
+            border: none;
+            padding: 6px;
+            font-size: 18px;
+            border-bottom: 2px solid #002f6c; 
+            padding-bottom: 4px;
+            float:right;
+        }
     </style>
     
     
@@ -55,7 +65,7 @@ if ($activeTab === 'tab3') {
     <?php 
     include("../../templates/nav-bar.php");
     ?>
-
+    
     <!-- Scripts -->
     <!-- Note: It will not work inside header because of the php block for templates -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -74,24 +84,28 @@ if ($activeTab === 'tab3') {
         <div class="tabset">
             <!-- Table view tab -->
             <input type="radio" name="tabset" id="tab1" aria-controls="tableView" <?php echo ($activeTab == 'tab1') ? 'checked' : ''; ?> onclick="setActiveTab('tab1')">
-            <label for="tab1" style="display: none">Table View</label>
+            <label for="tab1" style="display:none">Table View</label>
             
             <!-- Insert new tab -->
             <input type="radio" name="tabset" id="addRecordView" aria-controls="addRecordView" <?php echo ($activeTab == 'addRecordView') ? 'checked' : ''; ?> onclick="setActiveTab('addRecordView')">
-            <label for="addRecordView" style="display: none">Insert record</label>
+            <label for="addRecordView" style="display:none">Insert record</label>
             
             <!-- Update record tab -->
             <input type="radio" name="tabset" id="updateRecordView" aria-controls="updateRecordView" <?php echo ($activeTab == 'updateRecordView') ? 'checked' : ''; ?> onclick="setActiveTab('updateRecordView')">
-            <label for="updateRecordView" style="display: none">Update Record</label>
+            <label for="updateRecordView" style="display:none">Update Record</label>
             
             <!-- Map view tab -->
             <input type="radio" name="tabset" id="mapView" aria-controls="mapView" <?php echo ($activeTab == 'mapView') ? 'checked' : ''; ?> onclick="setActiveTab('mapView')">
-            <label for="mapView" style="display: none">Maps</label>
+            <label for="mapView" style="display:none">Maps</label>
 
             <!-- Full Details view tab -->
             <input type="radio" name="tabset" id="fullDetailsView" aria-controls="fullDetailsView" <?php echo ($activeTab == 'fullDetailsView') ? 'checked' : ''; ?> onclick="setActiveTab('fullDetailsView')">
-            <label for="fullDetailsView" style="display: none">Maps</label>
+            <label for="fullDetailsView" style="display:none">Fulldetails</label>
             
+            <!-- Update Maps view tab -->
+            <input type="radio" name="tabset" id="updateMapsView" aria-controls="updateMapsView" <?php echo ($activeTab == 'updateMapsView') ? 'checked' : ''; ?> onclick="setActiveTab('updateMapsView')">
+            <label for="updateMapsView" style="display:none">Update Maps</label>
+
             <div class="tab-panels">
                 <section id="tableView" class="tab-panel">
                     <!-- Display of table view -->
@@ -100,7 +114,7 @@ if ($activeTab === 'tab3') {
 
                     <div class="tableDiv">
                         <table id="incidentReportDataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
-                            <thead style="text-align:center; " >
+                            <thead style="text-align:center;">
                             <tr>
                             <th style="width:10%;">ID</th>
                                 <th>REPORT NUMBER</th>
@@ -153,14 +167,121 @@ if ($activeTab === 'tab3') {
 
                 <section id="addRecordView" class="tab-panel">
                     <!-- Manage Insert -->
-                    <button id="submitButton">Submit</button>
-                    <button id="addCoordinatesButton" >Add coordinates</button>
+                    <!-- <form> -->
+                     <div class="form-group">
+                            <button class="back-to-list" id="backToList">Back to List</button>
+                            <br><br>
+                            <h2> Create New </h2>
+                            <table style="width:100%;">
+                                
+                                <!-- Report Number -->
+                                <tr>
+                                    <td>
+                                        <label for="createNewReportedNumber">Report Number:</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="createNewReportedNumber" name="createNewReportedNumber" disabled >
+                                    </td>
+                                </tr>
+                                <!-- State -->
+                                <tr>
+                                    <td>
+                                        <label for="state">State:</label>
+                                    </td>
+                                    <td>
+                                        <!-- <input type="text" class="form-control" id="state" name="state" > -->
+                                        <select class="form-control" id="createNewState" name="createNewState">
+                                            <option value="Open">Open</option>
+                                            <option value="Assigned">Assigned</option>   
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- Assigned to -->
+                                <tr>
+                                    <td>
+                                        <label for="createNewAssignedTo">Assign to:</label>
+                                    </td>
+                                    <td>
+                                        <!-- <input type="text" class="form-control" id="assignedTo" name="assignedTo" > -->
+                                        <select class="form-control" id="createNewAssignedTo" name="createNewAssignedTo">
+                                            <!-- Options will be populated by JavaScript -->
+                                        </select>
+                                    </td>
+                                </tr>
+                                <!-- is accepted -->
+                                <!-- <tr>
+                                    <td>
+                                        <label for="createNewIsAccepted">Is Accepted?</label>
+                                    </td>
+                                    <td>
+                                        <select class="form-control" id="createNewIsAccepted" name="createNewIsAccepted">
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </td>
+                                </tr> -->
+
+                                <!-- Reported by -->
+                                <tr>
+                                    <td>
+                                        <label for="createNewReportedBy">Reported By</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="createNewReportedBy" name="createNewReportedBy" >
+                                    </td>
+                                </tr>
+                                <!-- Reported Date -->
+                                <tr>
+                                    <td>
+                                        <label for="createNewReportedDate">Date Reported</label>
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control" id="createNewReportedDate" name="createNewReportedDate" >
+                                    </td>
+                                </tr>
+                                <!-- Location -->
+                                <tr>
+                                    <td>
+                                        <label for="createNewLocation">Location</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="createNewLocation" name="createNewLocation" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Coordinates</td>
+                                    <td>
+                                        <div>
+                                            <input id="createNewCoordinateLng" name="createNewCoordinateLng"  type="text" placeholder="Enter Longitude">
+
+                                            <input id="createNewCoordinateLat" name="createNewCoordinateLat"  type="text" placeholder="Enter Latitude">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Details -->
+                                <tr>
+                                    <td>
+                                        <label for="createNewDetails">Details</label>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" id="createNewDetails" name="createNewDetails" required>
+                                    </td>
+                                </tr>
+                                
+                            </table>                              
+                        </div>
+                        <button id="submitButton">Submit</button>
+                        <!-- <button id="setLocationButton" >Set Location</button> -->
+                    <!-- </form> -->
+                    
                 </section>
 
                 <section id="updateRecordView" class="tab-panel">
                     <!-- Manage Update record -->
                     <!-- <form> -->
                         <div class="form-group">
+                            <button class="back-to-list" id="backToListFromUpdate">Back to List</button>
+                            <br><br>
                             <h2>Edit Details</h2>
                             <table style="width:100%">
                                 <tr>
@@ -211,10 +332,7 @@ if ($activeTab === 'tab3') {
                                         <label for="isAccepted">Is Accepted?</label>
                                     </td>
                                     <td>
-                                        <select class="form-control" id="isAccepted" name="isAccepted">
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
-                                        </select>
+                                    <input type="text" class="form-control" id="isAccepted" name="isAccepted" disabled >
                                     </td>
                                 </tr>
 
@@ -245,16 +363,31 @@ if ($activeTab === 'tab3') {
                                         <input type="text" class="form-control" id="details" name="details" >
                                     </td>
                                 </tr>
+                                <!-- Coordinates -->
+                                <tr>
+                                    <td>
+                                        <label for="details">Coordinates</label>
+                                    </td>
+                                    <td>
+                                        Longitude: <input type="text" class="form-control" id="coordinate_lng_from_put" name="coordinate_lng_from_put" >
+                                        Latitude: <input type="text" class="form-control" id="coordinate_lat_from_put" name="coordinate_lat_from_put" >
+                                    </td>
+                                    
+                                </tr>
                             </table>                              
                         </div>
 
                         <button id="saveUpdateButton" >Save</button>
+                        <!-- <button id="updateMapsButton" >Update Maps</button> -->
                     <!-- </form> -->
                 </section>
 
                 <section id="mapView" class="tab-panel">
                     <!-- Manage Map view -->
                     <button id="doneMapButton" >Done</button>
+                    <button id="addCoordinatesButton" >Add Coordinates</button>
+                    <div id="mapViewContainer"></div>
+                    
                 </section>
 
                 <section id="fullDetailsView" class="tab-panel">
@@ -308,11 +441,11 @@ if ($activeTab === 'tab3') {
                                 </tr>
                                 <tr>
                                     <td><strong>Coordinate Lat</strong></td>
-                                    <td id="coordinate_lat"></td>
+                                    <td id="coordinate_lat_from_get"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Coordinate Lng</strong></td>
-                                    <td id="coordinate_lng"></td>
+                                    <td id="coordinate_lng_from_get"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Activity Date</strong></td>
@@ -331,6 +464,11 @@ if ($activeTab === 'tab3') {
                     </div>
 
                     <button id="fullDetailsBackButton" >Back</button>
+                </section>
+
+                <!-- Update maps view section -->
+                <section id="updateMapsVIew" class="tab-panel">
+                    test map view section
                 </section>
             </div>
         </div>
@@ -364,11 +502,11 @@ if ($activeTab === 'tab3') {
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <li>
                                             <button class="actionButton" id="updateButton" onclick="switchToThirdTab(${row.id})">
-                                                <i class="fas fa-edit"></i> Edit
+                                                <i class="fas fa-edit" ></i> Edit
                                             </button>
                                         </li>
                                         <li>
-                                            <button class="actionButton" id="deleteButton">
+                                            <button class="actionButton" id="deleteButton" onclick="deleteRecord(${row.id})">
                                                 <i class="fas fa-trash-alt"></i> Delete
                                             </button>
                                         </li>
@@ -391,6 +529,7 @@ if ($activeTab === 'tab3') {
                         });
 
                         table.rows.add(rows).draw();
+                        table.order([0, 'desc']).draw();
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
@@ -410,7 +549,6 @@ if ($activeTab === 'tab3') {
                     success: function(response) {
                         var res = JSON.parse(response);
                         if (res.status === 'success') {
-                            // console.log("Active tab updated successfully");
                             
                             document.getElementById(tabId).checked = true; // Ensure the tab is checked
                             
@@ -434,7 +572,7 @@ if ($activeTab === 'tab3') {
                 //set value for action button
                 sessionStorage.setItem('actionButton', 'updateDetails');
                 const actionButton = sessionStorage.getItem('actionButton');
-                console.log("action is:",actionButton);
+                // console.log("action is:",actionButton);
                 
                 if (id) {
                     
@@ -442,7 +580,7 @@ if ($activeTab === 'tab3') {
                         url: '/ReportedIncidents/Staff/GET/get-record-by-id.php',
                         type: 'GET',
                         data: { reported_id: id },
-                        dataType: 'json',
+                        dataType: 'json',   
                         success: function(data) {
                             if (data.status === 'success') {
                                 getAccountByFieldStaff();//call function to display the fullname based on session value
@@ -452,17 +590,12 @@ if ($activeTab === 'tab3') {
                                 $('#reportedNumber').val(record.report_number);
                                 $('#state').val(record.state);
                                 $('#assignedTo').val(record.assigned_to);
-                                //  $('#isAccepted').val(record.isAccepted);
+                                $('#isAccepted').val(record.isAccepted);
                                 $('#reportedBy').val(record.reported_by);
                                 $('#location').val(record.location);
                                 $('#details').val(record.illegal_activity_detail);
-
-                                // console.log("dito",record.isAccepted);
-                                if (record.isAccepted === 'Yes') {
-                                    $('#isAccepted').val('Yes'); 
-                                } else if (record.isAccepted === 'No') {
-                                    $('#isAccepted').val('No'); 
-                                }
+                                $('#coordinate_lat_from_put').val(record.coordinate_lat);
+                                $('#coordinate_lng_from_put').val(record.coordinate_lng);
 
                                 // Store the value in sessionStorage
                                 sessionStorage.setItem('reportedId', record.id);
@@ -473,6 +606,8 @@ if ($activeTab === 'tab3') {
                                 sessionStorage.setItem('reportedBy', record.reported_by);
                                 sessionStorage.setItem('location', record.location);
                                 sessionStorage.setItem('details', record.illegal_activity_detail);
+                                sessionStorage.setItem('coordinate_lat_from_put', record.coordinate_lat);
+                                sessionStorage.setItem('coordinate_lng_from_put', record.coordinate_lng);
                             } else {
                                 Swal.fire('Error!', data.message || 'An error occurred while fetching the record.', 'error');
                             }
@@ -486,6 +621,7 @@ if ($activeTab === 'tab3') {
 
             // Retrieve the value from sessionStorage on page load
             $(document).ready(function() {
+            
                 const actionButton=sessionStorage.getItem('actionButton');
                 if(actionButton==='updateDetails'){
                     getAccountByFieldStaff();
@@ -497,8 +633,10 @@ if ($activeTab === 'tab3') {
                     const reportedBy = sessionStorage.getItem('reportedBy');
                     const location = sessionStorage.getItem('location');
                     const details = sessionStorage.getItem('details');
+                    const coordinate_lng= sessionStorage.getItem('coordinate_lng_from_put');
+                    const coordinate_lat= sessionStorage.getItem('coordinate_lat_from_put');
 
-                    if (savedId && savedNumber && state && assignedTo && isAccepted && reportedBy && location && details) {
+                    if (savedId && savedNumber && state && assignedTo && isAccepted && reportedBy && location && details && coordinate_lng && coordinate_lat) {
                         $('#reportedId').val(savedId);
                         $('#reportedNumber').val(savedNumber);
                         $('#state').val(state);
@@ -507,10 +645,14 @@ if ($activeTab === 'tab3') {
                         $('#reportedBy').val(reportedBy);
                         $('#location').val(location);
                         $('#details').val(details);
+                        $('#coordinate_lng_from_put').val(coordinate_lng);
+                        $('#coordinate_lat_from_put').val(coordinate_lat);
                     }
-                }else if(actionButton==='fulldetails'){
-                    console.log('call session function for full details view');
+                }else if(actionButton=='fulldetails'){
+                    // console.log('call session function for full details view');
                     getSessionFullDetails();
+                }else if (actionButton==='createNew'){
+                    createNewGetAccountByFieldStaff();
                 }
                 
             });
@@ -521,7 +663,6 @@ if ($activeTab === 'tab3') {
                     url: '/ReportedIncidents/Staff/GET/get-account.php',
                     type: 'POST',
                     success: function(response) {
-
                         var assignedToDropdown = $('#assignedTo');
                         assignedToDropdown.empty();
 
@@ -547,9 +688,42 @@ if ($activeTab === 'tab3') {
                         console.error("An error occurred ");
                     }
                 });
-
             }
 
+            //Display fullname on dropdown menu(Create new VIEW)
+            function createNewGetAccountByFieldStaff(){
+                $.ajax({
+                    url: '/ReportedIncidents/Staff/GET/get-account.php',
+                    type: 'POST',
+                    success: function(response) {
+                        var assignedToDropdown = $('#createNewAssignedTo');
+                        assignedToDropdown.empty();
+
+                        if (!id) {
+                            assignedToDropdown.append('<option value="">Select Field Staff</option>');
+                        } else {
+                            // Retrieve from session storage if available
+                            let field_staff_session = sessionStorage.getItem('assignedTo');
+                            if (field_staff_session) {
+                                assignedToDropdown.append('<option selected value="' + field_staff_session + '">' + field_staff_session + '</option>');
+                            }
+                        }
+
+                        // Iterate through the response data (array of accounts)
+                        $.each(response, function(index, fieldStaff) {
+                            var fullName = fieldStaff.full_name;
+                            if (!assignedToDropdown.find('option[value="' + fullName + '"]').length) {
+                                assignedToDropdown.append('<option value="' + fullName + '">' + fullName + '</option>');
+                            }
+                        });
+                    },
+                    error: function() {
+                        console.error("An error occurred ");
+                    }
+                });
+            }
+
+            //switching logic 
             function switchToSecondTab(tabId) {
                 setActiveTab('addRecordView'); 
             }
@@ -560,83 +734,216 @@ if ($activeTab === 'tab3') {
             function switchToFullDetailsTab() {
                 setActiveTab('fullDetailsView'); 
             }
+            function switchToUpdateMapsTab() {
+                setActiveTab('updateMapsView'); 
+            }
 
 
             // button click functions
             $('#createNewButton').on('click', function() {
-                switchToSecondTab();
+                sessionStorage.setItem('actionButton', 'createNew');
+                // const actionButton = sessionStorage.getItem('actionButton');
+                // console.log("action is:",actionButton);
+                switchToSecondTab();// Switch to Create New record View 
+                createNewGetAccountByFieldStaff();//Call the drop 
+
             });
+
+            // delete button
+            function deleteRecord(id) {
+                sessionStorage.setItem('actionButton', 'deleteRecord');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var data = {
+                            id: id
+                        };
+
+                        $.ajax({
+                            url: '/ReportedIncidents/Staff/DELETE/delete-record.php',
+                            type: 'DELETE',
+                            contentType: 'application/json',
+                            data: JSON.stringify(data),
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.status === 'success') {
+                                    Swal.fire('Deleted!', 'The record has been deleted successfully.', 'success').then(() => {
+                                        fetchDataFromDB();
+                                    });
+                                } else {
+                                    Swal.fire('Error!', response.message || 'An error occurred while deleting the record.', 'error');
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                Swal.fire('Error!', 'An error occurred while deleting the record.', 'error');
+                            }
+                        });
+                    }
+                });
+
+            };
 
             // $('#updateRecordButton').on('click', function() {
             //     switchToThirdTab();
             // });
 
+            
             $('#submitButton').on('click', function() {
-                console.log("run the Ajax logic for submiting the record");
+                const dateReported = $('#createNewReportedDate').val();
+                
+                const today = new Date();
+                const selectedDate = new Date(dateReported);
+
+                today.setHours(0, 0, 0, 0);
+                selectedDate.setHours(0, 0, 0, 0);
+                
+                if (selectedDate > today) {
+                    Swal.fire('Invalid Date!', 'The date cannot be in the future.', 'error');
+                    return;  
+                }
+
+                const data = {
+                    action: 'insert_record',
+                    state: $('#createNewState').val(),
+                    assignedTo: $('#createNewAssignedTo').val(),
+                    reportedBy: $('#createNewReportedBy').val(),
+                    location: $('#createNewLocation').val(),
+                    date_reported: dateReported,
+                    details: $('#createNewDetails').val(),
+                    coordinate_lat: $('#createNewCoordinateLat').val(),
+                    coordinate_lng: $('#createNewCoordinateLng').val()
+                };
+
+                const labels = {
+                    state: 'State',
+                    assignedTo: 'Assigned To',
+                    reportedBy: 'Reported By',
+                    location: 'Location',
+                    details: 'Details',
+                    date_reported: 'Date Reported',
+                    coordinate_lat: 'Latitude',
+                    coordinate_lng: 'Longitude',
+                };
+
+                for (let key in data) {
+                    if (data[key] === '' || data[key] === null) {
+                        Swal.fire(`${labels[key]} is required!`, 'Please complete the field.', 'info');
+                        return;
+                    }
+                }
+
+                $.ajax({
+                    url: '/ReportedIncidents/Staff/POST/insert-record.php',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    dataType: 'json',
+                    success: function(response) {
+                        // console.log('Response received:', response);
+                        if (response.status === 'success') {
+                            $('#createNewState').val('');
+                            $('#createNewAssignedTo').val('');
+                            $('#createNewReportedBy').val('');
+                            $('#createNewLocation').val('');
+                            $('#createNewReportedDate').val('');
+                            $('#createNewDetails').val('');
+                            $('#createNewCoordinateLat').val('');
+                            $('#createNewCoordinateLng').val('');
+                            Swal.fire('Success!', 'Your record has been added successfully.', 'success').then(() => {
+                                fetchDataFromDB();
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message || 'An error occurred while inserting the record.', 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Error!', 'An error occurred while inserting new record.', 'error');
+                    }
+                });
+
                 switchToFirstTab();
             });
 
-            $('#addCoordinatesButton').on('click', function() {
-                switchToFourthTab();
+
+            //Create New- back to list button action
+            $('#backToList').on('click', function() {
+                switchToFirstTab();
+            });
+            
+            $('#setLocationButton').on('click', function() {
+                //switchToFourthTab();//Switch to Map view
+                
+         
+            });
+
+            // Update actions-------------------------------------------------------------------------------------------------
+            $('#backToListFromUpdate').on('click', function() {
+                switchToFirstTab();
             });
 
             $('#saveUpdateButton').on('click', function() {
                 clearSessionData();
                 // Run AJAX logic for update
-                console.log("Run AJAX logic for update");
+                const savedId = sessionStorage.getItem('reportedId');
+                // console.log("Record id:",savedId);
+                // console.log("Run AJAX logic for update");
 
-                // const formData = new FormData();
-                // formData.append('action', 'update_record');
-                // formData.append('id', id); // Function to get 'id' from the URL
-                // formData.append('plate_no', $('#plate_no').val());
+                const formData = new FormData();
+                formData.append('action', 'update_record');
+                formData.append('id', savedId);
+                formData.append('state', $('#state').val());
+                formData.append('isAccepted', $('#isAccepted').val());
+                formData.append('assignedTo', $('#assignedTo').val());
+                formData.append('reportedBy', $('#reportedBy').val());
+                formData.append('location', $('#location').val());
+                formData.append('details', $('#details').val());
+                formData.append('coordinate_lng', $('#coordinate_lng_from_put').val());
+                formData.append('coordinate_lat', $('#coordinate_lat_from_put').val());
                 
-                // //  console.log('Sending request with ID:', id);
-                // //  console.log('Form data:', formData.serialNo);
+                $.ajax({
+                    url: '/ReportedIncidents/Staff/PUT/update-record.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        //console.log('Response received:', response);
+                        if (response.status === 'success') {
+                            const { id, state, assignedTo, isAccepted, reportedBy, location, details, date_assigned, updated_by, coordinate_lat, coordinate_lng } = response.data;
+                            // console.log('ID:', id);
 
-                // $.ajax({
-                //     url: '/vehicles/update-record.php',
-                //     type: 'POST',
-                //     data: formData,
-                //     processData: false,
-                //     contentType: false,
-                //     dataType: 'json',
-                //     success: function(response) {
-                //         //console.log('Response received:', response);
-                        
-                //         if (response.status === 'success') {
-                //             // console.log('Success:', response);
-
-                //             Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
-                //             let queryString = id;
-                //             let viewType = sessionStorage.getItem('viewType');//get session value
-                            
-                //                 if(viewType=='card'){
-                //                     window.location.href = '/vehicles/vehicle-card-view.php?' + queryString;//redirect to card view
-                //                     sessionStorage.removeItem('viewType');
-                //                 }else{
-                //                     window.location.href = '/vehicles/vehicle-table-view.php?' + queryString;//redirect to table view 
-                //                     sessionStorage.removeItem('viewType');  
-                //                 }
-                //             });
-                //         } else {
-                //             Swal.fire('Error!', response.message || 'An error occurred while updating the record.', 'error');
-                //         }
-                //     },
-                //     error: function(xhr, status, error) {
-                //         // console.log('AJAX Error:', status, error);
-                //         // console.log('Response text:', xhr.responseText);
-                //         Swal.fire('Error!', 'An error occurred while updating the record.', 'error');
-                //     }
-                // });
+                            Swal.fire('Success!', 'Your record has been updated successfully.', 'success').then(() => {
+                                fetchDataFromDB();
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message || 'An error occurred while updating the record.', 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire('Error!', 'An error occurred while updating the record.', 'error');
+                    }
+                });
                 //refresh the table 
                 switchToFirstTab();
             });
 
+            $('#updateMapsButton').on('click', function() {
+                switchToUpdateMapsTab();
+            });
+
             $('#doneMapButton').on('click', function() {
                 // Run AJAX logic for Insert map coordinates
-                console.log("Run AJAX logic for Insert map coordinates");
+                // console.log("Run AJAX logic for Insert map coordinates");
                 //refresh the table 
-                switchToFirstTab();
+                switchToSecondTab();
             });
 
             $('#fullDetailsBackButton').on('click', function() {
@@ -650,7 +957,7 @@ if ($activeTab === 'tab3') {
                 //set value for action button
                 sessionStorage.setItem('actionButton', 'fulldetails');
                 const actionButton = sessionStorage.getItem('actionButton');
-                console.log("action is:",actionButton);
+                // console.log("action is:",actionButton);
                 var id = $(this).text();
                 if (id) {
                     $.ajax({
@@ -659,6 +966,8 @@ if ($activeTab === 'tab3') {
                         data: { reported_id: id },
                         dataType: 'json',
                         success: function(data) {
+                            window.location.href = "/ReportedIncidents/Staff/display.php";
+
                             if (data.status === 'success') {
                                 let record = data.data;
                                 // Populate HTML with AJAX response data
@@ -672,8 +981,8 @@ if ($activeTab === 'tab3') {
                                 sessionStorage.setItem('activity_date', record.activity_date);
                                 sessionStorage.setItem('assigned_by', record.assigned_by);
                                 sessionStorage.setItem('assigned_to', record.assigned_to);
-                                sessionStorage.setItem('coordinate_lat', record.coordinate_lat);
-                                sessionStorage.setItem('coordinate_lng', record.coordinate_lng);
+                                sessionStorage.setItem('coordinate_lat_from_get', record.coordinate_lat);
+                                sessionStorage.setItem('coordinate_lng_from_get', record.coordinate_lng);
                                 sessionStorage.setItem('created_by', record.created_by);
                                 sessionStorage.setItem('created_on', record.created_on);
                                 sessionStorage.setItem('date_assigned', record.date_assigned);
@@ -685,6 +994,7 @@ if ($activeTab === 'tab3') {
                                 sessionStorage.setItem('reported_by', record.reported_by);
                                 sessionStorage.setItem('state', record.state);
                                 sessionStorage.setItem('updated_by', record.updated_by);
+                                
                                 
                                 // Populate HTML with AJAX response data
                                 Object.keys(record).forEach(key => {
@@ -707,12 +1017,13 @@ if ($activeTab === 'tab3') {
             });
             //clear details view session
             function clearFullDetailsSessionData(){
+                sessionStorage.removeItem('actionButton');
                 sessionStorage.removeItem('id');
                 sessionStorage.removeItem('activity_date');
                 sessionStorage.removeItem('assigned_by');
                 sessionStorage.removeItem('assigned_to');
-                sessionStorage.removeItem('coordinate_lat');
-                sessionStorage.removeItem('coordinate_lng');
+                sessionStorage.removeItem('coordinate_lat_from_get');
+                sessionStorage.removeItem('coordinate_lng_from_get');
                 sessionStorage.removeItem('created_by');
                 sessionStorage.removeItem('created_on');
                 sessionStorage.removeItem('date_assigned');
@@ -728,24 +1039,24 @@ if ($activeTab === 'tab3') {
             }
             //Full details view get session value
             function getSessionFullDetails() {
-                const id = sessionStorage.getItem('id');
-                const report_number = sessionStorage.getItem('report_number');
-                const illegal_activity_detail = sessionStorage.getItem('illegal_activity_detail');
-                const data_state = sessionStorage.getItem('state');
-                const reported_by = sessionStorage.getItem('reported_by');
-                const date_reported = sessionStorage.getItem('date_reported');
-                const assigned_by = sessionStorage.getItem('assigned_by');
-                const assigned_to = sessionStorage.getItem('assigned_to');
-                const data_isAccepted = sessionStorage.getItem('isAccepted');
-                const date_assigned = sessionStorage.getItem('date_assigned');
-                const data_location = sessionStorage.getItem('location');
-                const coordinate_lat = sessionStorage.getItem('coordinate_lat');
-                const coordinate_lng = sessionStorage.getItem('coordinate_lng');
-                const activity_date = sessionStorage.getItem('activity_date');
-                const created_by = sessionStorage.getItem('created_by');
-                const created_on = sessionStorage.getItem('created_on');
-
-                if (id) {
+                
+                    const id = sessionStorage.getItem('id');
+                    const report_number = sessionStorage.getItem('report_number');
+                    const illegal_activity_detail = sessionStorage.getItem('illegal_activity_detail');
+                    const data_state = sessionStorage.getItem('state');
+                    const reported_by = sessionStorage.getItem('reported_by');
+                    const date_reported = sessionStorage.getItem('date_reported');
+                    const assigned_by = sessionStorage.getItem('assigned_by');
+                    const assigned_to = sessionStorage.getItem('assigned_to');
+                    const data_isAccepted = sessionStorage.getItem('isAccepted');
+                    const date_assigned = sessionStorage.getItem('date_assigned');
+                    const data_location = sessionStorage.getItem('location');
+                    const coordinate_lat = sessionStorage.getItem('coordinate_lat_from_get');
+                    const coordinate_lng = sessionStorage.getItem('coordinate_lng_from_get');
+                    const activity_date = sessionStorage.getItem('activity_date');
+                    const created_by = sessionStorage.getItem('created_by');
+                    const created_on = sessionStorage.getItem('created_on');
+                    
                     $('#id').text(id);
                     $('#report_number').text(report_number);
                     $('#illegal_activity_detail').text(illegal_activity_detail);
@@ -757,17 +1068,17 @@ if ($activeTab === 'tab3') {
                     $('#data_isAccepted').text(data_isAccepted);
                     $('#date_assigned').text(date_assigned);
                     $('#data_location').text(data_location);
-                    $('#coordinate_lat').text(coordinate_lat);
-                    $('#coordinate_lng').text(coordinate_lng);
+                    $('#coordinate_lat_from_get').text(coordinate_lat);
+                    $('#coordinate_lng_from_get').text(coordinate_lng);
                     $('#activity_date').text(activity_date);
                     $('#created_by').text(created_by);
-                    $('#created_on').text(created_on);
-                }
+                    $('#created_on').text(created_on);  
             }
 
             // Clear session data 
             function clearSessionData() {
-                sessionStorage.removeItem('reportedId');
+                // sessionStorage.removeItem('reportedId');
+                sessionStorage.removeItem('actionButton');
                 sessionStorage.removeItem('reportedNumber');
                 sessionStorage.removeItem('assignedTo');
                 sessionStorage.removeItem('details');
@@ -776,6 +1087,8 @@ if ($activeTab === 'tab3') {
                 sessionStorage.removeItem('reportedBy');
                 sessionStorage.removeItem('state');
                 sessionStorage.removeItem('reportedNumber');
+                sessionStorage.removeItem('coordinate_lat_from_put');
+                sessionStorage.removeItem('coordinate_lng_from_put');
                 // console.log("cleared session");
             }
 
@@ -795,6 +1108,5 @@ if ($activeTab === 'tab3') {
     <?php
     include "../../templates/nav-bar2.php"; 
     ?>
-
 </body>
 </html> 

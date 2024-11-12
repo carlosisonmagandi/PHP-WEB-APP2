@@ -4,7 +4,6 @@ require("../../../includes/session.php");
 require("../../../includes/authentication.php");
 require_once("../../../includes/db_connection.php");
 
-// Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -13,80 +12,82 @@ header('Content-Type: application/json');
 $response = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Debug: Check if the POST data is being received
+    
     file_put_contents('php://stderr', print_r($_POST, TRUE));
 
-    $id = intval($_POST['id']);
-    if ($id > 0) {
-        // Fetch and sanitize input
-        $equipmentName = $_POST['equipmentName'] ?? '';
-        $type = $_POST['equipment_type'] ?? '';
-        $serialNo = $_POST['serialNo'] ?? '';
-        $brand = $_POST['brand'] ?? '';
-        $model = $_POST['model'] ?? '';
-        $condition = $_POST['condition'] ?? '';
-        $owner = $_POST['owner'] ?? '';
-        $dateOfConfiscation = $_POST['dateOfConfiscation'] ?? '';
-        $status = $_POST['status'] ?? '';
-        $location = $_POST['location'] ?? '';
-        $remarks = $_POST['remarks'] ?? '';
-        $user_name = $_SESSION['session_username'];
-       
-
-        $stmt = $connection->prepare("UPDATE incident_reports SET 
-            equipment_name=?,
-            equipment_type=?,
-            serial_no=?, 
-            brand=?, 
-            model=?,
-            equipment_status=?,
-            location=?,
-            date_of_compiscation=?,
-            equipment_owner=?,
-            equipment_condition=?,
-            remarks=?,
-            updated_by=?
-            WHERE id=?");
-
-        if ($stmt === false) {
-            file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
-        }
-
-        $stmt->bind_param('ssssssssssssi',
-            $equipmentName, 
-            $type, 
-            $serialNo, 
-            $brand, 
-            $model,
-            $status,
-            $location,
-            $dateOfConfiscation,
-            $owner,
-            $condition,
-            $remarks,
-            $user_name,
-            $equipment_id
-        );
-
-        if ($stmt->execute()) {
-            $response['status'] = 'success';
-            $response['message'] = 'Record updated successfully';
-        } else {
-            $response['status'] = 'error';
-            $response['message'] = 'Error updating record: ' . $stmt->error;
-        }
-
-        $stmt->close();
-    } else {
-        $response['status'] = 'error';
-        $response['message'] = 'Invalid or missing inventory ID';
+    $id=$_POST['id'] ?? '';
+    $state = $_POST['state'] ?? '';
+    $assignedTo = $_POST['assignedTo'] ?? '';
+    $isAccepted = $_POST['isAccepted'] ?? '';
+    $reportedBy = $_POST['reportedBy'] ?? '';
+    $location = $_POST['location'] ?? '';
+    $illegal_activity_detail = $_POST['details'] ?? '';
+    
+    $date_assigned = date('Y-m-d H:i:s');
+    $updated_by = $_SESSION['session_username'];
+    $coordinate_lat = $_POST['coordinate_lat'] ?? '';
+    $coordinate_lng = $_POST['coordinate_lng'] ?? '';
+    
+    $stmt = $connection->prepare("UPDATE incident_reports SET 
+        state=?,
+        assigned_to=?,
+        isAccepted=?,
+        reported_by=?,
+        location=?,
+        illegal_activity_detail=?,
+        date_assigned=?,
+        updated_by=?,
+        coordinate_lat=?,
+        coordinate_lng=?
+        WHERE id=?");
+    if ($stmt === false) {
+        file_put_contents('php://stderr', "Prepare failed: " . $connection->error . "\n");
     }
-
+    $stmt->bind_param('ssssssssssi',
+        $state,
+        $assignedTo,
+        $isAccepted,
+        $reportedBy,
+        $location,
+        $illegal_activity_detail,
+        $date_assigned,
+        $updated_by,
+        $coordinate_lat,
+        $coordinate_lng,
+        $id
+    );
+    if ($stmt->execute()) {
+        $response = [
+            'status' => 'success',
+            'message' => 'Record updated successfully',
+            'data' => [
+                'id' => $id,
+                'state' => $state,
+                'assignedTo' => $assignedTo,
+                'isAccepted' => $isAccepted,
+                'reportedBy' => $reportedBy,
+                'location' => $location,
+                'details' => $illegal_activity_detail,
+                'date_assigned' => $date_assigned,
+                'updated_by' => $updated_by,
+                'coordinate_lat' => $coordinate_lat,
+                'coordinate_lng' => $coordinate_lng
+            ]
+        ];
+    } else {
+        $response = [
+            'status' => 'error',
+            'message' => 'Error updating record: ' . $stmt->error
+        ];
+    }
+    $stmt->close();
+    
     $connection->close();
 } else {
-    $response['status'] = 'error';
-    $response['message'] = 'Invalid request method';
+    $response = [
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ];
 }
-
 echo json_encode($response);
 ?>

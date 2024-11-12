@@ -14,10 +14,11 @@ if(isset($_POST['Logout'])){
 <html>
 <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="../../Styles/styles.css">
-    <link rel="stylesheet" type="text/css" href="../../Styles/darkmode.css">
+    <link rel="stylesheet" type="text/css" href="../../../Styles/styles.css">
+    <link rel="stylesheet" type="text/css" href="../../../Styles/darkmode.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    
     <!-- data table -->
     <script src="/Styles/data-table/jquery-3.7.1.js"></script>
     <script src="/Styles/data-table/dataTables.js"></script>
@@ -631,7 +632,7 @@ include("../../Pages/FieldStaff/nav-bar2.php");
 
     //BAr chart
     var ctxBar = document.getElementById('barChart').getContext('2d');
-var barChart;
+    var barChart;
 
 function updateBarChart(data) {
     // Extract months and donation counts from the AJAX response
@@ -641,16 +642,14 @@ function updateBarChart(data) {
 
     // Loop through the data to populate the chart dynamically
     data.forEach(function(item) {
-        labels.push(months[item.completion_month - 1]); // convert month number to month name
+        labels.push(months[item.completion_month - 1]); 
         donationCounts.push(item.donation_count);
     });
 
-    // Destroy the old chart instance if it exists
     if (barChart) {
         barChart.destroy();
     }
 
-    // Create the new chart with the dynamic data
     barChart = new Chart(ctxBar, {
         type: 'bar',
         data: {

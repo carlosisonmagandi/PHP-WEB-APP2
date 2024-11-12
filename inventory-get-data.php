@@ -19,7 +19,7 @@ $sql = "SELECT id,
     apprehended_persons,
     date_created,
     species_status
-   FROM inventory WHERE species_status='Confiscated' ";
+   FROM inventory WHERE species_status='Confiscated' ORDER BY id";
 $result = $connection->query($sql);
 
 $data = array();

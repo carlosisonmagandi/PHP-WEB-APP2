@@ -16,30 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `equipment_status_ref_data`
+-- Table structure for table `inventory_title`
 --
 
-DROP TABLE IF EXISTS `equipment_status_ref_data`;
+DROP TABLE IF EXISTS `inventory_title`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `equipment_status_ref_data` (
+CREATE TABLE `inventory_title` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `status_title` varchar(255) DEFAULT NULL,
-  `status_description` varchar(255) DEFAULT NULL,
-  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `percentage` int NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `cy_start_year` varchar(255) DEFAULT NULL,
+  `cy_end_year` int DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `equipment_status_ref_data`
+-- Dumping data for table `inventory_title`
 --
 
-LOCK TABLES `equipment_status_ref_data` WRITE;
-/*!40000 ALTER TABLE `equipment_status_ref_data` DISABLE KEYS */;
-INSERT INTO `equipment_status_ref_data` VALUES (11,'Seized/Confiscated','The equipment has been taken by authorities or another entity for legal reasons.','2024-09-12 14:19:25','2024-09-12 14:19:25'),(12,'Under Investigation','The equipment is being examined as part of an ongoing investigation.','2024-09-12 14:19:49','2024-09-12 14:19:49'),(13,'Stolen','The equipment has been unlawfully taken.','2024-09-12 14:20:06','2024-09-12 14:20:06'),(14,'On Loan','The equipment has been temporarily given to someone else or another organization.','2024-09-12 14:20:20','2024-09-12 14:20:20');
-/*!40000 ALTER TABLE `equipment_status_ref_data` ENABLE KEYS */;
+LOCK TABLES `inventory_title` WRITE;
+/*!40000 ALTER TABLE `inventory_title` DISABLE KEYS */;
+INSERT INTO `inventory_title` VALUES (1,'2024-05-16 14:08:32','2024-05-16 14:08:32',100,'INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES\nAND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA AS OF CY','2018',2024);
+/*!40000 ALTER TABLE `inventory_title` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:39
+-- Dump completed on 2024-11-12 18:37:20

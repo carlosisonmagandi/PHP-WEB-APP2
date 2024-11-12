@@ -16,32 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `account`
+-- Table structure for table `map_coordinates`
 --
 
-DROP TABLE IF EXISTS `account`;
+DROP TABLE IF EXISTS `map_coordinates`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `account` (
+CREATE TABLE `map_coordinates` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `role` varchar(50) NOT NULL,
-  `status` varchar(20) NOT NULL DEFAULT 'inactive',
+  `inventory_id` int NOT NULL,
+  `longitude` varchar(255) NOT NULL,
+  `latitude` varchar(255) NOT NULL,
   `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `inventory_id` (`inventory_id`),
+  CONSTRAINT `map_coordinates_ibfk_1` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `account`
+-- Dumping data for table `map_coordinates`
 --
 
-LOCK TABLES `account` WRITE;
-/*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (64,'kian','$2y$10$nbjiw60sCTWSZCx/D2JY0O0XYY6/Pg2fWPK/b3yvy/dtJEGG6JHPG','2024-07-11 07:14:05','Staff','active','2024-09-14 05:56:24'),(65,'carlo','$2y$10$DlSbkqirNA5O101S9v2neu3sWJrbEbtm5a1cebfwkQm8N2AICDAkq','2024-09-03 16:34:40','Admin','active','2024-09-03 16:00:00');
-/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+LOCK TABLES `map_coordinates` WRITE;
+/*!40000 ALTER TABLE `map_coordinates` DISABLE KEYS */;
+INSERT INTO `map_coordinates` VALUES (15,145,'121.18352738047003','14.178422864219627','2024-10-21 14:39:06','2024-09-29 18:23:21','kian','kian'),(17,164,'121.14970261494994','14.189343384075187','2024-10-15 14:51:00','2024-10-11 09:55:15','kian','kian'),(18,168,'121.36282511691508','14.026834101924194','2024-10-21 14:38:26','2024-10-21 14:38:14','kian','kian'),(20,177,'121.18358195562513','14.17850428866798','2024-11-11 17:18:55','2024-11-11 03:32:24','carlo','carlo');
+/*!40000 ALTER TABLE `map_coordinates` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:46
+-- Dump completed on 2024-11-12 18:37:21

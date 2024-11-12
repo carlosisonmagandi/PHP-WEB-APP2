@@ -234,7 +234,7 @@ if(isset($_POST['Logout'])){
                     </div>
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <a class="nav-link" href="/Pages/admin/dashboard.php">
+                            <a class="nav-link" href="/Pages/FieldStaff/dashboard.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 Dashboard
                             </a>
@@ -287,17 +287,17 @@ if(isset($_POST['Logout'])){
                                             </nav>
                                         </div> -->
 
-                                        <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseDonations" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                        <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseDonations" aria-expanded="false" aria-controls="pagesCollapseAuth">
                                             Donations
                                             <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                         </a>
                                         <div class="collapse" id="pagesCollapseDonations" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                             <nav class="sb-sidenav-menu-nested nav">
                                                 <a class="nav-link" href="/Admin/Monitoring/monitoring-display.php">Forest Products</a>
-                                                <!-- <a class="nav-link" href="register.html">Equipment</a> -->
-                                                <!-- <a class="nav-link" href="password.html">Vehicle</a> -->
+                                                <a class="nav-link" href="register.html">Equipment</a>
+                                                <a class="nav-link" href="password.html">Vehicle</a>
                                             </nav>
-                                        </div>
+                                        </div> -->
                                     </nav>
                                 </div>
                             <!--  -->
@@ -314,20 +314,20 @@ if(isset($_POST['Logout'])){
                                     </a>
                                     <div class="collapse" id="pagesCollapseTrees" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="#">View All</a>
-                                            <a class="nav-link" href="#">Assigned to me</a>
+                                            <a class="nav-link" href="/Pages/FieldStaff/MyTickets/view-all-incidents.php">View All</a>
+                                            <a class="nav-link" href="/Pages/FIeldStaff/MyTickets/view-assign-to-me.php">Assigned to me</a>
                                         </nav>
                                     </div>
-                                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">
+                                    <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">
                                         Donations 
                                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                                     </a>
                                     <div class="collapse" id="pagesCollapseVehicle" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
-                                            <a class="nav-link" href="/vehicles/vehicle-table-view.php">View All</a>
+                                            <a class="nav-link" href="/Pages/FieldStaff/MyTickets/view-all-incidents.php">View All</a>
                                             <a class="nav-link" href="/vehicles/vehicle-card-view.php">Assigend to me</a>
                                         </nav>
-                                    </div>
+                                    </div> -->
                                     
                                    
                                 </nav>

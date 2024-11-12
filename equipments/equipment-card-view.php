@@ -230,7 +230,7 @@ $hasId = !empty($id);
                                 </div>
                                 <br>
                                 <div class="buttonsDiv">
-                                    <input class="button" type="button" value="view location">
+                                    
                                     <input class="button" id="moreDetails" data-id="${id}" type="button" value="more details">
                                 </div>
                             </div>

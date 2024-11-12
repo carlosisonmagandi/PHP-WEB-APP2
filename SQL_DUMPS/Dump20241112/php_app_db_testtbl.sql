@@ -16,35 +16,29 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `map_coordinates`
+-- Table structure for table `testtbl`
 --
 
-DROP TABLE IF EXISTS `map_coordinates`;
+DROP TABLE IF EXISTS `testtbl`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `map_coordinates` (
+CREATE TABLE `testtbl` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `inventory_id` int NOT NULL,
-  `longitude` varchar(255) NOT NULL,
-  `latitude` varchar(255) NOT NULL,
-  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `created_by` varchar(255) DEFAULT NULL,
-  `updated_by` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `inventory_id` (`inventory_id`),
-  CONSTRAINT `map_coordinates_ibfk_1` FOREIGN KEY (`inventory_id`) REFERENCES `inventory` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `Car` varchar(255) NOT NULL,
+  `Truck` varchar(255) NOT NULL,
+  `Jeepney` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `map_coordinates`
+-- Dumping data for table `testtbl`
 --
 
-LOCK TABLES `map_coordinates` WRITE;
-/*!40000 ALTER TABLE `map_coordinates` DISABLE KEYS */;
-INSERT INTO `map_coordinates` VALUES (2,145,'121.17842603410668','14.19135422831107','2024-09-19 09:20:53','2024-09-19 09:20:53','Carlo',NULL);
-/*!40000 ALTER TABLE `map_coordinates` ENABLE KEYS */;
+LOCK TABLES `testtbl` WRITE;
+/*!40000 ALTER TABLE `testtbl` DISABLE KEYS */;
+INSERT INTO `testtbl` VALUES (52,'Mitsubishi','L400','Owner'),(53,'Honda','L3','Jeep'),(54,'Chevrolet','L5','Owner'),(55,'Honda','L3','Jeep'),(56,'Chevrolet','L5','Owner'),(57,'Honda','L3','Jeep'),(58,'Chevrolet','L5','Owner'),(59,'Honda','L3','Jeep'),(60,'Chevrolet','L5','Owner'),(61,'Honda','L3','Jeep'),(62,'Chevrolet','L5','Owner');
+/*!40000 ALTER TABLE `testtbl` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -56,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-20  0:54:04
+-- Dump completed on 2024-11-12 18:37:35

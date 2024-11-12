@@ -32,7 +32,7 @@ CREATE TABLE `equipments_images` (
   PRIMARY KEY (`id`),
   KEY `equipment_id` (`equipment_id`),
   CONSTRAINT `equipments_images_ibfk_1` FOREIGN KEY (`equipment_id`) REFERENCES `equipments` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `equipments_images` (
 
 LOCK TABLES `equipments_images` WRITE;
 /*!40000 ALTER TABLE `equipments_images` DISABLE KEYS */;
-INSERT INTO `equipments_images` VALUES (22,9,'Bolo_Farm.jpg','Inventory/images/66e020359a17b.jpg','2024-09-10 10:32:21','2024-09-10 10:32:21'),(25,1,'Chainsaw.jpg','Inventory/images/66e069edd1c2c.jpg','2024-09-10 15:46:53','2024-09-09 16:00:00'),(26,2,'Chainsaw2.jpg','Inventory/images/66e069fb6c419.jpg','2024-09-10 15:47:07','2024-09-09 16:00:00'),(27,1,'Knife.jpg','Inventory/images/66e072663daa3.jpg','2024-09-10 16:23:02','2024-09-09 16:00:00'),(28,9,'Crowbar.jpg','Inventory/images/66e1e82604636.jpg','2024-09-11 18:57:42','2024-09-10 16:00:00'),(29,9,'Grass_Cutter.jpg','Inventory/images/66e1e882d33b8.jpg','2024-09-11 18:59:14','2024-09-10 16:00:00'),(30,9,'Knife.jpg','Inventory/images/66e1e882d7a7f.jpg','2024-09-11 18:59:14','2024-09-10 16:00:00'),(31,9,'Rope.jpg','Inventory/images/66e1e882dabfe.jpg','2024-09-11 18:59:14','2024-09-10 16:00:00'),(32,9,'Wood_Saw.jpg','Inventory/images/66e1e882dd83c.jpg','2024-09-11 18:59:14','2024-09-10 16:00:00');
+INSERT INTO `equipments_images` VALUES (26,2,'Chainsaw2.jpg','Inventory/images/66e069fb6c419.jpg','2024-09-10 15:47:07','2024-09-09 16:00:00'),(34,2,'Rope.jpg','Inventory/images/6708fcfe2a14e.jpg','2024-10-11 10:25:02','2024-10-10 16:00:00'),(35,2,'Wood_Saw.jpg','Inventory/images/6708fcfe2f578.jpg','2024-10-11 10:25:02','2024-10-10 16:00:00'),(36,12,'Chainsaw.jpg','Inventory/images/6709275ede130.jpg','2024-10-11 13:25:50','2024-10-11 13:25:50'),(38,13,'Grass_Cutter.jpg','Inventory/images/670fef7cc847f.jpg','2024-10-16 16:53:16','2024-10-16 16:53:16'),(39,14,'Wood_Saw.jpg','Inventory/images/670ff122b74e2.jpg','2024-10-16 17:00:18','2024-10-16 17:00:18');
 /*!40000 ALTER TABLE `equipments_images` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:29
+-- Dump completed on 2024-11-12 18:37:30

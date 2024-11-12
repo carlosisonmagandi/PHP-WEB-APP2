@@ -16,33 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `user_email`
+-- Table structure for table `vehicle_images`
 --
 
-DROP TABLE IF EXISTS `user_email`;
+DROP TABLE IF EXISTS `vehicle_images`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_email` (
+CREATE TABLE `vehicle_images` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) DEFAULT NULL,
-  `email` varchar(225) DEFAULT NULL,
-  `password_hash` varchar(225) DEFAULT NULL,
-  `reset_token_hash` varchar(64) DEFAULT NULL,
-  `reset_token_expires_at` datetime DEFAULT NULL,
-  `account_activation_hash` varchar(64) DEFAULT NULL,
+  `vehicle_id` int NOT NULL,
+  `file_name` varchar(255) NOT NULL,
+  `file_path` varchar(255) NOT NULL,
+  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `date_created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `account_activation_hash` (`account_activation_hash`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `vehicle_id` (`vehicle_id`),
+  CONSTRAINT `vehicle_images_ibfk_1` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `user_email`
+-- Dumping data for table `vehicle_images`
 --
 
-LOCK TABLES `user_email` WRITE;
-/*!40000 ALTER TABLE `user_email` DISABLE KEYS */;
-INSERT INTO `user_email` VALUES (1,'carlo','carlo.magandi@gmail.com','123abc',NULL,NULL,NULL);
-/*!40000 ALTER TABLE `user_email` ENABLE KEYS */;
+LOCK TABLES `vehicle_images` WRITE;
+/*!40000 ALTER TABLE `vehicle_images` DISABLE KEYS */;
+INSERT INTO `vehicle_images` VALUES (4,2,'closed_van.jpg','Inventory/images/670d48e0a64ac.jpg','2024-10-14 16:37:52','2024-10-13 16:00:00',NULL),(5,1,'Tusker.png','Inventory/images/670d54733db95.png','2024-10-14 17:27:15','2024-10-13 16:00:00',NULL);
+/*!40000 ALTER TABLE `vehicle_images` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:42
+-- Dump completed on 2024-11-12 18:37:28

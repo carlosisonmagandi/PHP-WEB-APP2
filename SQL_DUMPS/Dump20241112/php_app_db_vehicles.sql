@@ -16,30 +16,43 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `equipment_condition_ref_data`
+-- Table structure for table `vehicles`
 --
 
-DROP TABLE IF EXISTS `equipment_condition_ref_data`;
+DROP TABLE IF EXISTS `vehicles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `equipment_condition_ref_data` (
+CREATE TABLE `vehicles` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `condition_title` varchar(255) DEFAULT NULL,
-  `condition_description` varchar(255) DEFAULT NULL,
+  `vehicle_name` varchar(255) DEFAULT NULL,
+  `vehicle_type` varchar(255) DEFAULT NULL,
+  `plate_no` varchar(255) DEFAULT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `model` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `date_of_compiscation` varchar(255) DEFAULT NULL,
+  `vehicle_owner` varchar(255) DEFAULT NULL,
+  `vehicle_condition` varchar(255) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `vehicle_status` varchar(255) DEFAULT NULL,
+  `confiscated_by` varchar(255) DEFAULT NULL,
+  `category_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `equipment_condition_ref_data`
+-- Dumping data for table `vehicles`
 --
 
-LOCK TABLES `equipment_condition_ref_data` WRITE;
-/*!40000 ALTER TABLE `equipment_condition_ref_data` DISABLE KEYS */;
-INSERT INTO `equipment_condition_ref_data` VALUES (3,'Used','The equipment has been previously used but is still functional.','2024-09-12 14:15:58','2024-09-12 14:15:58'),(4,'Broken','The equipment is non-functional and needs repairs to be operational.','2024-09-12 14:16:12','2024-09-12 14:16:12'),(5,'Damaged','he equipment has visible damage but might still be usable with some repairs.','2024-09-12 14:16:26','2024-09-12 14:16:26'),(6,'Poor','The equipment is significantly worn and may have minor functional issues.','2024-09-12 14:16:42','2024-09-12 14:16:42'),(7,'Fair','The equipment has noticeable wear and tear but still functions properly.','2024-09-12 14:16:57','2024-09-12 14:16:57'),(8,'Good','The equipment shows minor signs of wear but is fully functional.','2024-09-12 14:17:10','2024-09-12 14:17:10'),(9,'New','The equipment is in perfect, unused condition.','2024-09-12 14:17:33','2024-09-12 14:17:33');
-/*!40000 ALTER TABLE `equipment_condition_ref_data` ENABLE KEYS */;
+LOCK TABLES `vehicles` WRITE;
+/*!40000 ALTER TABLE `vehicles` DISABLE KEYS */;
+INSERT INTO `vehicles` VALUES (1,'Closed Van','SUV','HOK102V','Toyota','2021','Real Calamba','2024-10-17','Gerome','Good condition','Needs to investigate','2024-10-16 15:54:38','2024-09-26 17:01:28','Kian','carlo','Impounded','Joe','vehicle'),(2,'TruckModel1','Pickup Truck','LOL404','Mitsubishi','2024','Bucal Calamba','2024-10-16','Jose','Damaged','Test remarks','2024-10-16 15:54:38','2024-10-14 16:21:25','carlo','carlo','Under Maintenance','Penro','vehicle');
+/*!40000 ALTER TABLE `vehicles` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +64,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:44
+-- Dump completed on 2024-11-12 18:37:27

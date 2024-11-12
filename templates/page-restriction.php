@@ -1,3 +1,7 @@
+<?php
+session_start();  
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -18,15 +22,24 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-6">
                                 <div class="text-center mt-4">
-                                <img class="mb-4 img-error" src="/Images/401.png" />
+                                    <img class="mb-4 img-error" src="/Images/401.png" />
                                     <!-- <h1 class="display-1">401</h1> -->
                                     <p class="lead">Unauthorized</p>
                                     <p>Access to this resource is denied.</p>
-                                    <a href="/Pages/admin/dashboard.php">
-                                        <i class="fas fa-arrow-left me-1"></i>
-                                        Return to Home
-                                    </a>
+
+                                    <?php if (isset($_SESSION['session_role']) && $_SESSION['session_role'] == 'Field_Staff'): ?>
+                                        <a href="/Pages/FieldStaff/dashboard.php">
+                                            <i class="fas fa-arrow-left me-1"></i>
+                                            Return to Home!
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="/Pages/admin/dashboard.php">
+                                            <i class="fas fa-arrow-left me-1"></i>
+                                            Return to Home
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
+
                             </div>
                         </div>
                     </div>

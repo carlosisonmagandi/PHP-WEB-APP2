@@ -30,10 +30,11 @@ if(isset($_POST['submit'])){
                 if (($question1 == '' || $question1 == null) || ($question2 == '' || $question2 == null)) {
                     showAlertMsg("Please select your security questions.", "warning");
                 } else {
+                    $_SESSION['full_name']=$full_name;
                     // Insert the new user if username is not already taken
                     $queryUser = "INSERT INTO account (username, password, role, full_name) VALUES ('$userName', '$hashedPassword', 'Staff' , '$full_name')";
                     $sqlUser = mysqli_query($connection, $queryUser);
-    
+                    
                     // Insert Security question
                     include("register-security-question.php"); 
     

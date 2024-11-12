@@ -16,32 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `logs_type_ref_data`
+-- Table structure for table `vehicle_type_ref_data`
 --
 
-DROP TABLE IF EXISTS `logs_type_ref_data`;
+DROP TABLE IF EXISTS `vehicle_type_ref_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `logs_type_ref_data` (
+CREATE TABLE `vehicle_type_ref_data` (
   `id` int NOT NULL AUTO_INCREMENT,
   `type_title` varchar(255) DEFAULT NULL,
   `type_description` varchar(255) DEFAULT NULL,
   `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `create_by` varchar(255) DEFAULT NULL,
-  `update_by` varchar(255) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `logs_type_ref_data`
+-- Dumping data for table `vehicle_type_ref_data`
 --
 
-LOCK TABLES `logs_type_ref_data` WRITE;
-/*!40000 ALTER TABLE `logs_type_ref_data` DISABLE KEYS */;
-INSERT INTO `logs_type_ref_data` VALUES (1,'Coals','Sample coals Description','2024-09-14 06:27:35','2024-09-14 06:27:35',NULL,NULL),(3,'Test1','test1','2024-09-16 06:04:30','2024-09-16 05:00:09',NULL,NULL);
-/*!40000 ALTER TABLE `logs_type_ref_data` ENABLE KEYS */;
+LOCK TABLES `vehicle_type_ref_data` WRITE;
+/*!40000 ALTER TABLE `vehicle_type_ref_data` DISABLE KEYS */;
+INSERT INTO `vehicle_type_ref_data` VALUES (14,'SUV','Sport Utility Vehicle','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(15,'Pickup Truck','Medium Duty Pickup Truck','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(16,'Minivan','Passenger Minivan','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(17,'Crossover','Crossover SUV','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(18,'Cargo Van','Commercial Cargo Van','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(19,'Full-size SUV','Large Sport Utility Vehicle','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(20,'Off-road Vehicle','Heavy Duty Off-road Vehicle','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL),(21,'Heavy Truck','Large Commercial Truck','2024-10-14 16:28:59','2024-10-14 16:28:59',NULL,NULL);
+/*!40000 ALTER TABLE `vehicle_type_ref_data` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:40
+-- Dump completed on 2024-11-12 18:37:26

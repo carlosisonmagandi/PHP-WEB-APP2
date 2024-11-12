@@ -16,32 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `inventory_title`
+-- Table structure for table `admin_donation_rejected_req`
 --
 
-DROP TABLE IF EXISTS `inventory_title`;
+DROP TABLE IF EXISTS `admin_donation_rejected_req`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `inventory_title` (
+CREATE TABLE `admin_donation_rejected_req` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `request_id` int NOT NULL,
+  `reject_reason` varchar(255) DEFAULT NULL,
+  `rejected_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `percentage` int NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `cy_start_year` varchar(255) DEFAULT NULL,
-  `cy_end_year` int DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `rejected_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `request_id` (`request_id`),
+  CONSTRAINT `admin_donation_rejected_req_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `request_form` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `inventory_title`
+-- Dumping data for table `admin_donation_rejected_req`
 --
 
-LOCK TABLES `inventory_title` WRITE;
-/*!40000 ALTER TABLE `inventory_title` DISABLE KEYS */;
-INSERT INTO `inventory_title` VALUES (1,'2024-05-16 14:08:32','2024-05-16 14:08:32',100,'INVENTORY OF APPREHENDED/CONFISCATED FOREST PRODUCT/CONVEYANCES\nAND OTHER IMPLEMENTS DEPOSITED AT THE IMPOUNDING AREA OF PENRO LAGUNA AS OF CY','2018',2024);
-/*!40000 ALTER TABLE `inventory_title` ENABLE KEYS */;
+LOCK TABLES `admin_donation_rejected_req` WRITE;
+/*!40000 ALTER TABLE `admin_donation_rejected_req` DISABLE KEYS */;
+INSERT INTO `admin_donation_rejected_req` VALUES (25,60,'Kulang ng docs','carlo',NULL,'2024-10-21 15:00:14','2024-10-21 15:00:14','2024-10-21 15:00:14'),(27,59,'rejected2','carlo',NULL,'2024-10-21 17:19:26','2024-10-21 17:19:26','2024-10-21 17:19:26');
+/*!40000 ALTER TABLE `admin_donation_rejected_req` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:35
+-- Dump completed on 2024-11-12 18:37:34

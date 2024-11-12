@@ -267,7 +267,8 @@ include ("templates/nav-bar.php");
                     `;
                 }
             }
-        ]
+        ],
+        order: [[0, 'desc']]
     });
 
 

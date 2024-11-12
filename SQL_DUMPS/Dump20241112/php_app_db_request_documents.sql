@@ -16,29 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `testtbl`
+-- Table structure for table `request_documents`
 --
 
-DROP TABLE IF EXISTS `testtbl`;
+DROP TABLE IF EXISTS `request_documents`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `testtbl` (
+CREATE TABLE `request_documents` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `Car` varchar(255) NOT NULL,
-  `Truck` varchar(255) NOT NULL,
-  `Jeepney` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `request_id` int NOT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `request_id` (`request_id`),
+  CONSTRAINT `request_documents_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `request_form` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `testtbl`
+-- Dumping data for table `request_documents`
 --
 
-LOCK TABLES `testtbl` WRITE;
-/*!40000 ALTER TABLE `testtbl` DISABLE KEYS */;
-INSERT INTO `testtbl` VALUES (52,'Mitsubishi','L400','Owner'),(53,'Honda','L3','Jeep'),(54,'Chevrolet','L5','Owner'),(55,'Honda','L3','Jeep'),(56,'Chevrolet','L5','Owner'),(57,'Honda','L3','Jeep'),(58,'Chevrolet','L5','Owner'),(59,'Honda','L3','Jeep'),(60,'Chevrolet','L5','Owner'),(61,'Honda','L3','Jeep'),(62,'Chevrolet','L5','Owner');
-/*!40000 ALTER TABLE `testtbl` ENABLE KEYS */;
+LOCK TABLES `request_documents` WRITE;
+/*!40000 ALTER TABLE `request_documents` DISABLE KEYS */;
+INSERT INTO `request_documents` VALUES (41,59,'Inventory List.pdf','Uploads/request_documents/67111ac2c414e.pdf',NULL,NULL,'2024-10-17 14:10:10','2024-10-17 14:10:10');
+/*!40000 ALTER TABLE `request_documents` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:33
+-- Dump completed on 2024-11-12 18:37:22

@@ -131,22 +131,22 @@ $activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function(){
-            var originalData; // Store the original data
+            var originalData; 
 
-            function handleApprove(id, buttonValue) {// Function to handle approve button click
+            function handleApprove(id, buttonValue) {
                 $.ajax({
                     url: 'approve_account.php',
                     type: 'GET',
                     data: { id: id, buttonValue: buttonValue }, 
                     success: function(response) {
-                        $("body").append(response); // Display response from approve.php (alert)
+                        $("body").append(response); 
 
                         var row = $('#myTable').find('tr').filter(function () {// Update the status in the table without hiding the row
                             return $(this).find('td:first').text() == id; // Find the row with the corresponding user id
                         });
 
                         var newStatus = buttonValue === 'Approve' ? 'active' : 'inactive';// Find the status cell in the row and update its text
-                        row.find('td:nth-child(4)').html('<div class="status-circle ' + newStatus + '"></div>' + newStatus);
+                        row.find('td:nth-child(5)').html('<div class="status-circle ' + newStatus + '"></div>' + newStatus);
                     },
                     error: function(xhr, status, error) {
                         console.error("Failed to approve:", error);

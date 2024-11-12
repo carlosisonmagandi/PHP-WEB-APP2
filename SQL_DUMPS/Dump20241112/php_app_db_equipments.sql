@@ -37,8 +37,11 @@ CREATE TABLE `equipments` (
   `remarks` varchar(255) DEFAULT NULL,
   `activity_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created_on` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` varchar(255) DEFAULT NULL,
+  `updated_by` varchar(255) DEFAULT NULL,
+  `category_type` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +50,7 @@ CREATE TABLE `equipments` (
 
 LOCK TABLES `equipments` WRITE;
 /*!40000 ALTER TABLE `equipments` DISABLE KEYS */;
-INSERT INTO `equipments` VALUES (1,'Chainsaw A','Cutting tools','SN123458','Mitsubishi','2013','Confiscated','Forest Region 4B','2024-09-07','John doe','Good','Illegal logging operation','2024-09-10 16:22:11','2024-09-06 18:11:15'),(2,'Chainsaw','Cutting','SN123451','Stihl','MS 880','Confiscated','Forest Region 4A','2024-09-07','John Doe','Good','Illegal logging operation','2024-09-10 16:20:52','2024-09-10 08:17:54'),(9,'Bolo Knife','Hand tool','BL1023','N/A','N/A','Confiscated','Bucal Calamba','2023-09-22','James','Used','','2024-09-10 14:48:14','2024-09-10 10:32:21');
+INSERT INTO `equipments` VALUES (2,'Chainsaw','Cutting','SN123451','Stihl','MS 880','Confiscated','Forest Region 4A','2024-09-07','John Doe','Good','Illegal logging operation','2024-10-16 15:50:34','2024-09-10 08:17:54',NULL,NULL,'equipment'),(12,'Chainsaw test 1','Safety Equipment','SN123458','Stihl','2014','Under Investigation','Bucal Calamba','2024-10-09','John Doe','Overused','Test','2024-10-16 15:50:34','2024-10-11 13:25:50','carlo','carlo','equipment'),(13,'Grass Cutter','','SN123458','Stihl','MS 880','Seized/Confiscated','Forest Region 4A','2024-02-08','Esmeralda','Fair','Needs to investigate','2024-10-16 16:53:16','2024-10-16 16:53:16','carlo',NULL,'equipment'),(14,'Wood saw','','WS21245','ToolsKit','WS90','Under Investigation','Calamba','2024-02-08','Melissa','New','Illegal logging operation','2024-10-16 17:00:18','2024-10-16 17:00:18','carlo',NULL,'equipment');
 /*!40000 ALTER TABLE `equipments` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +63,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-16 23:17:31
+-- Dump completed on 2024-11-12 18:37:18
