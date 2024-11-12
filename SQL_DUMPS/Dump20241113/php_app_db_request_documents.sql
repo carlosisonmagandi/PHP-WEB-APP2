@@ -34,7 +34,7 @@ CREATE TABLE `request_documents` (
   PRIMARY KEY (`id`),
   KEY `request_id` (`request_id`),
   CONSTRAINT `request_documents_ibfk_1` FOREIGN KEY (`request_id`) REFERENCES `request_form` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `request_documents` (
 
 LOCK TABLES `request_documents` WRITE;
 /*!40000 ALTER TABLE `request_documents` DISABLE KEYS */;
-INSERT INTO `request_documents` VALUES (42,66,'Inventory List.pdf','Uploads/request_documents/67337021970d3.pdf',NULL,NULL,'2024-11-12 15:11:29','2024-11-12 15:11:29');
+INSERT INTO `request_documents` VALUES (42,66,'Inventory List.pdf','Uploads/request_documents/67337021970d3.pdf',NULL,NULL,'2024-11-12 15:11:29','2024-11-12 15:11:29'),(43,67,'Inventory List.pdf','Uploads/request_documents/67337e8c23e39.pdf',NULL,NULL,'2024-11-12 16:13:00','2024-11-12 16:13:00'),(44,68,'Inventory List.pdf','Uploads/request_documents/6733810a8c761.pdf',NULL,NULL,'2024-11-12 16:23:38','2024-11-12 16:23:38');
 /*!40000 ALTER TABLE `request_documents` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-13  0:07:15
+-- Dump completed on 2024-11-13  1:04:41
