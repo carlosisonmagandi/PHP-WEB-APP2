@@ -289,9 +289,9 @@ if (isset($_POST['Logout'])) {
                     } else {
                         // call AJAX that will use the barangay+city+municipality as coordinates
                         $.ajax({
-                            url: '/inventory-tree/get-record.php',
+                            url: '/Pages/FieldStaff/MyTickets/map2.php',
                             type: 'GET',
-                            data: { inventory_id: id },
+                            data: { id: id },
                             success: function(response) {
                                 //  console.log(response.data.barangay,response.data.city_municipality,response.data.province);
                                  if (navigator.geolocation) {

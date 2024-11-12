@@ -1,5 +1,5 @@
 <?php
-require_once("../includes/db_connection.php");
+require_once("../../../includes/db_connection.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     
