@@ -1,0 +1,235 @@
+<?php
+session_start();
+require("../../includes/session.php");
+require("../../includes/darkmode.php");
+require("../../includes/authentication.php");
+require_once "../../includes/db_connection.php";
+require_once("../../templates/alert-message.php");
+
+if (!isset($_SESSION['session_id'])) {// Check if the user is logged in
+    header("Location: ../../index.php");
+    exit();
+}
+
+if ($_SESSION['session_role']!='Admin') {// Check if the user is logged in
+    header("Location: ../../templates/page-restriction.php");
+    exit();
+}
+
+$activeTab = isset($_SESSION['activeTab']) ? $_SESSION['activeTab'] : 'tab1';// Get the active tab from session
+$activeTabName = isset($_SESSION['activeTabName']) ? $_SESSION['activeTabName'] : 'Species'; // Default value if not set
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Accounts</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/Styles/breadCrumbs.css">
+    <style>
+        body {
+            background-image: url('/Images/manage-accounts.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: right bottom;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%; /* Cover the entire body */
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9); /* Adjust opacity here */
+            z-index: -1;
+        }
+        .status-circle {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .active {
+            background-color: green;
+        }
+        .inactive {
+            background-color: red;
+        }
+        p {
+            display: inline;
+        }
+        @media screen and (min-width: 320px) and (max-width: 425px) {
+            #container {
+                background-color: rgba(255, 255, 255, 0.8);
+            }
+        } 
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <?php include("../../templates/nav-bar.php"); ?>
+
+    <!-- Alert message -->
+    <?php require_once("../../templates/alert-message.php"); ?>
+
+    <div class="container mt-4" style="padding:3%">
+
+        <!-- a simple div with some links -->
+        <?php if ($_SESSION['mode'] == 'light'): ?>
+            <div class="breadcrumb flat">
+                <a href="#">Account Management</a>
+                <a href="#" class="active">Accounts</a>
+            </div>
+        <?php else: ?>
+            <div class="breadcrumb">
+                <a href="#">Account Management</a>
+                <a href="#" class="active">Accounts</a>
+            </div>
+        <?php endif; ?>
+
+        <input type="text" id="searchInput" class="form-control mb-2" style="width:20%;float:right" 
+            <?php 
+            $notification_user_name = isset($_GET['user_name']) ? $_GET['user_name'] : null;
+            if ($notification_user_name == null) {
+                echo 'placeholder="Search..."';
+            } else {
+                echo "value=\"$notification_user_name\"";
+            }
+            ?>
+        >
+        <div id="refreshDiv">
+            <div class="table-responsive" style="padding:20px">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                            <th>Created On</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="myTable">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <ul class="pagination"></ul>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var originalData; 
+
+            function handleApprove(id, buttonValue) {
+                $.ajax({
+                    url: 'approve_account.php',
+                    type: 'GET',
+                    data: { id: id, buttonValue: buttonValue }, 
+                    success: function(response) {
+                        $("body").append(response); 
+
+                        var row = $('#myTable').find('tr').filter(function () {// Update the status in the table without hiding the row
+                            return $(this).find('td:first').text() == id; // Find the row with the corresponding user id
+                        });
+
+                        var newStatus = buttonValue === 'Approve' ? 'active' : 'inactive';// Find the status cell in the row and update its text
+                        row.find('td:nth-child(5)').html('<div class="status-circle ' + newStatus + '"></div>' + newStatus);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Failed to approve:", error);
+                    }
+                });
+            }
+            $.ajax({// Fetch accounts data from PHP script
+                url: 'fetch_accounts.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(accountsData) {
+                    originalData = accountsData; // Store the original data
+                    paginate(originalData); // Pagination
+                },
+                error: function(xhr, status, error) {
+                    console.error("Failed to fetch accounts data:", error);
+                }
+            });
+
+            $('#searchInput').keyup(function(){// Search functionality
+                var searchText = $(this).val().toLowerCase().trim();
+                if (searchText === "") { // If search input is empty, reset the table
+                    paginate(originalData);
+                } else {
+                    var filteredUsers = originalData.filter(function(user) {
+                        return user.username.toLowerCase().indexOf(searchText) > -1 || user.id.toString().indexOf(searchText) > -1;
+                    });
+                    paginate(filteredUsers); // Paginate filtered data
+                }
+            });
+
+            // Pagination
+            var itemsPerPage = 5;
+            var currentPage = 1;
+
+            function paginate(data) {
+                $('#myTable').empty();
+                var startIndex = (currentPage - 1) * itemsPerPage;
+                var endIndex = startIndex + itemsPerPage;
+                var paginatedData = data.slice(startIndex, endIndex);
+                populateTable(paginatedData);
+                renderPagination(Math.ceil(data.length / itemsPerPage));
+            }
+            function populateTable(data) {// Populate table with data
+                $('#myTable').empty();
+                $.each(data, function(i, user){
+                    var row = $('<tr>');
+                    row.append($('<td>').text(user.id));
+                    row.append($('<td>').text(user.full_name));
+                    row.append($('<td>').text(user.username));
+                    row.append($('<td>').text(user.created_on));
+                    row.append($('<td>').html('<div class="status-circle ' + user.status + '"></div>' + user.status));
+                    var actions = $('<td>');
+                    var approveBtn = $('<button class="btn btn-warning btn-sm mr-2">Approve</button>');
+                    approveBtn.click(function() {
+                        handleApprove(user.id, 'Approve'); 
+                    });
+                    actions.append(approveBtn);
+
+                    var deactivateBtn = $('<button class="btn btn-danger btn-sm">Deactivate</button>');
+                    deactivateBtn.click(function() {
+                        handleApprove(user.id, 'Deactivate'); 
+                    });
+                    actions.append(deactivateBtn);
+
+                    row.append(actions);
+                    $('#myTable').append(row);
+                });
+            }
+            function renderPagination(totalPages) {
+                $('.pagination').empty();
+                for (var i = 1; i <= totalPages; i++) {
+                    var li = $('<li class="page-item"><a class="page-link">' + i + '</a></li>');
+                    li.click(function(){
+                        currentPage = parseInt($(this).text());
+                        paginate(originalData);
+                    });
+                    $('.pagination').append(li);
+                }
+            }
+        });
+    </script>
+    <!-- Navbar 2 -->
+    <?php include("../../templates/nav-bar2.php"); ?>
+</body>
+</html>
