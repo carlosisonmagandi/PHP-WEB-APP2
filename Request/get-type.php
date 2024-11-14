@@ -1,0 +1,18 @@
+<?php
+require_once("../includes/db_connection.php");
+
+$sql = "SELECT type_title FROM logs_type_ref_data WHERE type_title != 'Vehicle' ORDER BY created_on DESC";
+$result = $connection->query($sql);
+
+$data = array();
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $data[] = $row['type_title'];
+    }
+}
+
+$connection->close();
+
+header('Content-Type: application/json');
+echo json_encode($data);
+?>

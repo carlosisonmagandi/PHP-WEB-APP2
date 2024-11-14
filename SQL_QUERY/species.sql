@@ -1,0 +1,37 @@
+CREATE TABLE species (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    species_name VARCHAR(255),
+    species_description VARCHAR(255),
+    activity_date VARCHAR(255),
+    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO species (species_name, species_description) VALUES
+("Molave", "A hard and durable wood, often used in construction and furniture."),
+("Philippine Mahogany", "A group of species valued for their timber."),
+("Yakal", "Known for its strength and used in heavy construction."),
+("Lauan", "Various species used for plywood and veneer."),
+("Apitong", "Used in construction and boat building."),
+("Bagras", "Known for its multi-colored bark, also called rainbow eucalyptus."),
+("Balete", "Often found in lowland forests, known for its large roots and spiritual significance."),
+("Dao", "Known for its large size and high-quality wood."),
+("Ipil", "Used in shipbuilding and heavy construction."),
+("Kamagong", "Known for its dark, hard wood also called ebony."),
+("Mangkono", "The hardest Philippine wood, used in tool handles and construction."),
+("Bagtikan", "A tall tree used for timber and plywood."),
+("Almaciga", "Source of Manila copal resin."),
+("Mangrove species", "Important for coastal ecosystems."),
+("Mango", "The Philippines produces some of the world's best mangoes."),
+("Durian", "Known for its strong odor and rich flavor."),
+("Lanzones", "Sweet and tangy fruit, highly prized in the Philippines."),
+("Rambutan", "A tropical fruit with a hairy exterior and sweet interior."),
+("Mangosteen", "Often called the \"queen of fruits\" for its sweet and juicy segments."),
+("Banana", "Numerous varieties are cultivated in the Philippines."),
+("Jackfruit", "Large fruit with sweet flesh."),
+("Coconut", "Widely grown for its versatile fruit and other uses."),
+("Papaya", "A tropical fruit enjoyed both ripe and green."),
+("Fire Tree", "Known for its bright red flowers."),
+("Golden Shower Tree", "Known for its long, yellow flower clusters."),
+("Acacia", "Often used as a shade tree with wide, spreading branches."),
+("Bougainvillea", "Though often a shrub, it can grow as a small tree with vibrant flowers."),
+("Narra", "The national tree of the Philippines, known for its durable wood and striking yellow flowers.");

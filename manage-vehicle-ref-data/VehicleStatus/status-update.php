@@ -1,0 +1,44 @@
+<?php
+require_once("../../includes/db_connection.php");
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
+    // Read JSON input from PUT request
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    $statusId = isset($data['id']) ? intval($data['id']) : 0;
+    $statusTitle = isset($data['statusTitle']) ? trim($data['statusTitle']) : '';
+    $statusDescription = isset($data['statusDescription']) ? trim($data['statusDescription']) : '';
+    $updatedBy = isset($_SESSION['session_username']) ? $_SESSION['session_username'] : '';
+
+    if (empty($statusTitle) || empty($statusDescription) || $statusId === 0) {
+        http_response_code(400);
+        echo json_encode(array("message" => "Title and Description are required."));
+        exit;
+    }
+
+    if ($connection->connect_error) {
+        die("Connection failed: " . $connection->connect_error);
+    }
+
+    // Update query
+    $sql = "UPDATE vehicle_status_ref_data SET status_title = ?, status_description = ? ,updated_by = ? WHERE id = ?";
+    
+    $stmt = $connection->prepare($sql);
+    $stmt->bind_param("sssi", $statusTitle, $statusDescription,$updatedBy, $statusId);
+
+    if (!$stmt->execute()) {
+        http_response_code(500);
+        echo json_encode(array("message" => "Error: " . $stmt->error));
+    } else {
+        http_response_code(200);
+        echo json_encode([]); // Return an empty JSON object on success
+    }
+    $stmt->close();
+    $connection->close();
+
+} else {
+    http_response_code(405); // Method Not Allowed
+    echo json_encode(array("message" => "Method not allowed."));
+}

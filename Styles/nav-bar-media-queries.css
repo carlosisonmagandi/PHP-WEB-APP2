@@ -1,0 +1,68 @@
+/* @media (max-width: 992px) { */
+    @media (max-width: 1024px) {
+        .logo {
+            display: none;
+        }
+        .dark-mode-container {
+            position: absolute;
+            top: 15px;
+            left: 5px;
+        }
+        .slide-up{
+            overflow:hidden;
+        margin-top:-50%;
+        }
+        .slide-down {
+        overflow:hidden;
+        margin-top:-10%;
+        }
+        .navbar-nav{
+            margin-right:5%;
+        }
+    }
+
+    @media (max-width: 428px) {
+        .dark-mode-container {
+            position: absolute;
+            top: 15px;
+            left: 5px;
+        }
+        .slide-up {
+            overflow: hidden;
+            margin-top: -100%;
+        }
+        .slide-down {
+            overflow: hidden;
+            margin-top: 100%;
+        }
+        .notification-bell {
+            position: relative;
+            margin-top: -25px;
+            display: inline-block;
+            cursor: pointer;  
+        }
+        .custom-column {
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            padding-bottom: 15px;
+            width: 300px;
+            margin-left: -160px;
+        }
+    }
+    
+
+    @media (min-width: 320px) and (max-width: 355px) {
+        .slide-up{
+            overflow:hidden;
+        margin-top:-200%;
+        
+        }
+        .slide-down {
+        overflow:hidden;
+        margin-top:0;
+        
+        }
+        
+    }
