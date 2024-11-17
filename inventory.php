@@ -138,6 +138,17 @@ include ("templates/nav-bar.php");
 
 <!-- bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet">
+
+<!-- Breadcrumbs -->
+<nav aria-label="breadcrumb" style="font-size:10px;padding-left:10px">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/Pages/admin/dashboard.php">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Inventory</li>
+    <li class="breadcrumb-item active" aria-current="page">Forest Product</li>
+    <li class="breadcrumb-item"><a href="/inventory.php">Table View</a></li>
+  </ol>
+</nav>
+
 <div class="mainContaier" >
     <div class="flex-container">
         <div class="flex-item-left" id="titleContainer">
