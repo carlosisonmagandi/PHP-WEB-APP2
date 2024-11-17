@@ -1,7 +1,7 @@
 <?php
 require_once("../../includes/db_connection.php");
 
-$sql = "SELECT SUM(CAST(quantity AS UNSIGNED)) AS total_quantity FROM request_form WHERE approval_status='Completed'";
+$sql = "SELECT COUNT(*) AS total_quantity FROM request_form WHERE approval_status='Completed'";
 $result = $connection->query($sql);
 
 $data = array();
