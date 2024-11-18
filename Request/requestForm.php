@@ -381,17 +381,36 @@ $hasId = !empty($id);
                 formData.append('project_eng_certification', $('#Cpe-yes-no').val());
                 formData.append('budget_officer_certification', $('#Cbo-yes-no').val());
 
-                // species ID,Name,PCS
-                // Get the selected option's text
+                // species ID, Name, PCS
                 const selectedItemText = $('#item_name_input option:selected').text();
 
-                // Split the text by the hyphen (-) and take the second part (the item name)
-                const selectedItemName = selectedItemText.split('-')[1].split(' (')[0];
+                // Updated regex to capture Quantity and handle possible extra spaces or punctuation
+                const quantityRegex = /Quantity:\s*(\d+)\s*pcs\./;
 
-                // Append the item ID and name to the formData
+                // Attempt to match the quantity
+                const match = selectedItemText.match(quantityRegex);
+
+                // If a match is found, proceed with validation
+                if (match && match[1]) {
+                    const availableQuantity = parseInt(match[1], 10); 
+                    const quantityNeeded = parseInt($('#quantity_needed').val(), 10);
+
+                    // Check if the quantity needed is greater than the available quantity
+                    if (quantityNeeded > availableQuantity) {
+                        alert('Invalid input: The quantity needed exceeds the available stock.');
+                        return; 
+                    }
+                } else {
+                    console.log('No match found for quantity.');
+                }
+
+                // Continue appending the selected item details
                 const selectedInventoryId = $('#item_name_input').val();
                 formData.append('item_id', selectedInventoryId);
-                formData.append('item_name_input', selectedItemName);
+                formData.append('item_name_input', selectedItemText.split('-')[1].split(' (')[0]);
+
+                // Proceed with submitting or other logic
+
 
                 let fileDocument = $('#supporting_documents')[0].files;
                 for (let i = 0; i < fileDocument.length; i++) {
