@@ -31,7 +31,15 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
 ?>
 <body>
     <!-- Navbar -->
-    <?php include("../../templates/nav-bar.php"); ?>
+    <?php //include("../../templates/nav-bar.php"); ?>
+
+    <?php 
+    isset($_SESSION['session_role']) 
+    ? include($_SESSION['session_role'] == 'Field_Staff' ? "../../Pages/FieldStaff/nav-bar.php" : "../../templates/nav-bar.php")
+    : print("No session role found.");
+    ?>
+
+    
     <!-- Alert message -->
     <?php 
     require_once("../../templates/alert-message.php");
@@ -93,7 +101,12 @@ $userData = fetchUserData($connection, $_SESSION['session_id']);
     </div>
 
     <!-- Navbar 2 -->
-    <?php include("../../templates/nav-bar2.php"); ?>
+    <?php //include("../../templates/nav-bar2.php"); ?>
+    <?php 
+    isset($_SESSION['session_role']) 
+    ? include($_SESSION['session_role'] == 'Field_Staff' ? "../../Pages/FieldStaff/nav-bar2.php" : "../../templates/nav-bar2.php")
+    : print("No session role found.");
+    ?>
 
     <script>
         <?php

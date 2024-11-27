@@ -295,7 +295,7 @@ include ("../templates/nav-bar.php");
             `);
             table.row.add(rowDataArray);// Add the row to the DataTable
         });
-        table.order([12, 'desc']).draw();// Redraw the DataTable
+        table.order([0, 'desc']).draw();// Redraw the DataTable
     }
 
     $(document).ready(function() {//call fetchDataFromDb on page load

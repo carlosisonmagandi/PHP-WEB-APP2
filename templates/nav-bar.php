@@ -349,7 +349,7 @@ if(isset($_POST['Logout'])){
                             ?>
                             
                             <div class="sb-sidenav-menu-heading">Addons</div>
-                            <a class="nav-link" href="/templates/maintenance.php">
+                            <a class="nav-link" href="/ReportSummary/report-view.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                                 Reports
                             </a>

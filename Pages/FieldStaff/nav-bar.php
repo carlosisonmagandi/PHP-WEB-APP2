@@ -304,7 +304,7 @@ if(isset($_POST['Logout'])){
                                     <div class="collapse" id="pagesCollapseTrees" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
                                         <nav class="sb-sidenav-menu-nested nav">
                                             <a class="nav-link" href="/Pages/FieldStaff/MyTickets/view-all-incidents.php">View All</a>
-                                            <a class="nav-link" href="/Pages/FIeldStaff/MyTickets/view-assign-to-me.php">Assigned to me</a>
+                                            <a class="nav-link" href="/Pages/FieldStaff/MyTickets/view-assign-to-me.php">Assigned to me</a>
                                         </nav>
                                     </div>
                                     <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseVehicle" aria-expanded="false" aria-controls="pagesCollapseVehicle">

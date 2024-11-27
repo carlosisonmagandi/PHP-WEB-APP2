@@ -1,9 +1,9 @@
 <?php
 require_once("../includes/db_connection.php");
 
-function deleteInventoryRecord($connection, $equipment_id) {
-    $stmt = $connection->prepare("DELETE FROM equipments WHERE id = ?");
-    $stmt->bind_param("i", $equipment_id);
+function deleteVehicleRecord($connection, $vehicle_id) {
+    $stmt = $connection->prepare("DELETE FROM vehicles WHERE id = ?");
+    $stmt->bind_param("i", $vehicle_id);
     
     $success = $stmt->execute();
     $stmt->close();
@@ -16,14 +16,14 @@ function sendResponse($success, $message) {
     exit;
 }
 
-if (!isset($_POST['equipment_id'])) {
-    sendResponse(false, 'No equipment provided.');
+if (!isset($_POST['vehicle_id'])) {
+    sendResponse(false, 'No vehicle provided.');
 }
 
-$equipment_id = $_POST['equipment_id'];
+$vehicle_id = $_POST['vehicle_id'];
 
-$select_stmt = $connection->prepare("SELECT file_path FROM equipments_images WHERE equipment_id = ?");
-$select_stmt->bind_param("i", $equipment_id);
+$select_stmt = $connection->prepare("SELECT file_path FROM vehicle_images WHERE vehicle_id = ?");
+$select_stmt->bind_param("i", $vehicle_id);
 $select_stmt->execute();
 $select_stmt->store_result(); // Store the result to loop through
 $select_stmt->bind_result($file_path);
@@ -45,13 +45,13 @@ while ($select_stmt->fetch()) {
 $select_stmt->close();
 
 // Delete all image records from inventory_images table
-$delete_image_stmt = $connection->prepare("DELETE FROM equipments_images WHERE equipment_id = ?");
-$delete_image_stmt->bind_param("i", $equipment_id);
+$delete_image_stmt = $connection->prepare("DELETE FROM vehicle_images WHERE vehicle_id = ?");
+$delete_image_stmt->bind_param("i", $vehicle_id);
 if ($delete_image_stmt->execute()) {
     $delete_image_stmt->close();
 
-    $equipment_deleted = deleteInventoryRecord($connection, $equipment_id);
-    sendResponse($equipment_deleted && $files_deleted, $equipment_deleted ? 'Images and equipment record deleted successfully.' : 'Failed to delete equipment record from database.');
+    $vehicle_deleted = deleteVehicleRecord($connection, $vehicle_id);
+    sendResponse($vehicle_deleted && $files_deleted, $vehicle_deleted ? 'Images and vehicle record deleted successfully.' : 'Failed to delete equipment record from database.');
 } else {
     $delete_image_stmt->close();
     sendResponse(false, 'Failed to delete image records from database.');

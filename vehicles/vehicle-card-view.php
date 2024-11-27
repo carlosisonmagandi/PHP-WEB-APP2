@@ -198,7 +198,7 @@ $hasId = !empty($id);
             dataType: 'json',
             success: function(response) {
             // console.log('Image response:', response);
-            console.log("here",response);
+            // console.log("here",response);
             $('.container').empty();  // Clear existing content
 
             $.each(response, function(index, record) {
@@ -718,10 +718,10 @@ $hasId = !empty($id);
                             });
 
                             // add new image button
-                            const buttonAddImage = document.getElementById('addImage');
-                            buttonAddImage.addEventListener('click', addImage);
+                            const buttonAddImage = document.getElementById('vehicleAddImage');
+                            buttonAddImage.addEventListener('click', vehicleAddImageFunction);
 
-                            function addImage() {
+                            function vehicleAddImageFunction() {
                                 Swal.fire({
                                     html: `
                                         <div style="text-align: center;">

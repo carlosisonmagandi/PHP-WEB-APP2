@@ -83,7 +83,7 @@
         
         if (image_id) {
             $.ajax({
-                url: '/equipments/image-view-get.php', 
+                url: '/vehicles/image-view-get.php', 
                 type: 'GET',
                 data: { image_id: image_id },
                 dataType: 'json',

@@ -1,6 +1,6 @@
 <?php
 require_once("../../includes/db_connection.php");
-    
+
 $sql = "SELECT SUM(CAST(EMV_forest_product AS DECIMAL(10, 2))) AS total_emv
 FROM inventory
 WHERE species_status = 'Confiscated'
@@ -11,6 +11,8 @@ $result = $connection->query($sql);
 $data = array();
 if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
+        // Format the total_emv with commas as thousand separators
+        $row['total_emv'] = number_format($row['total_emv'], 2, '.', ',');
         $data[] = $row;
     }
 }

@@ -1,7 +1,7 @@
 <?php 
 require_once("includes/db_connection.php");
 
-$sql = "SELECT COUNT(*) AS unseen_count FROM pushedNotification WHERE status = ? ORDER BY date_created DESC LIMIT 1";
+$sql = "SELECT COUNT(*) AS unseen_count FROM pushednotification WHERE status = ? ORDER BY date_created DESC LIMIT 1";
 $stmt = mysqli_stmt_init($connection);
 
 if (!mysqli_stmt_prepare($stmt, $sql)) {

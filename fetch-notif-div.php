@@ -1,7 +1,7 @@
 <?php 
 require_once("includes/db_connection.php");
 
-$sql = "SELECT * FROM pushedNotification ORDER BY date_created DESC, time_created DESC;";
+$sql = "SELECT * FROM pushednotification ORDER BY date_created DESC, time_created DESC;";
 $stmt = mysqli_stmt_init($connection);
 
 if (!mysqli_stmt_prepare($stmt, $sql)) {

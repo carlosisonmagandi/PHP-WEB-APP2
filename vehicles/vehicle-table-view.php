@@ -152,7 +152,7 @@ include ("../templates/nav-bar.php");
     </div>
 
     <div class="container-div" style="display: flex;flex-direction: column; margin-top:12px; font-size:10px;padding:10px">
-        <div class="content" style="flex-grow: 1; " ><!--Removed overflow-x:scroll; -->
+        <div class="content" style="flex-grow: 1;overflow-x:scroll; " ><!--Removed overflow-x:scroll; -->
             <!-- overflow-x:scroll; -->
             <table id="vehicleDataTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
             <thead style="text-align:center; " >
@@ -212,7 +212,7 @@ include ("../templates/nav-bar.php");
 <script>
     
     $('#vehicleDataTable').DataTable({
-        "order": [[ 12, "desc" ]],//order based on the latest created record
+        "order": [[ 0, "desc" ]],//order based on the latest created record
         "responsive": true,
         "pageLength": 10,
         "lengthMenu": [5, 10, 25, 50]
@@ -348,9 +348,9 @@ include ("../templates/nav-bar.php");
         // alert('Delete successful for ID: ' + id);
 
         $.ajax({
-            url: '/equipments/delete-record.php',
+            url: '/vehicles/delete-record.php',
             type: 'POST',
-            data: { equipment_id: id },
+            data: { vehicle_id: id },
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
@@ -436,7 +436,7 @@ include ("../templates/nav-bar.php");
                                 <div class="flex-container">
                                     <div class="flex-item-left-img">
                                         <p style="display:none">${image.id}</p>
-                                        <img src="${image.file_path}" alt="${image.file_name}" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
+                                        <img src="${image.file_path}" alt="${image.file_name}" id="${image.id}" class="image-clickable" style="max-height: 180px;max-width:180px;box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);">
                                     </div> 
                                     <button data-id="${image.id}" class="button-trash delete-button" id="buttonId">
                                         <i class="fas fa-trash-alt"></i>
@@ -721,6 +721,15 @@ include ("../templates/nav-bar.php");
                                             });
                                         }
                                     });
+                                });
+                            });
+                            // Click image
+                            document.querySelectorAll('.image-clickable').forEach(image => {
+                                image.addEventListener('click', function() {
+                                    let id = this.getAttribute('id');
+                                    window.open('/vehicles/image-view.php?id='+id, '_blank');
+
+                                    // alert(imagePath);
                                 });
                             });
 

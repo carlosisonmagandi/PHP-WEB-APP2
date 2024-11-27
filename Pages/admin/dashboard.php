@@ -405,7 +405,7 @@ include ("../../templates/nav-bar2.php");
 
     function viewEMVDetails(){
         Swal.fire({
-            title: 'Estimaed Value Summary',
+            title: 'Estimated Value Summary',
             html:`
                 <style>                      
                     .parent {

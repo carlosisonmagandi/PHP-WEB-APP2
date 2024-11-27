@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['image_id'])) {
     $image_id = intval($_GET['image_id']);
 
     // Prepare the SQL statement to prevent SQL injection
-    $stmt = $connection->prepare("SELECT file_path FROM equipments_images WHERE id = ? ");
+    $stmt = $connection->prepare("SELECT file_path FROM vehicle_images WHERE id = ? ");
     $stmt->bind_param("i", $image_id);
 
     if ($stmt->execute()) {

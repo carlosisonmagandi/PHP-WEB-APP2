@@ -3,8 +3,8 @@ require_once("../../../includes/db_connection.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     
-    // $inventoryId = isset($_GET['id']) ? intval($_GET['id']) : 0;
-    $inventoryId = '35';
+    $inventoryId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+    //$inventoryId = '35';
     $stmt = $connection->prepare("SELECT * FROM incident_reports WHERE id = ? ");
 
     $stmt->bind_param('i', $inventoryId);

@@ -409,9 +409,8 @@ $hasId = !empty($id);
                 formData.append('item_id', selectedInventoryId);
                 formData.append('item_name_input', selectedItemText.split('-')[1].split(' (')[0]);
 
+                
                 // Proceed with submitting or other logic
-
-
                 let fileDocument = $('#supporting_documents')[0].files;
                 for (let i = 0; i < fileDocument.length; i++) {
                     formData.append('supporting_documents[]', fileDocument[i]);

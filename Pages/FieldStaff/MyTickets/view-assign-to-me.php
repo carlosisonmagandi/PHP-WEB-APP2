@@ -117,7 +117,7 @@ if (isset($_POST['Logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Content ----------------------------------------->
-    <div class="tableDiv">
+    <div class="tableDiv" style="overflow-x:scroll;">
         <table id="assignToMeTable" class="display" style="width:100%; border:1px solid black; font-size=10px;" >
             <thead style="text-align:center;">
             <tr>
