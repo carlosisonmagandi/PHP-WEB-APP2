@@ -10,6 +10,7 @@ $sql = "SELECT type_of_requested_item, COUNT(*) AS total_count, SUM(quantity) AS
 
 if ($startDate && $endDate) {
     $sql .= " AND DATE_FORMAT(created_on, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
+    // $sql .= " AND DATE_FORMAT(date_of_apprehension, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
 }
 
 $sql .= " GROUP BY type_of_requested_item";

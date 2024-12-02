@@ -8,7 +8,8 @@ $sql = "SELECT species_type, COUNT(*) AS type_count, SUM(EMV_forest_product) AS 
         FROM inventory";
 
 if ($startDate && $endDate) {
-    $sql .= " WHERE DATE_FORMAT(date_created, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
+    // $sql .= " WHERE DATE_FORMAT(date_created, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
+    $sql .= " WHERE DATE_FORMAT(date_of_apprehension, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
 }
 
 $sql .= " GROUP BY species_type";

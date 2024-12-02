@@ -8,7 +8,8 @@ $sql = "SELECT city_municipality, COUNT(*) AS activity_count
         FROM inventory";
 
 if ($startDate && $endDate) {
-    $sql .= " WHERE DATE_FORMAT(date_created, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
+    // $sql .= " WHERE DATE_FORMAT(date_created, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
+    $sql .= " WHERE DATE_FORMAT(date_of_apprehension, '%Y-%m') BETWEEN '$startDate' AND '$endDate'";
 }
 
 $sql .= " GROUP BY city_municipality";

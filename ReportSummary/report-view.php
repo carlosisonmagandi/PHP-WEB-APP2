@@ -426,94 +426,123 @@ $endDate = $currentYear . "-" . $currentMonth; // End date is the current month
 
     document.getElementById('start-date').addEventListener('change', logDates);
     document.getElementById('end-date').addEventListener('change', logDates);
+    
     function printPage() {
-    // Ensure the elements exist before manipulating them
-    var formContainer = document.querySelector('.form-container');
-    var tableDiv = document.querySelector('.tableDiv');
-    var navBar = document.querySelector('.nav-bar');
-    var printButton = document.getElementById('buttonPrint');
+        // Get the current tables (species-summary-table and donation-summary-table)
+        const speciesSummaryTable = document.getElementById('species-summary-table').innerHTML;
+        const donationSummaryTable = document.getElementById('donation-summary-table').innerHTML;
+        
+        // Get the total illegal activity per area data
+        const areaContainer = document.querySelector('.area-container');
+        let areaTableContent = '<table><thead><tr><th>Area</th><th>Total Activity Count</th></tr></thead><tbody>';
 
-    // Only hide elements if they exist
-    if (formContainer) formContainer.style.display = 'none';
-    if (tableDiv) tableDiv.style.display = 'none'; // Hide the div with the border
-    if (navBar) navBar.style.display = 'none';
-    if (printButton) printButton.style.display = 'none';
+        // Loop through the area container's children to create rows for the table
+        const areaDivs = areaContainer.getElementsByTagName('div');
+        for (let i = 0; i < areaDivs.length; i++) {
+            const areaDiv = areaDivs[i];
+            const cityName = areaDiv.querySelector('.city-name') ? areaDiv.querySelector('.city-name').textContent : '';
+            const activityCount = areaDiv.querySelector('h4') ? areaDiv.querySelector('h4').textContent : '';
 
-    // Only show the part we want to print
-    var printContent = document.createElement('div');
-    printContent.innerHTML = `
-        <div class="total-number-per-place">
-            <b><center>Total number of illegal activity per Area</center></b>
-            <div class="area-container">
-                <!-- Populate from database -->
-            </div>
-        </div>
-        <div class="flex-container">
-            <!-- Confiscated forest product div -->
-            <div class="flex-item-left">
-                <div class="container">
-                    <p><b>Total number of confiscated Forest products</b></p>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Total counts</th>
-                                    <th>Total estimated value</th>
-                                </tr>
-                            </thead>
-                            <tbody id="species-summary-table">
-                                <!-- Populate data from db -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!-- Donation div -->
-            <div class="flex-item-right">
-                <div class="container">
-                    <p><b>Total number of Donated Forest products</b></p>
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Type</th>
-                                    <th>Total counts</th>
-                                    <th>Total quantity</th>
-                                </tr>
-                            </thead>
-                            <tbody id="donation-summary-table">
-                                <!-- Populate data from db -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+            // Add a row for each area
+            areaTableContent += `
+                <tr>
+                    <td>${cityName}</td>
+                    <td>${activityCount}</td>
+                </tr>
+            `;
+        }
 
-    // Create a new window for printing
-    var printWindow = window.open('', '', 'width=800,height=600');
-    printWindow.document.write('<html><head><title>Print</title>');
-    printWindow.document.write('<style> @media print { body { font-family: Arial, sans-serif; margin: 0; padding: 0; } .total-number-per-place, .flex-container { margin: 20px; } } </style>');
-    printWindow.document.write('</head><body>');
-    printWindow.document.write(printContent.innerHTML); // Write the content to be printed
-    printWindow.document.write('</body></html>');
-    printWindow.document.close(); // Close the document to allow the print dialog
+        areaTableContent += '</tbody></table>';
 
-    // Wait for the content to load, then trigger the print dialog
-    printWindow.onload = function() {
-        printWindow.print(); // Trigger the print dialog once content is ready
-        printWindow.onafterprint = function() {
-            // Restore the hidden elements after printing
-            if (formContainer) formContainer.style.display = 'flex';
-            if (tableDiv) tableDiv.style.display = 'block'; // Restore the table div
-            if (navBar) navBar.style.display = 'block';
-            if (printButton) printButton.style.display = 'inline-block';
-            printWindow.close(); // Close the print window after printing
-        };
-    };
-}
+        // Build the HTML content to display in the print view
+        const printContent = `
+            <html>
+            <head>
+                <title>Print Report</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        margin: 20px;
+                        font-size: 12px;
+                    }
+                    h1 {
+                        text-align: center;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                    }
+                    th, td {
+                        padding: 8px;
+                        text-align: left;
+                        border: 1px solid #ddd;
+                    }
+                    th {
+                        background-color: #f4f4f4;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>Apprehended Forest Products and Donations</h1>
+                <p><b>From:</b> ${document.getElementById('start-date').value} <b>To:</b> ${document.getElementById('end-date').value}</p>
+                <h3>Total Number of Confiscated Forest Products</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Total Counts</th>
+                            <th>Total Estimated Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${speciesSummaryTable}
+                    </tbody>
+                </table>
+
+                <h3>Total Number of Donated Forest Products</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Total Counts</th>
+                            <th>Total Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${donationSummaryTable}
+                    </tbody>
+                </table>
+
+                <h3>Total Number of Illegal Activity Per Area</h3>
+                ${areaTableContent}
+            </body>
+            </html>
+        `;
+
+        // Create a new "printable" iframe element
+        const printIframe = document.createElement('iframe');
+        printIframe.style.position = 'absolute';
+        printIframe.style.width = '0px';
+        printIframe.style.height = '0px';
+        printIframe.style.border = 'none';
+
+        // Append the iframe to the body of the document
+        document.body.appendChild(printIframe);
+
+        // Open the iframe document and write the content
+        const iframeDoc = printIframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(printContent);
+        iframeDoc.close();
+
+        // Trigger the print dialog from the iframe content
+        printIframe.contentWindow.focus(); 
+        printIframe.contentWindow.print(); 
+
+        // Remove the iframe after printing
+        document.body.removeChild(printIframe);
+    }
 
 
 </script>
