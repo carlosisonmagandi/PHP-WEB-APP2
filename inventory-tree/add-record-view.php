@@ -200,7 +200,11 @@ $hasId = !empty($id);
                 </div>
                 <div class="form-group">
                     <label for="apprehending_officer">Apprehending Officers</label>
-                    <textarea class="form-control" id="apprehending_officer" name="apprehending_officer"></textarea>
+                    <!-- <textarea class="form-control" id="apprehending_officer" name="apprehending_officer"></textarea> -->
+
+                    <select class="form-control" id="apprehending_officer" name="apprehending_officer">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
                 </div>
             </fieldset>
             
@@ -266,6 +270,37 @@ $hasId = !empty($id);
                 }
             });
         }
+        // Get account by field staff
+        $.ajax({
+                url: '/inventory-tree/get-account.php',
+                type: 'GET',
+                success: function(response) {
+                    console.log(response,'here');
+                    
+                    var assignedToDropdown = $('#apprehending_officer');
+                    assignedToDropdown.empty();
+                    if (!id) {
+                        assignedToDropdown.append('<option value="">Select Apprehending Officer</option>');
+                    } else {
+                        // Retrieve from session storage if available
+                        let field_staff_session = sessionStorage.getItem('assignedTo');
+                        if (field_staff_session) {
+                            assignedToDropdown.append('<option selected value="' + field_staff_session + '">' + field_staff_session + '</option>');
+                        }
+                    }
+                    // Iterate through the response data (array of accounts)
+                    $.each(response, function(index, fieldStaff) {
+                        var fullName = fieldStaff.full_name;
+                        if (!assignedToDropdown.find('option[value="' + fullName + '"]').length) {
+                            assignedToDropdown.append('<option value="' + fullName + '">' + fullName + '</option>');
+                        }
+                    });
+                },
+                error: function() {
+                    console.error("An error occurred ");
+                }
+            });
+
          // display values to species_type dropdown
         $.ajax({
             url: '/manage-reference-data/logsType/type-list.php',

@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         'custodian' => $custodian,
         'ACP_status_or_case_no' => $ACP_status_or_case_no,
         'date_of_confiscation_order' => $date_of_confiscation_order,
-        'apprehended_persons' => $apprehended_persons,
+        // 'apprehended_persons' => $apprehended_persons,
         'apprehended_quantity' => $apprehended_quantity,
         'apprehended_volume' => $apprehended_volume,
         // 'apprehended_vehicle' => $apprehended_vehicle,
