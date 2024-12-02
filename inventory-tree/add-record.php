@@ -4,7 +4,7 @@ require("../includes/session.php");
 require("../includes/darkmode.php");
 require("../includes/authentication.php");
 require_once("../includes/db_connection.php");
-
+require ("../vendor/autoload.php");
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_record') {
@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $upload_directory = 'Inventory/images/';
             if (!is_dir($upload_directory)) {
                 mkdir($upload_directory, 0755, true);
-            }
+            } 
 
             $invalid_file_found = false;
 
@@ -179,6 +179,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             if (!$invalid_file_found) {
                 $response['status'] = 'success';
             }
+
+            // Pusher configuration
+            require_once("../includes/pusher.php");
+
+            // Struct the data for Pusher
+            $dataToSend = array();
+            $pusher->trigger('fetchChartData-channel', 'fetchChartData-event', $dataToSend);
+
         } else {
             $response = ['status' => 'error', 'message' => $stmt->error];
         }

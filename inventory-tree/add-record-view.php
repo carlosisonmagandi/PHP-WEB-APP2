@@ -29,6 +29,8 @@ $hasId = !empty($id);
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <!-- loader -->
+     <link rel="stylesheet" href="/Styles/loader.css">
 </head>
 
 <body>
@@ -275,8 +277,6 @@ $hasId = !empty($id);
                 url: '/inventory-tree/get-account.php',
                 type: 'GET',
                 success: function(response) {
-                    console.log(response,'here');
-                    
                     var assignedToDropdown = $('#apprehending_officer');
                     assignedToDropdown.empty();
                     if (!id) {
@@ -450,6 +450,14 @@ $hasId = !empty($id);
 
         //Button Send
         $('#send').on('click', function() {
+            // added loader
+            Swal.fire({
+                title: "Loading please wait",
+                html: '<br><center><div class="spinner"></div></center>',
+                icon: "info",
+                timer: 20000,  
+                showConfirmButton: false 
+            });
             addRecord();
         });
 

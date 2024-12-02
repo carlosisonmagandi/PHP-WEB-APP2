@@ -18,7 +18,9 @@ if(isset($_POST['Logout'])){
     <link rel="stylesheet" type="text/css" href="../../../Styles/darkmode.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    
+    <!-- Include Pusher JS library -->
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+
     <!-- data table -->
     <script src="/Styles/data-table/jquery-3.7.1.js"></script>
     <script src="/Styles/data-table/dataTables.js"></script>
@@ -547,6 +549,16 @@ include ("../../templates/nav-bar2.php");
     // $(document).ready(function() {
     //     fetchChartData();
     // });
+
+    //Events for fetchChartData
+    const pusher = new Pusher('6bde96fb5927bfee7cdc', {
+        cluster: 'ap1'
+    });
+    const channel = pusher.subscribe('fetchChartData-channel');
+    channel.bind('fetchChartData-event', function(data) {
+        fetchChartData(); 
+    });
+
     function fetchChartData() {
         $.ajax({
             url: '/Dashboard/LineGraph/get-all.php',
@@ -654,7 +666,8 @@ include ("../../templates/nav-bar2.php");
     }
 
     $(document).ready(function() {
-        fetchChartData();
+         fetchChartData();
+        
     });
 
     //Pie chart
