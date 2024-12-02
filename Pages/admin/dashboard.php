@@ -33,13 +33,30 @@ if(isset($_POST['Logout'])){
             position: relative;
             height: 400px; /* Set the height for all charts */
         }
+        @media print {
+            .sb-topnav{
+                display: none !important;
+            }  
+            #buttonPrint {
+                display: none !important;
+            }
+            #footerToHide{
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
 <?php 
 include ("../../templates/nav-bar.php");
 ?>
-<div class="container-fluid mt-5">
+<button class="btn btn-primary" 
+    style="float:right;margin-top:5px;margin-right:10px;font-size:11px" 
+    id="buttonPrint" onclick="printDashboard()"
+>
+    <i class="fas fa-print"></i>&nbsp Print
+</button>
+<div class="container-fluid mt-5" id="mainDiv">
     <div class="row ">
         <!-- <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item active">Dashboard</li>
@@ -230,6 +247,10 @@ include ("../../templates/nav-bar2.php");
             }
         });
     });
+    //Print Dashboard
+    function printDashboard() {
+        window.print();
+    }
 
     //Confiscated Record View details
     const buttonViewRecordDetails = document.getElementById('viewRecordDetailsButton');

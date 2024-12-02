@@ -44,7 +44,7 @@ if(isset($_POST['Logout'])){
             }else{
                 echo '<link rel="stylesheet" type="text/css" href="../../Styles/notification.css">';
             }
-        ?>        
+        ?>         
     </head>
         
         <!-- <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark"> -->
