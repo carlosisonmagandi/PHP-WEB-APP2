@@ -363,6 +363,21 @@ $hasId = !empty($id);
             $('#requestForm').on('submit', function(e){
                  e.preventDefault(); // Prevent default form submission
                 // var formData = new FormData(this); 
+
+                //validate the preffered
+                const dateReported = $('#delivery_date').val();
+                
+                const today = new Date();
+                const selectedDate = new Date(dateReported);
+
+                today.setHours(0, 0, 0, 0); 
+                selectedDate.setHours(0, 0, 0, 0);
+                
+                if (selectedDate < today) {
+                    Swal.fire('Invalid Date!', 'The date cannot be in the past.', 'error');
+                    return;  
+                }
+
                 const formData = new FormData();
                 formData.append('requestor_name', $('#requestor_name').val());
                 formData.append('organization', $('#organization').val());
