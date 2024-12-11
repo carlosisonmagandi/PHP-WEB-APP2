@@ -138,10 +138,7 @@ $endDate = $currentYear . "-" . $currentMonth; // End date is the current month
     </style>
 </head>
 <body>
-    
-<?php 
-    include("../templates/nav-bar.php");
-?>
+  
 <!-- Scripts -->
 <!-- Note: It will not work inside header because of the php block for templates -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -155,11 +152,7 @@ $endDate = $currentYear . "-" . $currentMonth; // End date is the current month
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Content ----------------------------------------->
-<button class="btn btn-primary" id="buttonPrint" onclick="printPage()">
-    <i class="fas fa-print"></i>&nbsp Print
-</button>
-<br>
-<br>
+
 <center><p>List of Apprehended Forest Products, Equipments and Conveyances of PENRO Laguna</p></center>
 <div class="tableDiv">
     <!-- <b><p>Select date range</p></b> -->
@@ -183,10 +176,11 @@ $endDate = $currentYear . "-" . $currentMonth; // End date is the current month
 </div>
 
 <div class="total-number-per-place">
-    <b><center>Total number of illegal activity per Area </center> </b>
     <div class="area-container">
         <!-- Populate from database -->
     </div>
+    <br>
+    <i>Displays location with the highest count of illegal activities</i>
 </div>
 
 <div class="flex-container">
@@ -520,37 +514,41 @@ $endDate = $currentYear . "-" . $currentMonth; // End date is the current month
             </html>
         `;
 
-        // Create a new "printable" iframe element
-        const printIframe = document.createElement('iframe');
-        printIframe.style.position = 'absolute';
-        printIframe.style.width = '0px';
-        printIframe.style.height = '0px';
-        printIframe.style.border = 'none';
+        function printDashboard() {
+            // Select the content you want to print (in this case, the content inside .container-fluid)
+            var printContent = document.querySelector('.container-fluid').innerHTML;
 
-        // Append the iframe to the body of the document
-        document.body.appendChild(printIframe);
+            // Create a new "printable" iframe element
+            const printIframe = document.createElement('iframe');
+            printIframe.style.position = 'absolute';
+            printIframe.style.width = '0px';
+            printIframe.style.height = '0px';
+            printIframe.style.border = 'none';
 
-        // Open the iframe document and write the content
-        const iframeDoc = printIframe.contentWindow.document;
-        iframeDoc.open();
-        iframeDoc.write(printContent);
-        iframeDoc.close();
+            // Append the iframe to the body of the document
+            document.body.appendChild(printIframe);
 
-        // Trigger the print dialog from the iframe content
-        printIframe.contentWindow.focus(); 
-        printIframe.contentWindow.print(); 
+            // Open the iframe document and write the content
+            const iframeDoc = printIframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write('<html><head><title>Print Dashboard</title>');
+            iframeDoc.write('<style>body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }</style>'); // Optional CSS
+            iframeDoc.write('</head><body>');
+            iframeDoc.write(printContent);
+            iframeDoc.write('</body></html>');
+            iframeDoc.close();
 
-        // Remove the iframe after printing
-        document.body.removeChild(printIframe);
+            // Trigger the print dialog from the iframe content
+            printIframe.contentWindow.focus(); 
+            printIframe.contentWindow.print(); 
+
+            // Remove the iframe after printing
+            document.body.removeChild(printIframe);
+        }
     }
 
 
 </script>
 
-<!-- ---------------------------------------------- -->
-
-<?php 
-include("../templates/nav-bar2.php");
-?>
 </body>
 </html>

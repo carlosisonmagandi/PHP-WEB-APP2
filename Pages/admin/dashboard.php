@@ -105,6 +105,9 @@ include ("../../templates/nav-bar.php");
                     <div class="card-body chart-container">
                         <canvas id="lineChart"></canvas>
                     </div>
+                    <center>
+                        <i>Bargraph displays the comparison of confiscated items based on forest product types</i>
+                    </center>
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6">
@@ -112,6 +115,8 @@ include ("../../templates/nav-bar.php");
                     <div class="card-body chart-container">
                         <canvas id="pieChart"></canvas>
                     </div>
+                   
+                    <i><b>Summary:</b> The largest portion in piegraphs shows the location that has the highest illegal activities.</i>
                 </div>
             </div>
             <div class="col-xl-6 col-lg-6">
@@ -119,11 +124,16 @@ include ("../../templates/nav-bar.php");
                     <div class="card-body chart-container">
                         <canvas id="barChart"></canvas>
                     </div>
+                    <i><b>Summary:</b> The line graph shows the monthly trend of completed donation based on current year.</i>
+                   
                 </div>
             </div>
         </div>
-
     </div>    
+    <!-- iframe -->
+    <iframe src="/ReportSummary/report-view-main.php" width="100%" height="800px" title="Example Iframe">
+        Your browser does not support iframes.
+    </iframe>
 </div>
 <?php 
 include ("../../templates/nav-bar2.php");
